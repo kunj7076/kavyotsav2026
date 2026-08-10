@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>काव्योत्सव 2026 | अभिव्यक्ति काव्यपीठ</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Razorpay Checkout SDK -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <!-- HTML5 QR Code Library -->
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <!-- jsPDF Library (PDF Generator) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- QRCode.js Library (QR Generator) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+    <!-- Header & Navigation -->
+    <header>
+        <div class="logo-container">
+            <img src="https://i.postimg.cc/BvCpXsBY/file-000000004b2c82119a54e5fe960f91e8.png" alt="Abhivyakti Logo" class="nav-logo">
+            <span class="logo-text">अभिव्यक्ति काव्यपीठ</span>
+        </div>
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#register" class="btn-nav">Register</a>
+            <a href="#location">Location</a>
+            <a href="#contact">Contact</a>
+            <a href="#admin-login" class="admin-link">🔒 Admin Portal</a>
+        </nav>
+    </header>
+
+    <!-- Home Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <span class="reg-badge">Govt Reg. No: UDYAM-UP-03-0155035</span>
+            <h1>काव्योत्सव 2026</h1>
+            <p>इलाहाबाद विश्वविद्यालय, प्रयागराज | 23 अगस्त 2026</p>
+            <a href="#register" class="btn-main">Get Ticket</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="container">
+        <h2>कार्यक्रम के बारे में</h2>
+        <div class="gold-line"></div>
+        <p>
+            'अभिव्यक्ति काव्यपीठ' द्वारा आयोजित <strong>काव्योत्सव 2026</strong> इलाहाबाद विश्वविद्यालय में एक भव्य साहित्यिक आयोजन है। 
+            यह मंच कवियों, विचारकों और साहित्य प्रेमियों को एक साथ लाता है।
+        </p>
+    </section>
+
+    <!-- Registration Form -->
+    <section id="register" class="container form-section">
+        <h2>पंजीकरण (Registration)</h2>
+        <div class="gold-line"></div>
+        
+        <form id="ticketForm">
+            <label class="input-label">आप किस रूप में शामिल होना चाहते हैं?</label>
+            <select id="userRole" required onchange="updateTicketPrice()">
+                <option value="Audience">श्रोता / दर्शक (Audience - ₹99)</option>
+                <option value="Performer">कवि / मंच प्रस्तुतकर्ता (Performer - ₹299)</option>
+            </select>
+
+            <input type="text" id="name" placeholder="पूरा नाम (Full Name)" required>
+            <input type="email" id="email" placeholder="ईमेल आईडी (Email ID)" required>
+            <input type="tel" id="phone" placeholder="व्हाट्सऐप नंबर (WhatsApp No.)" required>
+            
+            <div id="performerFields" style="display: none;">
+                <label class="input-label">किस विधा में प्रस्तुति देंगे?</label>
+                <select id="vidha">
+                    <option value="Ghazal">ग़ज़ल (Ghazal)</option>
+                    <option value="Poetry">कविता (Poetry)</option>
+                    <option value="Song">गीत (Song)</option>
+                    <option value="Comedy">हास्य (Comedy)</option>
+                    <option value="Other">अन्य (Other)</option>
+                </select>
+                <textarea id="poetrySample" placeholder="अपनी प्रस्तुति के बारे में संक्षेप में लिखें..."></textarea>
+            </div>
+
+            <div class="price-box">
+                <span>शुल्क (Fee):</span>
+                <strong id="priceDisplay">₹99</strong>
+            </div>
+
+            <button type="submit" class="btn-main">Pay Now</button>
+        </form>
+    </section>
+<!-- Location Section -->
+<section id="location" class="container">
+    <h2>कार्यक्रम स्थल (Venue)</h2>
+    <div class="gold-line"></div>
+    <p><strong>स्थान:</strong> इलाहाबाद विश्वविद्यालय परिसर, प्रयागराज, उत्तर प्रदेश</p>
+    
+    <div class="map-box" style="margin-top: 15px; overflow: hidden; border-radius: 8px;">
+        <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3602.5115206148386!2d81.85461137597148!3d25.454583921239127!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x399bfd0a8764b857%3A0xb35a0928e469e38e!2sUniversity%20of%20Allahabad!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" 
+            width="100%" 
+            height="280" 
+            style="border:0;" 
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+    </div>
+    
+    <!-- Direct Open Button -->
+    <a href="https://maps.google.com/?q=University+of+Allahabad+Prayagraj" target="_blank" class="btn-map" style="margin-top: 15px; display: inline-block;">
+        Google Maps App में खोलें 📍
+    </a>
+</section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="container">
+        <h2>संपर्क करें (Contact Us)</h2>
+        <div class="gold-line"></div>
+        <div class="contact-details">
+            <p>📧 <strong>Email:</strong> <a href="mailto:abhivyaktikavypith@gmail.com">abhivyaktikavypith@gmail.com</a></p>
+            <p>📞 <strong>Phone:</strong> <a href="tel:+918528537076">+91 8528537076</a></p>
+        </div>
+    </section>
+
+   <!-- Admin Login Form Section -->
+<section id="admin-login" class="container admin-section">
+    <h2>🔒 Admin Login Portal</h2>
+    <div class="gold-line"></div>
+    <p class="admin-subtitle">केवल अधिकृत व्यवस्थापक / वालंटियर के लिए:</p>
+    
+    <!-- CHANGE HERE: event pass kiya gaya hai -->
+    <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
+        <input type="text" id="adminUser" placeholder="Email / Phone Number" required>
+        <input type="password" id="adminPass" placeholder="Password" required>
+        <button type="submit" class="btn-scan">Login to Scanner Portal</button>
+    </form>
+    <div id="loginError" class="error-msg" style="display:none;"></div>
+</section>
+
+    <!-- Dedicated Admin Dashboard Modal (Hidden until logged in) -->
+    <div id="adminDashboard" class="admin-modal" style="display:none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🎟️ Admin Entry Gateway & QR Scanner</h3>
+                <button onclick="closeAdminDashboard()" class="close-btn">❌ Logout</button>
+            </div>
+            
+            <div class="dashboard-stats">
+                <div class="stat-card">Scanned: <span id="scannedCount">0</span></div>
+                <div class="stat-card">Status: <span id="scannerStatus">Ready</span></div>
+            </div>
+
+            <div class="scanner-wrapper">
+                <button onclick="toggleCamera()" id="camToggleBtn" class="btn-main">📷 Start Camera Scanner</button>
+                <div id="reader"></div>
+            </div>
+
+            <div id="scanResultBox" class="scan-result-box" style="display:none;"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Abhivyakti Kavypith. All Rights Reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+    
