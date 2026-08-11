@@ -172,10 +172,18 @@ function sendDataToGoogleSheet(paymentId, name, email, phone, role, vidha, poetr
 // ==========================================
 // 4. ADMIN LOGIN (NO PAGE REFRESH)
 // ==========================================
+// Admin Modal Toggle Functions
+function openAdminModal() {
+    document.getElementById('adminModal').style.display = 'flex';
+}
+
+function closeAdminModal() {
+    document.getElementById('adminModal').style.display = 'none';
+}
+
+// Updated Login Success Handler (Admin Login verification success par call hone wala code)
 function handleAdminLogin(event) {
-    if (event) {
-        event.preventDefault();
-    }
+    if (event) event.preventDefault();
 
     const userInput = document.getElementById('adminUser').value.trim();
     const passInput = document.getElementById('adminPass').value.trim();
@@ -184,22 +192,14 @@ function handleAdminLogin(event) {
     if ((userInput === ADMIN_CREDENTIALS.user || userInput === ADMIN_CREDENTIALS.email) && passInput === ADMIN_CREDENTIALS.pass) {
         loginError.style.display = 'none';
         document.getElementById('adminLoginForm').reset();
-        document.getElementById('adminDashboard').style.display = 'flex';
+        closeAdminModal(); // Close login box
+        document.getElementById('adminDashboard').style.display = 'flex'; // Open Scanner
     } else {
         loginError.innerText = "❌ अमान्य Email/Phone या Password!";
         loginError.style.display = 'block';
     }
-
     return false;
 }
-
-function closeAdminDashboard() {
-    if (isScanning) {
-        stopCamera();
-    }
-    document.getElementById('adminDashboard').style.display = 'none';
-}
-
 // ==========================================
 // 5. LIVE QR ATTENDANCE SCANNER
 // ==========================================

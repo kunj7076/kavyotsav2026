@@ -4,168 +4,174 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>काव्योत्सव 2026 | अभिव्यक्ति काव्यपीठ</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Yatra+One&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="style.css">
-    <!-- Razorpay Checkout SDK -->
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <!-- HTML5 QR Code Library -->
-    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-    <!-- jsPDF Library (PDF Generator) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-    <!-- QRCode.js Library (QR Generator) -->
+    <!-- Third-Party Libraries -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
 <body>
 
-    <!-- Header & Navigation -->
-    <header>
+    <!-- Professional Navigation Bar -->
+    <header class="navbar">
         <div class="logo-container">
             <img src="https://i.postimg.cc/BvCpXsBY/file-000000004b2c82119a54e5fe960f91e8.png" alt="Abhivyakti Logo" class="nav-logo">
-            <span class="logo-text">अभिव्यक्ति काव्यपीठ</span>
+            <div class="logo-brand">
+                <span class="logo-title">अभिव्यक्ति काव्यपीठ</span>
+                <small class="logo-sub">प्रयागराज, उत्तर प्रदेश</small>
+            </div>
         </div>
-        <nav>
+        <nav class="nav-links">
             <a href="#home">Home</a>
             <a href="#about">About</a>
-            <a href="#register" class="btn-nav">Register</a>
+            <a href="#register">Register</a>
             <a href="#location">Location</a>
-            <a href="#contact">Contact</a>
-            <a href="#admin-login" class="admin-link">🔒 Admin Portal</a>
+            <!-- Admin Trigger Button -->
+            <button class="admin-nav-btn" onclick="openAdminModal()">🔒 Admin Portal</button>
         </nav>
     </header>
 
-    <!-- Home Section -->
+    <!-- Hero Section -->
     <section id="home" class="hero">
+        <div class="hero-overlay"></div>
         <div class="hero-content">
-            <span class="reg-badge">Govt Reg. No: UDYAM-UP-03-0155035</span>
+            <span class="badge">UDYAM REG. NO: UDYAM-UP-03-0155035</span>
             <h1>काव्योत्सव 2026</h1>
-            <p>इलाहाबाद विश्वविद्यालय, प्रयागराज | 23 अगस्त 2026</p>
-            <a href="#register" class="btn-main">Get Ticket</a>
+            <p class="tagline">साहित्यिक चेतना एवं युवा काव्य संध्या</p>
+            <div class="hero-meta">
+                <span>📍 इलाहाबाद विश्वविद्यालय परिसर, प्रयागराज</span>
+                <span>📅 23 अगस्त 2026</span>
+            </div>
+            <a href="#register" class="btn-primary">Pass Book Karein</a>
         </div>
     </section>
 
-    <!-- About Section -->
-    <section id="about" class="container">
-        <h2>कार्यक्रम के बारे में</h2>
-        <div class="gold-line"></div>
-        <p>
-            'अभिव्यक्ति काव्यपीठ' द्वारा आयोजित <strong>काव्योत्सव 2026</strong> इलाहाबाद विश्वविद्यालय में एक भव्य साहित्यिक आयोजन है। 
-            यह मंच कवियों, विचारकों और साहित्य प्रेमियों को एक साथ लाता है।
-        </p>
-    </section>
-
-    <!-- Registration Form -->
-    <section id="register" class="container form-section">
-        <h2>पंजीकरण (Registration)</h2>
-        <div class="gold-line"></div>
+    <!-- Registration Section -->
+    <section id="register" class="section-container">
+        <div class="section-header">
+            <h2>प्रवेश पंजीकरण (Registration)</h2>
+            <div class="gold-divider"></div>
+            <p>कृपया अपना सही विवरण दर्ज करें, E-Ticket PDF तुरंत प्राप्त होगा</p>
+        </div>
         
-        <form id="ticketForm">
-            <label class="input-label">आप किस रूप में शामिल होना चाहते हैं?</label>
-            <select id="userRole" required onchange="updateTicketPrice()">
-                <option value="Audience">श्रोता / दर्शक (Audience - ₹99)</option>
-                <option value="Performer">कवि / मंच प्रस्तुतकर्ता (Performer - ₹299)</option>
-            </select>
-
-            <input type="text" id="name" placeholder="पूरा नाम (Full Name)" required>
-            <input type="email" id="email" placeholder="ईमेल आईडी (Email ID)" required>
-            <input type="tel" id="phone" placeholder="व्हाट्सऐप नंबर (WhatsApp No.)" required>
-            
-            <div id="performerFields" style="display: none;">
-                <label class="input-label">किस विधा में प्रस्तुति देंगे?</label>
-                <select id="vidha">
-                    <option value="Ghazal">ग़ज़ल (Ghazal)</option>
-                    <option value="Poetry">कविता (Poetry)</option>
-                    <option value="Song">गीत (Song)</option>
-                    <option value="Comedy">हास्य (Comedy)</option>
-                    <option value="Other">अन्य (Other)</option>
+        <form id="ticketForm" class="pro-card form-card">
+            <div class="input-group">
+                <label for="userRole">आप किस रूप में शामिल होना चाहते हैं?</label>
+                <select id="userRole" class="pro-input" required onchange="updateTicketPrice()">
+                    <option value="Audience">श्रोता / दर्शक (Audience Pass - ₹99)</option>
+                    <option value="Performer">कवि / मंच प्रस्तुतकर्ता (Performer Pass - ₹299)</option>
                 </select>
-                <textarea id="poetrySample" placeholder="अपनी प्रस्तुति के बारे में संक्षेप में लिखें..."></textarea>
             </div>
 
-            <div class="price-box">
-                <span>शुल्क (Fee):</span>
-                <strong id="priceDisplay">₹99</strong>
+            <div class="input-grid">
+                <div class="input-group">
+                    <label for="name">पूरा नाम (Full Name)</label>
+                    <input type="text" id="name" class="pro-input" placeholder="जैसे: प्रशांत प्रयागी" required>
+                </div>
+                <div class="input-group">
+                    <label for="phone">व्हाट्सऐप नंबर (WhatsApp No.)</label>
+                    <input type="tel" id="phone" class="pro-input" placeholder="10-digit number" required>
+                </div>
             </div>
 
-            <button type="submit" class="btn-main">Pay Now</button>
+            <div class="input-group">
+                <label for="email">ईमेल आईडी (Email ID)</label>
+                <input type="email" id="email" class="pro-input" placeholder="example@gmail.com" required>
+            </div>
+            
+            <!-- Dynamic Performer Fields -->
+            <div id="performerFields" class="performer-box" style="display: none;">
+                <div class="input-group">
+                    <label for="vidha">प्रस्तुति की विधा (Category)</label>
+                    <select id="vidha" class="pro-input">
+                        <option value="Ghazal">ग़ज़ल (Ghazal)</option>
+                        <option value="Poetry">कविता (Poetry)</option>
+                        <option value="Song">गीत (Song)</option>
+                        <option value="Comedy">हास्य व्यंग्य (Satire / Comedy)</option>
+                        <option value="Other">अन्य (Other)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="poetrySample">अपनी रचना का संक्षिप्त अंश (4 पंक्तियाँ)</label>
+                    <textarea id="poetrySample" class="pro-input pro-textarea" placeholder="यहाँ अपनी पंक्तियाँ लिखें..."></textarea>
+                </div>
+            </div>
+
+            <!-- Price Summary Box -->
+            <div class="summary-card">
+                <span>कुल पंजीकरण शुल्क:</span>
+                <strong id="priceDisplay" class="price-text">₹99</strong>
+            </div>
+
+            <button type="submit" class="btn-pay">Pay & Download Ticket PDF</button>
         </form>
     </section>
-<!-- Location Section -->
-<section id="location" class="container">
-    <h2>कार्यक्रम स्थल (Venue)</h2>
-    <div class="gold-line"></div>
-    <p><strong>स्थान:</strong> इलाहाबाद विश्वविद्यालय परिसर, प्रयागराज, उत्तर प्रदेश</p>
-    
-    <div class="map-box" style="margin-top: 15px; overflow: hidden; border-radius: 8px;">
-        <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3602.5115206148386!2d81.85461137597148!3d25.454583921239127!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x399bfd0a8764b857%3A0xb35a0928e469e38e!2sUniversity%20of%20Allahabad!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" 
-            width="100%" 
-            height="280" 
-            style="border:0;" 
-            allowfullscreen="" 
-            loading="lazy" 
-            referrerpolicy="no-referrer-when-downgrade">
-        </iframe>
-    </div>
-    
-    <!-- Direct Open Button -->
-    <a href="https://maps.google.com/?q=University+of+Allahabad+Prayagraj" target="_blank" class="btn-map" style="margin-top: 15px; display: inline-block;">
-        Google Maps App में खोलें 📍
-    </a>
-</section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="container">
-        <h2>संपर्क करें (Contact Us)</h2>
-        <div class="gold-line"></div>
-        <div class="contact-details">
-            <p>📧 <strong>Email:</strong> <a href="mailto:abhivyaktikavypith@gmail.com">abhivyaktikavypith@gmail.com</a></p>
-            <p>📞 <strong>Phone:</strong> <a href="tel:+918528537076">+91 8528537076</a></p>
+    <!-- Venue / Map Section -->
+    <section id="location" class="section-container">
+        <div class="section-header">
+            <h2>कार्यक्रम स्थल (Venue)</h2>
+            <div class="gold-divider"></div>
+        </div>
+        <div class="pro-card map-wrapper">
+            <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3602.5115206148386!2d81.85461137597148!3d25.454583921239127!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x399bfd0a8764b857%3A0xb35a0928e469e38e!2sUniversity%20of%20Allahabad!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" 
+                width="100%" height="320" style="border:0;" allowfullscreen="" loading="lazy">
+            </iframe>
+            <div class="map-actions">
+                <a href="https://maps.google.com/?q=University+of+Allahabad+Prayagraj" target="_blank" class="btn-outline">Google Maps पर दिशा देखें 📍</a>
+            </div>
         </div>
     </section>
 
-   <!-- Admin Login Form Section -->
-<section id="admin-login" class="container admin-section">
-    <h2>🔒 Admin Login Portal</h2>
-    <div class="gold-line"></div>
-    <p class="admin-subtitle">केवल अधिकृत व्यवस्थापक / वालंटियर के लिए:</p>
-    
-    <!-- CHANGE HERE: event pass kiya gaya hai -->
-    <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
-        <input type="text" id="adminUser" placeholder="Email / Phone Number" required>
-        <input type="password" id="adminPass" placeholder="Password" required>
-        <button type="submit" class="btn-scan">Login to Scanner Portal</button>
-    </form>
-    <div id="loginError" class="error-msg" style="display:none;"></div>
-</section>
+    <!-- Footer -->
+    <footer class="pro-footer">
+        <p>&copy; 2026 अभिव्यक्ति काव्यपीठ | सर्वाधिकार सुरक्षित</p>
+    </footer>
 
-    <!-- Dedicated Admin Dashboard Modal (Hidden until logged in) -->
-    <div id="adminDashboard" class="admin-modal" style="display:none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>🎟️ Admin Entry Gateway & QR Scanner</h3>
-                <button onclick="closeAdminDashboard()" class="close-btn">❌ Logout</button>
-            </div>
+    <!-- HIDDEN ADMIN LOGIN MODAL (Triggered only from Navbar) -->
+    <div id="adminModal" class="modal-overlay" style="display: none;">
+        <div class="modal-card">
+            <button class="close-modal-btn" onclick="closeAdminModal()">&times;</button>
+            <h3>🔒 Admin Access Portal</h3>
+            <p class="modal-sub">केवल अधिकृत व्यवस्थापक / वालंटियर हेतु</p>
             
-            <div class="dashboard-stats">
-                <div class="stat-card">Scanned: <span id="scannedCount">0</span></div>
-                <div class="stat-card">Status: <span id="scannerStatus">Ready</span></div>
-            </div>
-
-            <div class="scanner-wrapper">
-                <button onclick="toggleCamera()" id="camToggleBtn" class="btn-main">📷 Start Camera Scanner</button>
-                <div id="reader"></div>
-            </div>
-
-            <div id="scanResultBox" class="scan-result-box" style="display:none;"></div>
+            <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
+                <div class="input-group">
+                    <input type="text" id="adminUser" class="pro-input" placeholder="User Phone / Email" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="adminPass" class="pro-input" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn-primary" style="width:100%; margin-top:10px;">Verify & Access Scanner</button>
+            </form>
+            <div id="loginError" class="error-badge" style="display:none;"></div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2026 Abhivyakti Kavypith. All Rights Reserved.</p>
-    </footer>
+    <!-- ADMIN SCANNER DASHBOARD MODAL -->
+    <div id="adminDashboard" class="modal-overlay" style="display: none;">
+        <div class="modal-card scanner-card">
+            <button class="close-modal-btn" onclick="closeAdminDashboard()">&times;</button>
+            <h3>📷 Gate Entry QR Scanner</h3>
+            <div class="stats-badge">Total Entry Scanned: <strong id="scannedCount">0</strong></div>
+            
+            <div id="reader" class="scanner-viewport"></div>
+            <p id="scannerStatus" class="scanner-status">Status: Standby</p>
+
+            <button id="camToggleBtn" class="btn-primary" onclick="toggleCamera()">Start Camera Scanner</button>
+            <div id="scanResultBox" class="scan-result-card" style="display:none;"></div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
 </html>
-    
