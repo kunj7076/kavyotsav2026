@@ -34,6 +34,8 @@
             <a href="#about">About</a>
             <a href="#register">Register</a>
             <a href="#location">Location</a>
+            <a href="#event">Event Info</a>
+            <a href="#about">About Us</a>
             <!-- Admin Trigger Button -->
             <button class="admin-nav-btn" onclick="openAdminModal()">🔒 Admin Portal</button>
         </nav>
@@ -52,6 +54,13 @@
             </div>
             <a href="#register" class="btn-primary">Pass Book Karein</a>
         </div>
+    </section>
+
+    <!-- 1. ABOUT OUR EVENT SECTION (Registration Form Ke Upar) -->
+    <section id="event" class="section">
+        <h2>काव्योत्सव 2026 के बारे में (About Our Event)</h2>
+        <p>काव्योत्सव 2026 प्रयागराज की ऐतिहासिक धरती पर आयोजित होने वाली एक भव्य साहित्यिक एवं काव्य संध्या है। इस आयोजन का मुख्य उद्देश्य नवोदित एवं स्थापित कवियों, शायरों और विचारकों को एक साझा मंच प्रदान करना है।</p>
+        <p style="margin-top: 10px;">यहाँ आप हिंदी साहित्य, ग़ज़ल, छंद, हास्य-व्यंग्य और आधुनिक काव्य-विधाओं के अद्भुत संगम का अनुभव करेंगे। यदि आप साहित्य प्रेमी हैं या मंच पर अपनी रचना प्रस्तुत करना चाहते हैं, तो नीचे दिए गए फॉर्म से अपना Pass सुनिश्चित करें।</p>
     </section>
 
     <!-- Registration Section -->
@@ -124,7 +133,7 @@
         <div class="pro-card map-wrapper">
             <iframe 
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3602.5115206148386!2d81.85461137597148!3d25.454583921239127!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x399bfd0a8764b857%3A0xb35a0928e469e38e!2sUniversity%20of%20Allahabad!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" 
-                width="100%" height="320" style="border:0;" allowfullscreen="" loading="lazy">
+                width="100%" height="60" style="border:0;" allowfullscreen="" loading="lazy">
             </iframe>
             <div class="map-actions">
                 <a href="https://maps.google.com/?q=University+of+Allahabad+Prayagraj" target="_blank" class="btn-outline">Google Maps पर दिशा देखें 📍</a>
@@ -132,11 +141,58 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="pro-footer">
-        <p>&copy; 2026 अभिव्यक्ति काव्यपीठ | सर्वाधिकार सुरक्षित</p>
-    </footer>
+    <!-- 2. ABOUT US SECTION (Registration Form Ke Niche) -->
+    <section id="about" class="section">
+        <h2>हमारे बारे में (About Us)</h2>
+        <p><strong>अभिव्यक्ति काव्यपीठ</strong> साहित्य, कला एवं सांस्कृतिक चेतना को समर्पित एक पंजीकृत एवं अग्रणी संस्था है (UDYAM REG. NO: UDYAM-UP-03-0155035)।</p>
+        <p style="margin-top: 10px;">हमारा उद्देश्य देश के कोने-कोने से युवा प्रतिभाओं को खोजकर उन्हें राष्ट्रीय मंच प्रदान करना है। अभिव्यक्ति काव्यपीठ नियमित रूप से काव्य गोष्ठियों, open-mic प्रतियोगिताओं और साहित्यिक सम्मेलनों का सफल आयोजन करती आ रही है।</p>
+    </section>
 
+    <!-- Footer -->
+    <!-- Professional Multi-Column Footer -->
+<footer class="site-footer">
+    <div class="footer-container">
+        <!-- Column 1: Organization Info -->
+        <div class="footer-col">
+            <h3 class="footer-brand">अभिव्यक्ति काव्यपीठ</h3>
+            <p class="footer-desc">साहित्य, कला एवं सांस्कृतिक चेतना को समर्पित एक राष्ट्रीय मंच।</p>
+            <span class="reg-tag">UDYAM REG: UDYAM-UP-03-0155035</span>
+        </div>
+
+        <!-- Column 2: Useful Navigation Links -->
+        <div class="footer-col">
+            <h4>उपयोगी लिंक (Useful Links)</h4>
+            <ul class="footer-links">
+                <li><a href="#home">मुख्य पृष्ठ (Home)</a></li>
+                <li><a href="#about">हमारे बारे में (About Us)</a></li>
+                <li><a href="#register">पास बुकिंग (Pass Registration)</a></li>
+                <li><a href="#location">दिशा-निर्देश (Venue & Map)</a></li>
+            </ul>
+        </div>
+
+        <!-- Column 3: Policy & Legal Pages (Payment Gateway Compliance) -->
+        <div class="footer-col">
+            <h4>नीति एवं नियम (Policies)</h4>
+            <ul class="footer-links">
+                <li><a href="#" onclick="alert('नियम एवं शर्तें: केवल पंजीकृत पास धारकों को ही सभागार में प्रवेश की अनुमति होगी।')">Terms & Conditions</a></li>
+                <li><a href="#" onclick="alert('गोपनीयता नीति: आपका व्यक्तिगत विवरण केवल काव्योत्सव 2026 पास और अपडेट्स के लिए सुरक्षित रखा जाएगा।')">Privacy Policy</a></li>
+                <li><a href="#" onclick="alert('रिफंड नीति: पंजीकरण शुल्क किसी भी परिस्थिति में वापस (Non-refundable) नहीं होगा।')">Refund Policy</a></li>
+            </ul>
+        </div>
+
+        <!-- Column 4: Support & Contact -->
+        <div class="footer-col">
+            <h4>संपर्क एवं सहायता (Support)</h4>
+            <p>📧 Email: <a href="mailto:abhivyaktikavypith@gmail.com">abhivyaktikavypith@gmail.com</a></p>
+            <p>📞 Helpline: +91 8528537076</p>
+            <p>📍 Allahabad University, Prayagraj</p>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>&copy; 2026 अभिव्यक्ति काव्यपीठ | सर्वाधिकार सुरक्षित | Developed for Kavyotsav 2026</p>
+    </div>
+</footer>
     <!-- HIDDEN ADMIN LOGIN MODAL (Triggered only from Navbar) -->
     <div id="adminModal" class="modal-overlay" style="display: none;">
         <div class="modal-card">

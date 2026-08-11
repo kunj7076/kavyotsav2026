@@ -16,25 +16,37 @@
 }
 
 body {
-    background-color: var(--bg-primary);
-    color: var(--text-light);
-    line-height: 1.6;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    /* Soft Deep Royal Gradient Background */
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+    background-attachment: fixed;
+    color: #f8fafc;
 }
 
-/* Header & Navbar */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 5%;
-    background: rgba(15, 23, 42, 0.95);
-    backdrop-filter: blur(10px);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    border-bottom: 1px solid var(--border-color);
+/* Sections ko dark card jaisa dikhane ke liye */
+.section {
+    max-width: 650px;
+    margin: 40px auto;
+    padding: 25px;
+    background: rgba(30, 41, 59, 0.95);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    text-align: center;
+    color: #f8fafc;
 }
 
+.section h2 {
+    color: #fbbf24; /* Warm Gold Heading */
+}
+
+.form-group input, .form-group select, .form-group textarea {
+    background-color: #0f172a;
+    color: #fff;
+    border: 1px solid #334155;
+}
 .logo-container {
     display: flex;
     align-items: center;
@@ -93,20 +105,25 @@ body {
     color: #000;
 }
 
-/* Hero Section */
-.hero {
-    position: relative;
-    padding: 90px 20px 70px;
-    text-align: center;
-    background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
-    border-bottom: 1px solid var(--border-color);
+/* 1. Hero Banner Top Section (New Image Background) */
+#home.hero-section {
+    background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.85)), 
+                url('https://images.unsplash.com/photo-1455390582262-044cdead277a?q=80&w=1200&auto=format&fit=crop') center/cover no-repeat;
+    border-bottom: 2px solid #b8860b;
+    color: #ffffff;
+    padding: 60px 20px;
 }
 
-.hero h1 {
-    font-family: 'Cinzel', serif;
-    font-size: 2.8rem;
-    color: var(--accent-gold-light);
-    margin: 15px 0 5px;
+#home.hero-section h1 {
+    color: #fbbf24; /* Glowing Gold */
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+}
+
+#home.hero-section p {
+    color: #f8fafc;
+    font-size: 1.1rem;
 }
 
 .badge {
@@ -318,4 +335,133 @@ body {
     .hero h1 {
         font-size: 2rem;
     }
+}
+
+.site-footer {
+    background-color: #5c280b;
+    color: #fcf8f2;
+    padding: 40px 20px 20px;
+    margin-top: 50px;
+    border-top: 3px solid #b8860b;
+}
+
+.footer-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 30px;
+}
+
+.footer-col h3, .footer-col h4 {
+    color: #fbbf24;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+
+.footer-desc {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    opacity: 0.9;
+}
+
+.reg-tag {
+    display: inline-block;
+    background: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    margin-bottom: 8px;
+}
+
+.footer-links a, .footer-col a {
+    color: #fcf8f2;
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: 0.2s;
+}
+
+.footer-links a:hover {
+    color: #fbbf24;
+    padding-left: 5px;
+}
+
+.footer-bottom {
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 30px;
+    padding-top: 15px;
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+/* 2. About Our Event & About Us Text Color (White Fix) */
+#event, #about {
+    color: #ffffff !important; /* Pure White Text */
+    text-align: left;
+    line-height: 1.8;
+}
+
+#event h2, #about h2 {
+    color: #fbbf24 !important; /* Gold Heading */
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+#event p, #about p {
+    color: #ffffff !important; /* White Body Text */
+    font-size: 1rem;
+}
+
+/* ==========================================
+   HERO BANNER & ABOUT SECTIONS FIX
+   ========================================== */
+
+/* Hero Banner Background Image & Overlay */
+.hero-section, #home {
+    background: linear-gradient(rgba(15, 23, 42, 0.82), rgba(15, 23, 42, 0.88)), 
+                url('https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1200&q=80') center center / cover no-repeat !important;
+    border-bottom: 2px solid #fbbf24 !important;
+    padding: 60px 20px !important;
+    color: #ffffff !important;
+}
+
+.hero-section h1, #home h1 {
+    color: #fbbf24 !important; /* Glowing Gold */
+    font-size: 2.4rem !important;
+    margin-bottom: 12px !important;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8) !important;
+}
+
+.hero-section p, #home p {
+    color: #f8fafc !important;
+    font-size: 1.05rem !important;
+    margin-top: 5px !important;
+}
+/* Hero Banner Text Center Alignment Fix */
+.hero, .hero-section, #home {
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.hero-content {
+    text-align: center !important;
+    width: 100% !important;
+}
+
+.hero-meta {
+    justify-content: center !important;
 }

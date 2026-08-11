@@ -239,17 +239,23 @@ function stopCamera() {
 }
 
 function onScanSuccess(decodedText) {
+    // 1. Instant Camera Stop (Automatic Pause)
+    stopCamera();
+
+    // 2. Play Haptic Feedback / Beep
     if (navigator.vibrate) navigator.vibrate(200);
 
+    const scannedId = decodedText.trim();
     const resultBox = document.getElementById('scanResultBox');
     resultBox.style.display = 'block';
-    const scannedId = decodedText.trim();
 
-    resultBox.className = "scan-result-box scan-success";
+    resultBox.className = "result-box";
     resultBox.innerHTML = `⏳ <strong>Verifying Ticket...</strong><br><small>ID: ${scannedId}</small>`;
 
+    // 3. Mark Attendance in Sheet
     markAttendanceInGoogleSheet(scannedId);
 }
+
 
 function markAttendanceInGoogleSheet(ticketId) {
     const resultBox = document.getElementById('scanResultBox');
