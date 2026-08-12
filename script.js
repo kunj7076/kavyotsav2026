@@ -8,7 +8,7 @@ const ADMIN_CREDENTIALS = {
 };
 
 // APNA GOOGLE APPS SCRIPT WEBHOOK URL YAHAN PASTE KAREIN
-const GOOGLE_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbzuJZre3PTqG2DO-Ix6EuU7mgCFCummzwTyh6eDm5XaAUJeLk4l4IXCmBulqN2osFkU/exec";
+const GOOGLE_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbzr5Q28u4tGPmm7_dYXOz3tqSQSgNjU9S_11M5xRfVn8sIh9axjNxpYpXwtYjs0lPJX/exec";
 let html5QrCode;
 let isScanning = false;
 let scannedCount = 0;
@@ -150,25 +150,24 @@ function generateAndDownloadPDF(paymentId, name, email, phone, role, vidha) {
 
 // Data Sender to Google Sheet & Email
 function sendDataToGoogleSheet(paymentId, name, email, phone, role, vidha, poetrySample) {
-    if (GOOGLE_WEBHOOK_URL !== "https://script.google.com/macros/s/AKfycbzuJZre3PTqG2DO-Ix6EuU7mgCFCummzwTyh6eDm5XaAUJeLk4l4IXCmBulqN2osFkU/exec") {
-        fetch(GOOGLE_WEBHOOK_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                action: "register",
-                paymentId: paymentId, 
-                name: name, 
-                email: email, 
-                phone: phone, 
-                role: role,
-                vidha: vidha,
-                sample: poetrySample
-            })
-        });
-    }
-}
+    const GOOGLE_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbzr5Q28u4tGPmm7_dYXOz3tqSQSgNjU9S_11M5xRfVn8sIh9axjNxpYpXwtYjs0lPJX/exec"; // Put your full URL here
 
+    fetch(GOOGLE_WEBHOOK_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            action: "register",
+            paymentId: paymentId,
+            name: name,
+            email: email,
+            phone: phone,
+            role: role,
+            vidha: vidha,
+            sample: poetrySample
+        })
+    });
+}
 // ==========================================
 // 4. ADMIN LOGIN (NO PAGE REFRESH)
 // ==========================================
@@ -260,7 +259,7 @@ function onScanSuccess(decodedText) {
 function markAttendanceInGoogleSheet(ticketId) {
     const resultBox = document.getElementById('scanResultBox');
 
-    if (GOOGLE_WEBHOOK_URL === "https://script.google.com/macros/s/AKfycbzuJZre3PTqG2DO-Ix6EuU7mgCFCummzwTyh6eDm5XaAUJeLk4l4IXCmBulqN2osFkU/exec") {
+    if (GOOGLE_WEBHOOK_URL === "https://script.google.com/macros/s/AKfycbzr5Q28u4tGPmm7_dYXOz3tqSQSgNjU9S_11M5xRfVn8sIh9axjNxpYpXwtYjs0lPJX/exec") {
         scannedCount++;
         document.getElementById('scannedCount').innerText = scannedCount;
         resultBox.className = "scan-result-box scan-success";
