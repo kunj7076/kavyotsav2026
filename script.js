@@ -8,7 +8,7 @@ const ADMIN_CREDENTIALS = {
 };
 
 // APNA GOOGLE APPS SCRIPT WEBHOOK URL YAHAN PASTE KAREIN
-const GOOGLE_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbz1gTTwEBaBA7qohgHAzLOyzBbz-jLOarQxLRkZOW6HEGnyxFI3uNAPVopQy4MyeWxV/exec";
+const GOOGLE_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbzuJZre3PTqG2DO-Ix6EuU7mgCFCummzwTyh6eDm5XaAUJeLk4l4IXCmBulqN2osFkU/exec";
 let html5QrCode;
 let isScanning = false;
 let scannedCount = 0;
@@ -150,7 +150,7 @@ function generateAndDownloadPDF(paymentId, name, email, phone, role, vidha) {
 
 // Data Sender to Google Sheet & Email
 function sendDataToGoogleSheet(paymentId, name, email, phone, role, vidha, poetrySample) {
-    if (GOOGLE_WEBHOOK_URL !== "https://script.google.com/macros/s/AKfycbz1gTTwEBaBA7qohgHAzLOyzBbz-jLOarQxLRkZOW6HEGnyxFI3uNAPVopQy4MyeWxV/exec") {
+    if (GOOGLE_WEBHOOK_URL !== "https://script.google.com/macros/s/AKfycbzuJZre3PTqG2DO-Ix6EuU7mgCFCummzwTyh6eDm5XaAUJeLk4l4IXCmBulqN2osFkU/exec") {
         fetch(GOOGLE_WEBHOOK_URL, {
             method: 'POST',
             mode: 'no-cors',
@@ -260,7 +260,7 @@ function onScanSuccess(decodedText) {
 function markAttendanceInGoogleSheet(ticketId) {
     const resultBox = document.getElementById('scanResultBox');
 
-    if (GOOGLE_WEBHOOK_URL === "https://script.google.com/macros/s/AKfycbxvHjzm3KD5zyoD6s--pITZU8tFI2XmKWJHJodlZMQY5tqQj5HScZMkctqBV2CyWObb/https://script.google.com/macros/s/AKfycbz1gTTwEBaBA7qohgHAzLOyzBbz-jLOarQxLRkZOW6HEGnyxFI3uNAPVopQy4MyeWxV/exec") {
+    if (GOOGLE_WEBHOOK_URL === "https://script.google.com/macros/s/AKfycbzuJZre3PTqG2DO-Ix6EuU7mgCFCummzwTyh6eDm5XaAUJeLk4l4IXCmBulqN2osFkU/exec") {
         scannedCount++;
         document.getElementById('scannedCount').innerText = scannedCount;
         resultBox.className = "scan-result-box scan-success";
