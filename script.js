@@ -8,7 +8,7 @@ const ADMIN_CREDENTIALS = {
 };
 
 // APNA GOOGLE APPS SCRIPT WEBHOOK URL YAHAN PASTE KAREIN
-const GOOGLE_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbzr5Q28u4tGPmm7_dYXOz3tqSQSgNjU9S_11M5xRfVn8sIh9axjNxpYpXwtYjs0lPJX/exec";
+const GOOGLE_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbzdfT03vf_CLORuq2wULroVn0mceiwgjED3VzaYYHw1efR4bOWlhrBxCW8NB5iQyVcO/exec";
 let html5QrCode;
 let isScanning = false;
 let scannedCount = 0;
@@ -41,7 +41,7 @@ document.getElementById('ticketForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
     if (typeof Razorpay === 'undefined') {
-        alert("Razorpay SDK load nahi hua hai. Kripya check karein ki index.html me checkout.js script judi hai.");
+        alert("Razorpay SDK load nahi hua hai.");
         return;
     }
 
