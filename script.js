@@ -25,7 +25,7 @@ function updateTicketPrice() {
         priceDisplay.innerText = '₹299';
         if (performerFields) performerFields.style.display = 'block';
     } else {
-        priceDisplay.innerText = '₹99';
+        priceDisplay.innerText = '₹01';
         if (performerFields) performerFields.style.display = 'none';
     }
 }
