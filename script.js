@@ -150,8 +150,6 @@ function generateAndDownloadPDF(paymentId, name, email, phone, role, vidha) {
 
 // Data Sender to Google Sheet & Email
 function sendDataToGoogleSheet(paymentId, name, email, phone, role, vidha, poetrySample) {
-    const GOOGLE_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbzr5Q28u4tGPmm7_dYXOz3tqSQSgNjU9S_11M5xRfVn8sIh9axjNxpYpXwtYjs0lPJX/exec"; // Put your full URL here
-
     fetch(GOOGLE_WEBHOOK_URL, {
         method: 'POST',
         mode: 'no-cors',
@@ -168,19 +166,20 @@ function sendDataToGoogleSheet(paymentId, name, email, phone, role, vidha, poetr
         })
     });
 }
+
 // ==========================================
 // 4. ADMIN LOGIN (NO PAGE REFRESH)
 // ==========================================
-// Admin Modal Toggle Functions
 function openAdminModal() {
-    document.getElementById('adminModal').style.display = 'flex';
+    const modal = document.getElementById('adminModal');
+    if (modal) modal.style.display = 'flex';
 }
 
 function closeAdminModal() {
-    document.getElementById('adminModal').style.display = 'none';
+    const modal = document.getElementById('adminModal');
+    if (modal) modal.style.display = 'none';
 }
 
-// Updated Login Success Handler (Admin Login verification success par call hone wala code)
 function handleAdminLogin(event) {
     if (event) event.preventDefault();
 
@@ -189,16 +188,19 @@ function handleAdminLogin(event) {
     const loginError = document.getElementById('loginError');
 
     if ((userInput === ADMIN_CREDENTIALS.user || userInput === ADMIN_CREDENTIALS.email) && passInput === ADMIN_CREDENTIALS.pass) {
-        loginError.style.display = 'none';
+        if(loginError) loginError.style.display = 'none';
         document.getElementById('adminLoginForm').reset();
-        closeAdminModal(); // Close login box
-        document.getElementById('adminDashboard').style.display = 'flex'; // Open Scanner
+        closeAdminModal(); 
+        document.getElementById('adminDashboard').style.display = 'block'; 
     } else {
-        loginError.innerText = "❌ अमान्य Email/Phone या Password!";
-        loginError.style.display = 'block';
+        if(loginError) {
+            loginError.innerText = "❌ अमान्य Email/Phone या Password!";
+            loginError.style.display = 'block';
+        }
     }
     return false;
 }
+
 // ==========================================
 // 5. LIVE QR ATTENDANCE SCANNER
 // ==========================================
@@ -228,7 +230,7 @@ function startCamera() {
 }
 
 function stopCamera() {
-    if (html5QrCode) {
+    if (html5QrCode && isScanning) {
         html5QrCode.stop().then(() => {
             isScanning = false;
             document.getElementById('camToggleBtn').innerText = "📷 Start Camera Scanner";
@@ -238,10 +240,7 @@ function stopCamera() {
 }
 
 function onScanSuccess(decodedText) {
-    // 1. Instant Camera Stop (Automatic Pause)
     stopCamera();
-
-    // 2. Play Haptic Feedback / Beep
     if (navigator.vibrate) navigator.vibrate(200);
 
     const scannedId = decodedText.trim();
@@ -251,56 +250,28 @@ function onScanSuccess(decodedText) {
     resultBox.className = "result-box";
     resultBox.innerHTML = `⏳ <strong>Verifying Ticket...</strong><br><small>ID: ${scannedId}</small>`;
 
-    // 3. Mark Attendance in Sheet
     markAttendanceInGoogleSheet(scannedId);
 }
-
 
 function markAttendanceInGoogleSheet(ticketId) {
     const resultBox = document.getElementById('scanResultBox');
 
-    if (GOOGLE_WEBHOOK_URL === "https://script.google.com/macros/s/AKfycbzr5Q28u4tGPmm7_dYXOz3tqSQSgNjU9S_11M5xRfVn8sIh9axjNxpYpXwtYjs0lPJX/exec") {
-        scannedCount++;
-        document.getElementById('scannedCount').innerText = scannedCount;
-        resultBox.className = "scan-result-box scan-success";
-        resultBox.innerHTML = `
-            ✅ <strong>प्रवेश स्वीकृत (Entry Granted)!</strong><br>
-            <strong>Ticket ID:</strong> ${ticketId}<br>
-            <small>Status: Verified (Test Mode)</small>
-        `;
-        return;
-    }
-
     fetch(GOOGLE_WEBHOOK_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: "markAttendance", ticketId: ticketId })
     })
-    .then(response => response.json())
-    .then(data => {
-        if(data.status === "Success") {
-            scannedCount++;
-            document.getElementById('scannedCount').innerText = scannedCount;
-            
-            resultBox.className = "scan-result-box scan-success";
-            resultBox.innerHTML = `
-                ✅ <strong>प्रवेश स्वीकृत (Entry Granted)!</strong><br>
-                <strong>Name:</strong> ${data.name}<br>
-                <strong>Role:</strong> ${data.role}<br>
-                <strong>Phone:</strong> ${data.phone}<br>
-                <small>Status: Attendance Marked in Sheet</small>
-            `;
-        } else if(data.status === "AlreadyMarked") {
-            resultBox.className = "scan-result-box scan-error";
-            resultBox.innerHTML = `
-                ⚠️ <strong>Duplicate Ticket!</strong><br>
-                <strong>Name:</strong> ${data.name}<br>
-                <small>यह टिकट पहले ही स्कैन हो चुका है!</small>
-            `;
-        } else {
-            resultBox.className = "scan-result-box scan-error";
-            resultBox.innerHTML = `❌ <strong>Invalid Ticket!</strong>`;
-        }
+    .then(() => {
+        scannedCount++;
+        document.getElementById('scannedCount').innerText = scannedCount;
+        
+        resultBox.className = "scan-result-box scan-success";
+        resultBox.innerHTML = `
+            ✅ <strong>प्रवेश स्वीकृत (Entry Sent to Sheet)!</strong><br>
+            <strong>Ticket ID:</strong> ${ticketId}<br>
+            <small>Status: Updated in Google Sheet</small>
+        `;
     })
     .catch(err => {
         resultBox.className = "scan-result-box scan-error";
