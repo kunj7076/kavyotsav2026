@@ -92,88 +92,118 @@ document.getElementById('ticketForm').addEventListener('submit', function(e) {
     }
 });
 
-// PDF Generation & Auto-Download Function (With Transparent Stamp)
+// Reliable PDF Generation Function (Prevents Blank PDF Issue)
 function generateAndDownloadPDF(paymentId, name, email, phone, role, vidha) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
-    // 1. Stamp Image (Transparent BG) Link
-    // Note: Agar aapka apna link ho toh niche "YOUR_TRANSPARENT_STAMP_URL" ki jagah paste kar dein
-    const STAMP_URL = "https://i.postimg.cc/zf0zvnKb/Gemini-Generated-Image-u2nl7zu2nl7zu2nl.png"; 
-
-    // Generate Hidden QR Code
+    // 1. QR Code Element Setup
     const qrDiv = document.createElement('div');
     qrDiv.style.display = 'none';
     document.body.appendChild(qrDiv);
-    
+
     new QRCode(qrDiv, {
         text: paymentId,
         width: 128,
         height: 128
     });
 
-    // Stamp Image Load karne ke liye Image Object
-    const stampImg = new Image();
-    stampImg.crossOrigin = "Anonymous";
-    stampImg.src = STAMP_URL;
+    // Function to Draw PDF Content
+    function buildPDF(stampImgData = null) {
+        const qrCanvas = qrDiv.querySelector('canvas');
+        const qrImgData = qrCanvas ? qrCanvas.toDataURL("image/png") : null;
 
-    stampImg.onload = function() {
-        setTimeout(() => {
-            const qrCanvas = qrDiv.querySelector('canvas');
-            const qrImgData = qrCanvas ? qrCanvas.toDataURL("image/png") : "";
+        // --- HEADER DESIGN ---
+        doc.setFillColor(120, 53, 15); // Dark Brown Background
+        doc.rect(0, 0, 210, 30, "F");
 
-            // --- HEADER DESIGN ---
-            doc.setFillColor(120, 53, 15);
-            doc.rect(0, 0, 210, 30, "F");
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(16);
+        doc.text("KAVYOTSAV 2026 - OFFICIAL ENTRY TICKET", 15, 20);
 
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(16);
-            doc.text("KAVYOTSAV 2026 - OFFICIAL ENTRY TICKET", 15, 20);
+        // --- TICKET DETAILS ---
+        doc.setTextColor(34, 34, 34);
+        doc.setFontSize(11);
+        doc.text(`Ticket / Payment ID: ${paymentId}`, 15, 45);
+        doc.text(`Name: ${name}`, 15, 53);
+        doc.text(`Email: ${email}`, 15, 61);
+        doc.text(`Phone: ${phone}`, 15, 69);
+        doc.text(`Role: ${role}`, 15, 77);
+        doc.text(`Vidha: ${vidha || "N/A"}`, 15, 85);
+        doc.text(`Venue: University of Allahabad, Prayagraj`, 15, 93);
+        doc.text(`Date: 23 August 2026`, 15, 101);
 
-            // --- TICKET DETAILS ---
-            doc.setTextColor(34, 34, 34);
-            doc.setFontSize(11);
-            doc.text(`Ticket / Payment ID: ${paymentId}`, 15, 45);
-            doc.text(`Name: ${name}`, 15, 53);
-            doc.text(`Email: ${email}`, 15, 61);
-            doc.text(`Phone: ${phone}`, 15, 69);
-            doc.text(`Role: ${role}`, 15, 77);
-            doc.text(`Vidha: ${vidha}`, 15, 85);
-            doc.text(`Venue: University of Allahabad, Prayagraj`, 15, 93);
-            doc.text(`Date: 23 August 2026`, 15, 101);
+        // --- ADD STAMP (If Loaded Successfully) ---
+        if (stampImgData) {
+            try {
+                doc.addImage(stampImgData, "PNG", 145, 105, 45, 45);
+            } catch (err) {
+                console.log("Stamp image error:", err);
+            }
+        }
 
-            // --- 2. ADD STAMP (Neeche Right Side Par) ---
-            // doc.addImage(Image, Format, X-axis, Y-axis, Width, Height)
-            doc.addImage(stampImg, "PNG", 145, 105, 45, 45); 
-
-            // --- ADD QR CODE (Upar Right Side Par) ---
-            if (qrImgData) {
+        // --- ADD QR CODE ---
+        if (qrImgData) {
+            try {
                 doc.addImage(qrImgData, "PNG", 145, 42, 45, 45);
                 doc.setFontSize(8);
                 doc.text("Gate Entry QR Pass", 153, 90);
+            } catch (err) {
+                console.log("QR Code error:", err);
             }
+        }
 
-            // --- FOOTER DIVIDER LINE ---
-            doc.setDrawColor(184, 134, 11);
-            doc.line(15, 155, 195, 155);
+        // --- FOOTER DIVIDER LINE ---
+        doc.setDrawColor(184, 134, 11);
+        doc.line(15, 155, 195, 155);
 
-            doc.setFontSize(9);
-            doc.setTextColor(100, 100, 100);
-            doc.text("Abhivyakti Kavypith | Govt Reg. UDYAM-UP-03-0155035", 15, 163);
-            doc.text("Official Digital Verified Stamp & Entry Pass", 15, 169);
+        doc.setFontSize(9);
+        doc.setTextColor(100, 100, 100);
+        doc.text("Abhivyakti Kavypith | Govt Reg. UDYAM-UP-03-0155035", 15, 163);
+        doc.text("Official Digital Verified Stamp & Entry Pass", 15, 169);
 
-            // Auto Download PDF
-            doc.save(`Kavyotsav_Ticket_${name.replace(/\s+/g, '_')}.pdf`);
-            document.body.removeChild(qrDiv);
-        }, 500);
+        // Save & Download
+        doc.save(`Kavyotsav_Ticket_${name.replace(/\s+/g, '_')}.pdf`);
+        document.body.removeChild(qrDiv);
+    }
+
+    // Load Stamp Image safely with Fallback Timeout
+    const stampImg = new Image();
+    stampImg.crossOrigin = "Anonymous";
+    
+    // Set 2 Seconds Timeout (Isse agar image load na bhi ho, tab bhi blank page nahi aayega)
+    let isDownloaded = false;
+    const fallbackTimer = setTimeout(() => {
+        if (!isDownloaded) {
+            isDownloaded = true;
+            buildPDF(null); // Build without stamp if image hangs
+        }
+    }, 1500);
+
+    stampImg.onload = function() {
+        if (!isDownloaded) {
+            isDownloaded = true;
+            clearTimeout(fallbackTimer);
+            buildPDF(stampImg);
+        }
     };
 
+    stampImg.onerror = function() {
+        if (!isDownloaded) {
+            isDownloaded = true;
+            clearTimeout(fallbackTimer);
+            buildPDF(null);
+        }
+    };
+
+    stampImg.src = "https://i.postimg.cc/zf0zvnKb/Gemini-Generated-Image-u2nl7zu2nl7zu2nl.png";
+}
     // Fallback: Agar Image load na ho paye toh bina stamp ke PDF download kar dega
     stampImg.onerror = function() {
         console.log("Stamp image failed to load, generating PDF without stamp.");
         doc.save(`Kavyotsav_Ticket_${name.replace(/\s+/g, '_')}.pdf`);
     };
-}
+
 
 // Data Sender to Google Sheet & Email
 function sendDataToGoogleSheet(paymentId, name, email, phone, role, vidha, poetrySample) {

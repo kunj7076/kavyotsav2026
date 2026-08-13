@@ -670,3 +670,24 @@ body {
 #registerModal .gold-divider {
     background-color: #d90429 !important; /* Divider line ko bhi Red kar diya */
 }
+/* QR SCAN RESULT TEXT COLOR & BOX FIX */
+#scanResultBox, .scan-result-card {
+    background-color: #f8fafc !important; /* Light Greyish-White Box */
+    color: #1e293b !important;            /* Dark Slate Text Color (Visible) */
+    border: 2px solid #78350f !important;  /* Brown Border */
+    border-radius: 8px !important;
+    padding: 12px 15px !important;
+    margin-top: 15px !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Small text inside result box (e.g., Ticket ID) */
+#scanResultBox small, .scan-result-card small {
+    color: #00050c !important; /* Visible Dark Grey */
+    font-size: 13px !important;
+    display: block !important;
+    margin-top: 4px !important;
+}
