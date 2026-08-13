@@ -25,7 +25,7 @@ function updateTicketPrice() {
         priceDisplay.innerText = '₹299';
         if (performerFields) performerFields.style.display = 'block';
     } else {
-        priceDisplay.innerText = '₹99';
+        priceDisplay.innerText = '₹01';
         if (performerFields) performerFields.style.display = 'none';
     }
 }
@@ -92,10 +92,14 @@ document.getElementById('ticketForm').addEventListener('submit', function(e) {
     }
 });
 
-// PDF Generation & Auto-Download Function
+// PDF Generation & Auto-Download Function (With Transparent Stamp)
 function generateAndDownloadPDF(paymentId, name, email, phone, role, vidha) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
+
+    // 1. Stamp Image (Transparent BG) Link
+    // Note: Agar aapka apna link ho toh niche "YOUR_TRANSPARENT_STAMP_URL" ki jagah paste kar dein
+    const STAMP_URL = "https://i.postimg.cc/zf0zvnKb/Gemini-Generated-Image-u2nl7zu2nl7zu2nl.png"; 
 
     // Generate Hidden QR Code
     const qrDiv = document.createElement('div');
@@ -108,44 +112,67 @@ function generateAndDownloadPDF(paymentId, name, email, phone, role, vidha) {
         height: 128
     });
 
-    setTimeout(() => {
-        const qrCanvas = qrDiv.querySelector('canvas');
-        const qrImgData = qrCanvas ? qrCanvas.toDataURL("image/png") : "";
+    // Stamp Image Load karne ke liye Image Object
+    const stampImg = new Image();
+    stampImg.crossOrigin = "Anonymous";
+    stampImg.src = STAMP_URL;
 
-        // Design PDF
-        doc.setFillColor(120, 53, 15);
-        doc.rect(0, 0, 210, 30, "F");
+    stampImg.onload = function() {
+        setTimeout(() => {
+            const qrCanvas = qrDiv.querySelector('canvas');
+            const qrImgData = qrCanvas ? qrCanvas.toDataURL("image/png") : "";
 
-        doc.setTextColor(255, 255, 255);
-        doc.setFontSize(18);
-        doc.text("KAVYOTSAV 2026 - OFFICIAL ENTRY TICKET", 15, 20);
+            // --- HEADER DESIGN ---
+            doc.setFillColor(120, 53, 15);
+            doc.rect(0, 0, 210, 30, "F");
 
-        doc.setTextColor(34, 34, 34);
-        doc.setFontSize(12);
-        doc.text(`Ticket / Payment ID: ${paymentId}`, 15, 45);
-        doc.text(`Name: ${name}`, 15, 55);
-        doc.text(`Email: ${email}`, 15, 65);
-        doc.text(`Phone: ${phone}`, 15, 75);
-        doc.text(`Role: ${role}`, 15, 85);
-        doc.text(`Vidha: ${vidha}`, 15, 95);
-        doc.text(`Venue: University of Allahabad, Prayagraj`, 15, 105);
-        doc.text(`Date: 23 August 2026`, 15, 115);
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(16);
+            doc.text("KAVYOTSAV 2026 - OFFICIAL ENTRY TICKET", 15, 20);
 
-        if (qrImgData) {
-            doc.addImage(qrImgData, "PNG", 140, 45, 50, 50);
+            // --- TICKET DETAILS ---
+            doc.setTextColor(34, 34, 34);
+            doc.setFontSize(11);
+            doc.text(`Ticket / Payment ID: ${paymentId}`, 15, 45);
+            doc.text(`Name: ${name}`, 15, 53);
+            doc.text(`Email: ${email}`, 15, 61);
+            doc.text(`Phone: ${phone}`, 15, 69);
+            doc.text(`Role: ${role}`, 15, 77);
+            doc.text(`Vidha: ${vidha}`, 15, 85);
+            doc.text(`Venue: University of Allahabad, Prayagraj`, 15, 93);
+            doc.text(`Date: 23 August 2026`, 15, 101);
+
+            // --- 2. ADD STAMP (Neeche Right Side Par) ---
+            // doc.addImage(Image, Format, X-axis, Y-axis, Width, Height)
+            doc.addImage(stampImg, "PNG", 145, 105, 45, 45); 
+
+            // --- ADD QR CODE (Upar Right Side Par) ---
+            if (qrImgData) {
+                doc.addImage(qrImgData, "PNG", 145, 42, 45, 45);
+                doc.setFontSize(8);
+                doc.text("Gate Entry QR Pass", 153, 90);
+            }
+
+            // --- FOOTER DIVIDER LINE ---
+            doc.setDrawColor(184, 134, 11);
+            doc.line(15, 155, 195, 155);
+
             doc.setFontSize(9);
-            doc.text("Gate Entry QR Pass", 145, 100);
-        }
+            doc.setTextColor(100, 100, 100);
+            doc.text("Abhivyakti Kavypith | Govt Reg. UDYAM-UP-03-0155035", 15, 163);
+            doc.text("Official Digital Verified Stamp & Entry Pass", 15, 169);
 
-        doc.setDrawColor(184, 134, 11);
-        doc.line(15, 125, 195, 125);
-        doc.setFontSize(10);
-        doc.text("Abhivyakti Kavypith | Govt Reg. UDYAM-UP-03-0155035", 15, 135);
+            // Auto Download PDF
+            doc.save(`Kavyotsav_Ticket_${name.replace(/\s+/g, '_')}.pdf`);
+            document.body.removeChild(qrDiv);
+        }, 500);
+    };
 
-        // Auto Download PDF
+    // Fallback: Agar Image load na ho paye toh bina stamp ke PDF download kar dega
+    stampImg.onerror = function() {
+        console.log("Stamp image failed to load, generating PDF without stamp.");
         doc.save(`Kavyotsav_Ticket_${name.replace(/\s+/g, '_')}.pdf`);
-        document.body.removeChild(qrDiv);
-    }, 500);
+    };
 }
 
 // Data Sender to Google Sheet & Email
@@ -278,3 +305,77 @@ function markAttendanceInGoogleSheet(ticketId) {
         resultBox.innerHTML = `❌ Connection Error`;
     });
 }
+// MENU & POPUP CONTROLS
+function toggleNavMenu() {
+    document.getElementById('navMenu').classList.toggle('active');
+}
+
+function closeNavMenu() {
+    document.getElementById('navMenu').classList.remove('active');
+}
+
+function openRegisterModal() {
+    document.getElementById('registerModal').style.display = 'flex';
+    if (typeof updateTicketPrice === 'function') updateTicketPrice();
+}
+
+function closeRegisterModal() {
+    document.getElementById('registerModal').style.display = 'none';
+}
+function toggleNavMenu() {
+    const menu = document.getElementById('navMenu');
+    if (menu) menu.classList.toggle('active');
+}
+
+function closeNavMenu() {
+    const menu = document.getElementById('navMenu');
+    if (menu) menu.classList.remove('active');
+}
+
+function openRegisterModal() {
+    const modal = document.getElementById('registerModal');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeRegisterModal() {
+    const modal = document.getElementById('registerModal');
+    if (modal) modal.style.display = 'none';
+}
+// 3-Lines Hamburger Menu Toggle Function
+function toggleNavMenu() {
+    const navMenu = document.getElementById('navMenu');
+    if (navMenu) {
+        navMenu.classList.toggle('active');
+    }
+}
+
+// Menu Link par click karne par dropdown band ho jaye
+function closeNavMenu() {
+    const navMenu = document.getElementById('navMenu');
+    if (navMenu) {
+        navMenu.classList.remove('active');
+    }
+}
+// Admin Dashboard / Scanner Popup ko band karne ke liye
+function closeAdminDashboard() {
+    const dashboard = document.getElementById('adminDashboard');
+    if (dashboard) {
+        dashboard.style.display = 'none';
+    }
+    // Agar camera chal raha ho toh usko bhi stop kar dega
+    if (typeof stopCamera === 'function') {
+        stopCamera();
+    }
+}
+// Screen par kahin bhi touch/click karne par Nav Menu band ho jaye
+window.addEventListener('click', function(event) {
+    const navMenu = document.getElementById('navMenu');
+    const hamburger = document.querySelector('.hamburger');
+
+    // Agar menu khula hai AUR click menu ya hamburger ke bahar hua hai
+    if (navMenu && navMenu.classList.contains('active')) {
+        if (!navMenu.contains(event.target) && !hamburger.contains(event.target)) {
+            navMenu.classList.remove('active');
+        }
+    }
+});
