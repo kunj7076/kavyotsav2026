@@ -7,7 +7,7 @@ const ADMIN_CREDENTIALS = {
     pass: "kavypith@123"
 };
 
-// APNA GOOGLE APPS SCRIPT WEBHOOK URL YAHAN PASTE KAREIN
+// APNA GOOGLE APPS SCRIPT WEBHOOK URL
 const GOOGLE_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbzdfT03vf_CLORuq2wULroVn0mceiwgjED3VzaYYHw1efR4bOWlhrBxCW8NB5iQyVcO/exec";
 let html5QrCode;
 let isScanning = false;
@@ -25,7 +25,7 @@ function updateTicketPrice() {
         priceDisplay.innerText = '₹299';
         if (performerFields) performerFields.style.display = 'block';
     } else {
-        priceDisplay.innerText = '₹01';
+        priceDisplay.innerText = '₹99';
         if (performerFields) performerFields.style.display = 'none';
     }
 }
@@ -35,7 +35,68 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ==========================================
-// 3. RAZORPAY PAYMENT & AUTO PDF GENERATOR
+// 3. MENU & MODAL POPUP CONTROLS
+// ==========================================
+function toggleNavMenu(e) {
+    if (e) e.stopPropagation();
+    const navMenu = document.getElementById('navMenu');
+    if (navMenu) navMenu.classList.toggle('active');
+}
+
+function closeNavMenu() {
+    const navMenu = document.getElementById('navMenu');
+    if (navMenu) navMenu.classList.remove('active');
+}
+
+function openRegisterModal(e) {
+    if (e) e.stopPropagation();
+    const modal = document.getElementById('registerModal');
+    if (modal) {
+        modal.style.display = 'flex';
+        updateTicketPrice();
+    }
+}
+
+function closeRegisterModal() {
+    const modal = document.getElementById('registerModal');
+    if (modal) modal.style.display = 'none';
+}
+
+function openAdminModal(e) {
+    if (e) e.stopPropagation();
+    const modal = document.getElementById('adminModal');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeAdminModal() {
+    const modal = document.getElementById('adminModal');
+    if (modal) modal.style.display = 'none';
+}
+
+function closeAdminDashboard() {
+    const dashboard = document.getElementById('adminDashboard');
+    if (dashboard) dashboard.style.display = 'none';
+    if (typeof stopCamera === 'function') stopCamera();
+}
+
+// Click Outside to Close Modals & Menu
+window.addEventListener('click', function(event) {
+    const regModal = document.getElementById('registerModal');
+    const adminModal = document.getElementById('adminModal');
+    const navMenu = document.getElementById('navMenu');
+    const hamburger = document.querySelector('.hamburger');
+
+    if (regModal && event.target === regModal) regModal.style.display = 'none';
+    if (adminModal && event.target === adminModal) adminModal.style.display = 'none';
+    if (navMenu && navMenu.classList.contains('active')) {
+        if (!navMenu.contains(event.target) && hamburger && !hamburger.contains(event.target)) {
+            navMenu.classList.remove('active');
+        }
+    }
+});
+
+// ==========================================
+// 4. RAZORPAY PAYMENT & AUTO PDF GENERATOR
 // ==========================================
 document.getElementById('ticketForm').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -70,11 +131,15 @@ document.getElementById('ticketForm').addEventListener('submit', function(e) {
         "handler": function (response) {
             const paymentId = response.razorpay_payment_id;
 
-            // 1. Instant Screen Par PDF Receipt Download
+            // 1. Download PDF Ticket
             generateAndDownloadPDF(paymentId, name, email, phone, role, vidha);
 
-            // 2. Email & Google Sheet Sync
+            // 2. Google Sheet Sync
             sendDataToGoogleSheet(paymentId, name, email, phone, role, vidha, poetrySample);
+
+            // Reset & Close
+            document.getElementById('ticketForm').reset();
+            closeRegisterModal();
         },
         "prefill": {
             "name": name,
@@ -92,12 +157,11 @@ document.getElementById('ticketForm').addEventListener('submit', function(e) {
     }
 });
 
-// Reliable PDF Generation Function (Prevents Blank PDF Issue)
+// PDF Generation
 function generateAndDownloadPDF(paymentId, name, email, phone, role, vidha) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
-    // 1. QR Code Element Setup
     const qrDiv = document.createElement('div');
     qrDiv.style.display = 'none';
     document.body.appendChild(qrDiv);
@@ -108,13 +172,12 @@ function generateAndDownloadPDF(paymentId, name, email, phone, role, vidha) {
         height: 128
     });
 
-    // Function to Draw PDF Content
     function buildPDF(stampImgData = null) {
         const qrCanvas = qrDiv.querySelector('canvas');
         const qrImgData = qrCanvas ? qrCanvas.toDataURL("image/png") : null;
 
         // --- HEADER DESIGN ---
-        doc.setFillColor(120, 53, 15); // Dark Brown Background
+        doc.setFillColor(120, 53, 15);
         doc.rect(0, 0, 210, 30, "F");
 
         doc.setTextColor(255, 255, 255);
@@ -133,14 +196,14 @@ function generateAndDownloadPDF(paymentId, name, email, phone, role, vidha) {
         doc.text(`Venue: University of Allahabad, Prayagraj`, 15, 93);
         doc.text(`Date: 23 August 2026`, 15, 101);
 
-       // --- ADD STAMP (Rotated & Centered between Details & QR) ---
-if (stampImgData) {
-  try {
-    // 105: बीच का X-स्थान, 55: Y-स्थान, 38x38: साइज़, doc.addImage(stampImgData, "PNG", 105, 55, 38, 38);
-    doc.addImage(stampImgData, "PNG", 104, 43, 38, 38);
-    console.log("Stamp image error:", err);
-  }
-}
+        // --- ADD STAMP (Proper Centered & Non-rotated) ---
+        if (stampImgData) {
+            try {
+                doc.addImage(stampImgData, "PNG", 104, 43, 38, 38);
+            } catch (err) {
+                console.log("Stamp image error:", err);
+            }
+        }
 
         // --- ADD QR CODE ---
         if (qrImgData) {
@@ -164,19 +227,19 @@ if (stampImgData) {
 
         // Save & Download
         doc.save(`Kavyotsav_Ticket_${name.replace(/\s+/g, '_')}.pdf`);
-        document.body.removeChild(qrDiv);
+        if (document.body.contains(qrDiv)) {
+            document.body.removeChild(qrDiv);
+        }
     }
 
-    // Load Stamp Image safely with Fallback Timeout
     const stampImg = new Image();
     stampImg.crossOrigin = "Anonymous";
     
-    // Set 2 Seconds Timeout (Isse agar image load na bhi ho, tab bhi blank page nahi aayega)
     let isDownloaded = false;
     const fallbackTimer = setTimeout(() => {
         if (!isDownloaded) {
             isDownloaded = true;
-            buildPDF(null); // Build without stamp if image hangs
+            buildPDF(null);
         }
     }, 1500);
 
@@ -196,16 +259,11 @@ if (stampImgData) {
         }
     };
 
+    // Transparent Stamp URL
     stampImg.src = "https://i.postimg.cc/X7Mfjsmx/Gemini-Generated-Image-u2nl7zu2nl7zu2nl-removebg-preview.png";
 }
-    // Fallback: Agar Image load na ho paye toh bina stamp ke PDF download kar dega
-    stampImg.onerror = function() {
-        console.log("Stamp image failed to load, generating PDF without stamp.");
-        doc.save(`Kavyotsav_Ticket_${name.replace(/\s+/g, '_')}.pdf`);
-    };
 
-
-// Data Sender to Google Sheet & Email
+// Data Sender to Google Sheet
 function sendDataToGoogleSheet(paymentId, name, email, phone, role, vidha, poetrySample) {
     fetch(GOOGLE_WEBHOOK_URL, {
         method: 'POST',
@@ -225,18 +283,8 @@ function sendDataToGoogleSheet(paymentId, name, email, phone, role, vidha, poetr
 }
 
 // ==========================================
-// 4. ADMIN LOGIN (NO PAGE REFRESH)
+// 5. ADMIN LOGIN & SCANNER
 // ==========================================
-function openAdminModal() {
-    const modal = document.getElementById('adminModal');
-    if (modal) modal.style.display = 'flex';
-}
-
-function closeAdminModal() {
-    const modal = document.getElementById('adminModal');
-    if (modal) modal.style.display = 'none';
-}
-
 function handleAdminLogin(event) {
     if (event) event.preventDefault();
 
@@ -245,12 +293,12 @@ function handleAdminLogin(event) {
     const loginError = document.getElementById('loginError');
 
     if ((userInput === ADMIN_CREDENTIALS.user || userInput === ADMIN_CREDENTIALS.email) && passInput === ADMIN_CREDENTIALS.pass) {
-        if(loginError) loginError.style.display = 'none';
+        if (loginError) loginError.style.display = 'none';
         document.getElementById('adminLoginForm').reset();
         closeAdminModal(); 
         document.getElementById('adminDashboard').style.display = 'block'; 
     } else {
-        if(loginError) {
+        if (loginError) {
             loginError.innerText = "❌ अमान्य Email/Phone या Password!";
             loginError.style.display = 'block';
         }
@@ -258,9 +306,6 @@ function handleAdminLogin(event) {
     return false;
 }
 
-// ==========================================
-// 5. LIVE QR ATTENDANCE SCANNER
-// ==========================================
 function toggleCamera() {
     if (!isScanning) {
         startCamera();
@@ -335,77 +380,3 @@ function markAttendanceInGoogleSheet(ticketId) {
         resultBox.innerHTML = `❌ Connection Error`;
     });
 }
-// MENU & POPUP CONTROLS
-function toggleNavMenu() {
-    document.getElementById('navMenu').classList.toggle('active');
-}
-
-function closeNavMenu() {
-    document.getElementById('navMenu').classList.remove('active');
-}
-
-function openRegisterModal() {
-    document.getElementById('registerModal').style.display = 'flex';
-    if (typeof updateTicketPrice === 'function') updateTicketPrice();
-}
-
-function closeRegisterModal() {
-    document.getElementById('registerModal').style.display = 'none';
-}
-function toggleNavMenu() {
-    const menu = document.getElementById('navMenu');
-    if (menu) menu.classList.toggle('active');
-}
-
-function closeNavMenu() {
-    const menu = document.getElementById('navMenu');
-    if (menu) menu.classList.remove('active');
-}
-
-function openRegisterModal() {
-    const modal = document.getElementById('registerModal');
-    if (modal) modal.style.display = 'flex';
-}
-
-function closeRegisterModal() {
-    const modal = document.getElementById('registerModal');
-    if (modal) modal.style.display = 'none';
-}
-// 3-Lines Hamburger Menu Toggle Function
-function toggleNavMenu() {
-    const navMenu = document.getElementById('navMenu');
-    if (navMenu) {
-        navMenu.classList.toggle('active');
-    }
-}
-
-// Menu Link par click karne par dropdown band ho jaye
-function closeNavMenu() {
-    const navMenu = document.getElementById('navMenu');
-    if (navMenu) {
-        navMenu.classList.remove('active');
-    }
-}
-// Admin Dashboard / Scanner Popup ko band karne ke liye
-function closeAdminDashboard() {
-    const dashboard = document.getElementById('adminDashboard');
-    if (dashboard) {
-        dashboard.style.display = 'none';
-    }
-    // Agar camera chal raha ho toh usko bhi stop kar dega
-    if (typeof stopCamera === 'function') {
-        stopCamera();
-    }
-}
-// Screen par kahin bhi touch/click karne par Nav Menu band ho jaye
-window.addEventListener('click', function(event) {
-    const navMenu = document.getElementById('navMenu');
-    const hamburger = document.querySelector('.hamburger');
-
-    // Agar menu khula hai AUR click menu ya hamburger ke bahar hua hai
-    if (navMenu && navMenu.classList.contains('active')) {
-        if (!navMenu.contains(event.target) && !hamburger.contains(event.target)) {
-            navMenu.classList.remove('active');
-        }
-    }
-});
