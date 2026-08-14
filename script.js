@@ -136,9 +136,8 @@ function generateAndDownloadPDF(paymentId, name, email, phone, role, vidha) {
        // --- ADD STAMP (Rotated & Centered between Details & QR) ---
 if (stampImgData) {
   try {
-    // 105: बीच का X-स्थान, 55: Y-स्थान, 38x38: साइज़, -15: तिरछा (Rotate Angle)
-    doc.addImage(stampImgData, "PNG", 110, 46, 32, 32, null, null, -12);
-  } catch (err) {
+    // 105: बीच का X-स्थान, 55: Y-स्थान, 38x38: साइज़, doc.addImage(stampImgData, "PNG", 105, 55, 38, 38);
+    doc.addImage(stampImgData, "PNG", 104, 43, 38, 38);
     console.log("Stamp image error:", err);
   }
 }
