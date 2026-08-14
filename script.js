@@ -133,14 +133,15 @@ function generateAndDownloadPDF(paymentId, name, email, phone, role, vidha) {
         doc.text(`Venue: University of Allahabad, Prayagraj`, 15, 93);
         doc.text(`Date: 23 August 2026`, 15, 101);
 
-        // --- ADD STAMP (If Loaded Successfully) ---
-        if (stampImgData) {
-            try {
-                doc.addImage(stampImgData, "PNG", 145, 105, 45, 45);
-            } catch (err) {
-                console.log("Stamp image error:", err);
-            }
-        }
+       // --- ADD STAMP (Rotated & Centered between Details & QR) ---
+if (stampImgData) {
+  try {
+    // 105: बीच का X-स्थान, 55: Y-स्थान, 38x38: साइज़, -15: तिरछा (Rotate Angle)
+    doc.addImage(stampImgData, "PNG", 105, 55, 38, 38, null, null, -15);
+  } catch (err) {
+    console.log("Stamp image error:", err);
+  }
+}
 
         // --- ADD QR CODE ---
         if (qrImgData) {
@@ -196,7 +197,7 @@ function generateAndDownloadPDF(paymentId, name, email, phone, role, vidha) {
         }
     };
 
-    stampImg.src = "https://i.postimg.cc/zf0zvnKb/Gemini-Generated-Image-u2nl7zu2nl7zu2nl.png";
+    stampImg.src = "https://i.postimg.cc/X7Mfjsmx/Gemini-Generated-Image-u2nl7zu2nl7zu2nl-removebg-preview.png";
 }
     // Fallback: Agar Image load na ho paye toh bina stamp ke PDF download kar dega
     stampImg.onerror = function() {
