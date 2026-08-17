@@ -182,15 +182,18 @@ body {
   display: none !important;
 }
 
+/* =========================================================
+   PERFECT HALF-SCREEN HERO SECTION
+   ========================================================= */
 .hero {
   position: relative;
-  min-height: auto;
-  background: linear-gradient(135deg, #3c32c0 0%, #0f0401 100%) !important;
+  min-height: 55vh; /* ठीक आधी स्क्रीन से थोड़ा सा बड़ा ताकि संतुलित लगे */
+  background: radial-gradient(circle at top, #1e0b57 0%, #0a041f 60%, #1a0305 100%) !important;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 115px 25px 48px;
+  padding: 100px 20px 30px;
   overflow: hidden;
   border-bottom: 2px solid rgba(212, 175, 55, 0.2);
 }
@@ -198,102 +201,93 @@ body {
 .hero-content {
   position: relative;
   z-index: 2;
-  max-width: 850px;
-  animation: fadeInUp 0.9s ease-out;
+  max-width: 800px;
+  width: 100%;
 }
 
 .badge {
   background: rgba(212, 175, 55, 0.12);
   color: var(--royal-gold);
   border: 1px solid rgba(212, 175, 55, 0.4);
-  padding: 5px 14px;
+  padding: 4px 12px;
   border-radius: 20px;
-  font-size: 0.9rem;
-  letter-spacing: 1px;
+  font-size: 0.75rem;
+  letter-spacing: 0.8px;
   display: inline-block;
-  margin-bottom: 18px; /* गैप कम किया */
-  font-weight: 500;
+  margin-bottom: 8px;
 }
 
 .hero h1 {
   font-family: 'Cinzel', serif;
-  font-size: 3.8rem;
+  font-size: 3.6rem;
   font-weight: 700;
-  background: linear-gradient(180deg, #bca108 0%, #F5E6BE 40%, #D4AF37 100%);
+  background: linear-gradient(180deg, #FFFFFF 0%, #F5E6BE 40%, #D4AF37 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.5));
-  margin-bottom: 6px;
-  line-height: 1.2;
+  margin-bottom: 4px;
+  line-height: 1.15;
 }
 
 .tagline {
   color: #E2E8F0;
   font-size: 1.1rem;
   font-family: 'Yatra One', cursive;
-  margin-bottom: 18px;
-  letter-spacing: 0.5px;
+  margin-bottom: 14px;
 }
 
 .hero-meta {
   display: flex;
   justify-content: center;
-  gap: 12px;
+  gap: 10px;
   color: var(--text-light);
-  font-size: 0.9rem;
-  margin-bottom: 24px; /* बटन्स से पहले की दूरी संतुलित */
+  font-size: 0.88rem;
+  margin-bottom: 18px;
   flex-wrap: wrap;
 }
 
 .hero-meta span {
   background: rgba(255, 255, 255, 0.07);
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: 8px;
   border: 1px solid rgba(212, 175, 55, 0.2);
-  backdrop-filter: blur(4px);
 }
 
-/* हीरो एक्शन बटन्स रैपर */
-.hero-content .btn-primary,
-.hero-content .btn-outline-gold {
-  margin: 6px;
-  vertical-align: middle;
-}
 /* =========================================================
-   MOBILE RESPONSIVE ADJUSTMENTS
+   MOBILE RESPONSIVE (EXACT HALF-SCREEN FIT)
    ========================================================= */
-@media (max-width: 868px) {
+@media (max-width: 768px) {
   .hero {
-    padding: 95px 16px 30px; /* मोबाइल पर कॉम्पैक्ट पैडिंग */
+    min-height: 56vh; /* मोबाइल स्क्रीन का सटीक 56% हिस्सा */
+    padding: 85px 15px 25px; /* ऊपर-नीचे से सटीक गैप */
   }
 
   .hero h1 {
-    font-size: 3.5rem; /* मोबाइल स्क्रीन पर टेक्स्ट सही आकार में */
-    margin-bottom: 6px;
+    font-size: 2.7rem; /* मोबाइल पर बड़ा व स्पष्ट */
+    margin-bottom: 4px;
   }
 
   .tagline {
-    font-size: 1rem;
-    margin-bottom: 15px;
+    font-size: 0.98rem;
+    margin-bottom: 12px;
   }
 
   .hero-meta {
     gap: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
   }
 
   .hero-meta span {
-    font-size: 0.82rem;
-    padding: 5px 10px;
+    font-size: 0.8rem;
+    padding: 4px 10px;
   }
 
   .hero-content .btn-primary,
   .hero-content .btn-outline-gold {
-    padding: 11px 22px;
-    font-size: 0.9rem;
-    width: auto;
-    display: inline-block;
+    padding: 10px 18px;
+    font-size: 0.88rem;
+    margin: 4px;
   }
 }
 
