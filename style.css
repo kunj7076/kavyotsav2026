@@ -263,18 +263,18 @@ body {
 /* =========================================================
    MOBILE RESPONSIVE ADJUSTMENTS
    ========================================================= */
-@media (max-width: 768px) {
+@media (max-width: 868px) {
   .hero {
     padding: 95px 16px 30px; /* मोबाइल पर कॉम्पैक्ट पैडिंग */
   }
 
   .hero h1 {
-    font-size: 2.9rem; /* मोबाइल स्क्रीन पर टेक्स्ट सही आकार में */
+    font-size: 3.5rem; /* मोबाइल स्क्रीन पर टेक्स्ट सही आकार में */
     margin-bottom: 6px;
   }
 
   .tagline {
-    font-size: 1rem;
+    font-size: 2rem;
     margin-bottom: 15px;
   }
 
