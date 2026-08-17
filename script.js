@@ -269,83 +269,147 @@ function handlePortalSearch(event) {
     document.body.appendChild(scriptTag);
 }
 
-// Live High-Quality PDF Generator
+// Pure jsPDF Bulletproof Ticket Generator (Never Blank)
 function generateAndDownloadTicketPDF() {
     if (!currentMatchedUser) return;
 
     const u = currentMatchedUser;
-    const verifyUrl = `${WEB_APP_URL}?id=${encodeURIComponent(u.ticketId)}`;
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=0&data=${encodeURIComponent(verifyUrl)}`;
-
-    const ticketContainer = document.createElement('div');
-    ticketContainer.style.position = 'fixed';
-    ticketContainer.style.left = '-9999px';
-    ticketContainer.style.top = '0';
-    ticketContainer.style.width = '420px';
-    ticketContainer.style.background = '#0A1931';
-    ticketContainer.style.color = '#FFFFFF';
-    ticketContainer.style.fontFamily = "'Segoe UI', Arial, sans-serif";
-    ticketContainer.style.padding = '25px';
-    ticketContainer.style.borderRadius = '16px';
-    ticketContainer.style.border = '3px solid #D4AF37';
-    ticketContainer.style.boxSizing = 'border-box';
-    ticketContainer.style.textAlign = 'center';
-
-    ticketContainer.innerHTML = `
-        <div style="border-bottom: 2px solid rgba(212, 175, 55, 0.4); padding-bottom: 12px; margin-bottom: 15px;">
-            <h2 style="color: #D4AF37; margin: 0; font-size: 22px; font-weight: bold;">अभिव्यक्ति काव्यपीठ</h2>
-            <p style="color: #CBD5E1; margin: 4px 0 0 0; font-size: 13px;">काव्योत्सव 2026 • आधिकारिक ई-प्रवेश पत्र</p>
-        </div>
-
-        <div style="background: #FFFFFF; color: #0F172A; border-radius: 12px; padding: 16px; text-align: left; margin-bottom: 15px; font-size: 13px; line-height: 1.6;">
-            <div><strong>नाम:</strong> ${u.name}</div>
-            <div><strong>पास प्रकार:</strong> ${u.type}</div>
-            <div><strong>टिकट ID:</strong> <span style="font-family:monospace; color:#B45309; font-weight:bold;">${u.ticketId}</span></div>
-            <div><strong>दिनांक:</strong> 23 अगस्त 2026 (शाम 05:00 बजे)</div>
-            <div><strong>स्थान:</strong> सीनेट हॉल, प्रयागराज</div>
-        </div>
-
-        <div style="background: rgba(255,255,255,0.06); padding: 12px; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 15px;">
-            <img id="tempTicketQr" src="${qrUrl}" crossOrigin="anonymous" style="width: 110px; height: 110px; border-radius: 8px; border: 2px solid #D4AF37; background:#fff;" />
-            <div style="text-align: left; font-size: 11px; color: #CBD5E1; max-width: 200px;">
-                <strong style="color: #D4AF37;">प्रवेश निर्देश:</strong><br>
-                यह QR कोड प्रवेश द्वार पर स्कैन किया जाएगा। कृपया इस डिजिटल पास को सुरक्षित रखें।
-            </div>
-        </div>
-    `;
-
-    document.body.appendChild(ticketContainer);
-
-    const qrImg = document.getElementById('tempTicketQr');
-
-    const downloadAction = () => {
-        const opt = {
-            margin:       10,
-            filename:     `Kavyotsav_Pass_${u.ticketId}.pdf`,
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2, useCORS: true, logging: false },
-            jsPDF:        { unit: 'mm', format: 'a5', orientation: 'portrait' }
-        };
-
-        html2pdf().set(opt).from(ticketContainer).save().then(() => {
-            if (document.body.contains(ticketContainer)) {
-                document.body.removeChild(ticketContainer);
-            }
-        }).catch(() => {
-            if (document.body.contains(ticketContainer)) {
-                document.body.removeChild(ticketContainer);
-            }
-        });
-    };
-
-    if (qrImg.complete) {
-        downloadAction();
-    } else {
-        qrImg.onload = downloadAction;
-        qrImg.onerror = downloadAction;
+    const btn = document.getElementById('btnDownloadTicket');
+    const originalText = btn ? btn.innerText : "";
+    if (btn) {
+        btn.innerText = "⏳ टिकट तैयार हो रहा है...";
+        btn.style.pointerEvents = "none";
     }
-}
 
+    const verifyUrl = `${WEB_APP_URL}?id=${encodeURIComponent(u.ticketId)}`;
+
+    // Generate QR using QRCode library (Pre-loaded in index.html)
+    const tempQrDiv = document.createElement("div");
+    tempQrDiv.style.display = "none";
+    document.body.appendChild(tempQrDiv);
+
+    new QRCode(tempQrDiv, {
+        text: verifyUrl,
+        width: 200,
+        height: 200,
+        correctLevel: QRCode.CorrectLevel.H
+    });
+
+    setTimeout(() => {
+        const qrCanvas = tempQrDiv.querySelector('canvas');
+        let qrDataUrl = "";
+        if (qrCanvas) {
+            qrDataUrl = qrCanvas.toDataURL("image/png");
+        }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({
+            orientation: "portrait",
+            unit: "mm",
+            format: "a5" // 148 x 210 mm
+        });
+
+        // 1. Navy Blue Background
+        doc.setFillColor(10, 25, 49);
+        doc.rect(0, 0, 148, 210, "F");
+
+        // 2. Gold Border
+        doc.setDrawColor(212, 175, 55);
+        doc.setLineWidth(1.5);
+        doc.roundedRect(6, 6, 136, 198, 4, 4, "D");
+
+        // 3. Header
+        doc.setTextColor(212, 175, 55);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(20);
+        doc.text("ABHIVYAKTI KAVYAPITH", 74, 22, { align: "center" });
+
+        doc.setTextColor(203, 213, 225);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        doc.text("KAVYOTSAV 2026 - OFFICIAL ENTRY PASS", 74, 28, { align: "center" });
+
+        // Header Line
+        doc.setDrawColor(212, 175, 55);
+        doc.setLineWidth(0.5);
+        doc.line(15, 33, 133, 33);
+
+        // 4. White Details Card
+        doc.setFillColor(255, 255, 255);
+        doc.roundedRect(14, 38, 120, 68, 3, 3, "F");
+
+        doc.setTextColor(15, 23, 42);
+        doc.setFontSize(11);
+        doc.setFont("helvetica", "bold");
+        doc.text("Name:", 20, 48);
+        doc.setFont("helvetica", "normal");
+        doc.text(`${u.name}`, 45, 48);
+
+        doc.setFont("helvetica", "bold");
+        doc.text("Pass Type:", 20, 57);
+        doc.setFont("helvetica", "normal");
+        doc.text(`${u.type}`, 45, 57);
+
+        doc.setFont("helvetica", "bold");
+        doc.text("Ticket ID:", 20, 66);
+        doc.setTextColor(180, 83, 9);
+        doc.setFont("helvetica", "bold");
+        doc.text(`${u.ticketId}`, 45, 66);
+
+        doc.setTextColor(15, 23, 42);
+        doc.setFont("helvetica", "bold");
+        doc.text("Date & Time:", 20, 75);
+        doc.setFont("helvetica", "normal");
+        doc.text("23 August 2026, 05:00 PM", 48, 75);
+
+        doc.setFont("helvetica", "bold");
+        doc.text("Venue:", 20, 84);
+        doc.setFont("helvetica", "normal");
+        doc.text("Senate Hall, University of Allahabad", 38, 84);
+
+        doc.setFont("helvetica", "bold");
+        doc.text("Reg. No:", 20, 93);
+        doc.setFont("helvetica", "normal");
+        doc.text("UDYAM-UP-03-0155035", 40, 93);
+
+        // 5. QR Code Card
+        doc.setFillColor(15, 35, 65);
+        doc.roundedRect(14, 112, 120, 75, 3, 3, "F");
+
+        if (qrDataUrl) {
+            doc.setFillColor(255, 255, 255);
+            doc.roundedRect(49, 118, 50, 50, 2, 2, "F");
+            doc.addImage(qrDataUrl, "PNG", 51, 120, 46, 46);
+        }
+
+        doc.setTextColor(212, 175, 55);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(10);
+        doc.text("GATE ENTRY VERIFICATION QR CODE", 74, 175, { align: "center" });
+
+        doc.setTextColor(203, 213, 225);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8);
+        doc.text("Scan this QR Code at the entrance gate for single entry.", 74, 180, { align: "center" });
+
+        // 6. Footer
+        doc.setTextColor(148, 163, 184);
+        doc.setFontSize(7.5);
+        doc.text("This is an authorized computer-generated pass. Valid for 1 person only.", 74, 198, { align: "center" });
+
+        // Save PDF
+        doc.save(`Kavyotsav_Pass_${u.ticketId}.pdf`);
+
+        // Clean up
+        if (document.body.contains(tempQrDiv)) {
+            document.body.removeChild(tempQrDiv);
+        }
+        if (btn) {
+            btn.innerText = originalText;
+            btn.style.pointerEvents = "auto";
+        }
+    }, 400);
+}
 // ==========================================
 // 6. ADMIN LOGIN & SCANNER
 // ==========================================
