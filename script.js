@@ -158,19 +158,99 @@ document.getElementById('ticketForm').addEventListener('submit', function(e) {
 });
 
 // PDF Generation
-function generateAndDownloadPDF(paymentId, name, email, phone, role, vidha) {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+// E-Ticket PDF Generate & Direct Download (Bulletproof)
+function generateAndDownloadTicketPDF() {
+  if (!currentMatchedUser) return;
 
-    const qrDiv = document.createElement('div');
-    qrDiv.style.display = 'none';
-    document.body.appendChild(qrDiv);
+  const u = currentMatchedUser;
+  const btn = document.getElementById('btnDownloadTicket');
+  const originalText = btn.innerText;
+  btn.innerText = "⏳ टिकट तैयार हो रहा है...";
+  btn.style.pointerEvents = "none";
 
-    new QRCode(qrDiv, {
-        text: paymentId,
-        width: 128,
-        height: 128
+  const verifyUrl = `${WEB_APP_URL}?id=${encodeURIComponent(u.ticketId)}`;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(verifyUrl)}`;
+
+  // अस्थायी कंटेनर
+  const ticketContainer = document.createElement('div');
+  ticketContainer.id = "temp-ticket-container";
+  ticketContainer.style.position = "fixed";
+  ticketContainer.style.left = "-9999px";
+  ticketContainer.style.top = "0";
+  ticketContainer.style.width = "400px";
+  ticketContainer.style.background = "#0A1931";
+  ticketContainer.style.color = "#FFFFFF";
+  ticketContainer.style.fontFamily = "'Segoe UI', Arial, sans-serif";
+  ticketContainer.style.padding = "25px";
+  ticketContainer.style.borderRadius = "16px";
+  ticketContainer.style.border = "3px solid #D4AF37";
+  ticketContainer.style.boxSizing = "border-box";
+  ticketContainer.style.textAlign = "center";
+
+  ticketContainer.innerHTML = `
+    <div style="border-bottom: 2px solid rgba(212, 175, 55, 0.4); padding-bottom: 12px; margin-bottom: 15px;">
+      <h2 style="color: #D4AF37; margin: 0; font-size: 22px; font-weight: bold;">अभिव्यक्ति काव्यपीठ</h2>
+      <p style="color: #CBD5E1; margin: 4px 0 0 0; font-size: 13px;">काव्योत्सव 2026 • आधिकारिक ई-प्रवेश पत्र</p>
+    </div>
+
+    <div style="background: #FFFFFF; color: #0F172A; border-radius: 12px; padding: 16px; text-align: left; margin-bottom: 15px; font-size: 14px; line-height: 1.6;">
+      <div><strong>नाम:</strong> ${u.name}</div>
+      <div><strong>पास प्रकार:</strong> ${u.type}</div>
+      <div><strong>टिकट ID:</strong> <span style="font-family:monospace; color:#D4AF37; font-weight:bold;">${u.ticketId}</span></div>
+      <div><strong>दिनांक:</strong> 23 अगस्त 2026 (शाम 05:00 बजे)</div>
+      <div><strong>स्थान:</strong> सीनेट हॉल, प्रयागराज</div>
+    </div>
+
+    <div style="background: rgba(255,255,255,0.06); padding: 12px; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 15px;">
+      <img id="tempQrImg" src="${qrUrl}" crossOrigin="anonymous" style="width: 110px; height: 110px; border-radius: 8px; border: 2px solid #D4AF37; background:#fff;" />
+      <div style="text-align: left; font-size: 11px; color: #CBD5E1; max-width: 200px;">
+        <strong style="color: #D4AF37;">प्रवेश निर्देश:</strong><br>
+        प्रवेश द्वार पर यह QR कोड स्कैन किया जाएगा। कृपया इस डिजिटल पास को सुरक्षित रखें।
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(ticketContainer);
+
+  const qrImg = document.getElementById('tempQrImg');
+
+  // QR इमेज लोड होने के बाद PDF बनाएँ
+  const createPdf = () => {
+    if (typeof html2pdf === 'undefined') {
+      alert("PDF लाइब्रेरी लोड नहीं हो सकी। कृपया पेज रीफ्रेश करें।");
+      btn.innerText = originalText;
+      btn.style.pointerEvents = "auto";
+      document.body.removeChild(ticketContainer);
+      return;
+    }
+
+    const opt = {
+      margin:       10,
+      filename:     `Kavyotsav_Pass_${u.ticketId}.pdf`,
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true, logging: false },
+      jsPDF:        { unit: 'mm', format: 'a5', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(ticketContainer).save().then(() => {
+      document.body.removeChild(ticketContainer);
+      btn.innerText = originalText;
+      btn.style.pointerEvents = "auto";
+    }).catch(err => {
+      console.error(err);
+      document.body.removeChild(ticketContainer);
+      btn.innerText = originalText;
+      btn.style.pointerEvents = "auto";
     });
+  };
+
+  if (qrImg.complete) {
+    createPdf();
+  } else {
+    qrImg.onload = createPdf;
+    qrImg.onerror = createPdf;
+  }
+}
 
     function buildPDF(stampImgData = null) {
         const qrCanvas = qrDiv.querySelector('canvas');
@@ -261,7 +341,7 @@ function generateAndDownloadPDF(paymentId, name, email, phone, role, vidha) {
 
     // Transparent Stamp URL
     stampImg.src = "https://i.postimg.cc/X7Mfjsmx/Gemini-Generated-Image-u2nl7zu2nl7zu2nl-removebg-preview.png";
-}
+
 
 // Data Sender to Google Sheet
 function sendDataToGoogleSheet(paymentId, name, email, phone, role, vidha, poetrySample) {
@@ -277,7 +357,7 @@ function sendDataToGoogleSheet(paymentId, name, email, phone, role, vidha, poetr
             phone: phone,
             role: role,
             vidha: vidha,
-            sample: title,
+            sample: poetrySample,
         })
     });
 }
@@ -622,3 +702,146 @@ window.addEventListener('click', (e) => {
     closeDownloadModal();
   }
 });
+// 👇 Apps Script से मिला हुआ URL यहाँ पेस्ट करें
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzdfT03vf_CLORuq2wULroVn0mceiwgjED3VzaYYHw1efR4bOWlhrBxCW8NB5iQyVcO/exec";
+
+let currentMatchedUser = null;
+
+function openDownloadModal() {
+  const modal = document.getElementById('downloadModal');
+  if (modal) {
+    modal.style.display = 'flex';
+    document.getElementById('portalResult').style.display = 'none';
+    document.getElementById('portalNotFound').style.display = 'none';
+    document.getElementById('searchQuery').value = '';
+  }
+}
+
+function closeDownloadModal() {
+  const modal = document.getElementById('downloadModal');
+  if (modal) {
+    modal.style.display = 'none';
+  }
+}
+
+// JSONP Search
+function handlePortalSearch(event) {
+  event.preventDefault();
+
+  const query = document.getElementById('searchQuery').value.trim();
+  const loader = document.getElementById('portalLoader');
+  const resultBox = document.getElementById('portalResult');
+  const errorBox = document.getElementById('portalNotFound');
+  const searchBtn = document.getElementById('portalSearchBtn');
+
+  if (!query) return;
+
+  resultBox.style.display = 'none';
+  errorBox.style.display = 'none';
+  loader.style.display = 'block';
+  searchBtn.disabled = true;
+
+  const callbackName = 'portalCallback_' + Math.round(100000 * Math.random());
+  
+  window[callbackName] = function(data) {
+    delete window[callbackName];
+    document.body.removeChild(scriptTag);
+    loader.style.display = 'none';
+    searchBtn.disabled = false;
+
+    if (data && data.status === 'success' && data.user) {
+      currentMatchedUser = data.user;
+      document.getElementById('resUserName').innerText = data.user.name;
+      document.getElementById('resUserType').innerText = `${data.user.type} • आईडी: ${data.user.ticketId}`;
+
+      const ticketBtn = document.getElementById('btnDownloadTicket');
+      ticketBtn.href = "javascript:void(0)";
+      ticketBtn.removeAttribute("target");
+      ticketBtn.onclick = generateAndDownloadTicketPDF;
+      ticketBtn.innerText = "🎟️ E-Ticket PDF डाउनलोड करें";
+      ticketBtn.style.display = "block";
+
+      const certBtn = document.getElementById('btnDownloadCert');
+      if (data.user.certificateUrl && data.user.certificateUrl.startsWith("http")) {
+        certBtn.href = data.user.certificateUrl;
+        certBtn.target = "_blank";
+        certBtn.innerText = '📜 ई-सर्टिफिकेट PDF डाउनलोड करें';
+        certBtn.style.pointerEvents = 'auto';
+        certBtn.style.opacity = '1';
+      } else {
+        certBtn.href = 'javascript:void(0)';
+        certBtn.innerText = '📜 सर्टिफिकेट कार्यक्रम के बाद उपलब्ध होगा';
+        certBtn.style.opacity = '0.6';
+        certBtn.style.pointerEvents = 'none';
+      }
+
+      resultBox.style.display = 'block';
+    } else {
+      errorBox.innerText = '⚠️ कोई विवरण नहीं मिला! कृपया सही मोबाइल नंबर या ईमेल दर्ज करें।';
+      errorBox.style.display = 'block';
+    }
+  };
+
+  const scriptTag = document.createElement('script');
+  scriptTag.src = `${WEB_APP_URL}?action=searchUser&query=${encodeURIComponent(query)}&callback=${callbackName}`;
+  scriptTag.onerror = function() {
+    loader.style.display = 'none';
+    searchBtn.disabled = false;
+    errorBox.innerText = '⚠️ सर्वर से कनेक्ट करने में समस्या हुई। कृपया URL जाँचें।';
+    errorBox.style.display = 'block';
+  };
+  document.body.appendChild(scriptTag);
+}
+
+// Live E-Ticket PDF Generator
+function generateAndDownloadTicketPDF() {
+  if (!currentMatchedUser) return;
+
+  const u = currentMatchedUser;
+  const verifyUrl = `${WEB_APP_URL}?id=${encodeURIComponent(u.ticketId)}`;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=0&data=${encodeURIComponent(verifyUrl)}`;
+
+  const ticketElement = document.createElement('div');
+  ticketElement.style.width = '450px';
+  ticketElement.style.padding = '25px';
+  ticketElement.style.background = '#0A1931';
+  ticketElement.style.color = '#FFFFFF';
+  ticketElement.style.fontFamily = "'Segoe UI', Arial, sans-serif";
+  ticketElement.style.borderRadius = '16px';
+  ticketElement.style.border = '2px solid #D4AF37';
+  ticketElement.style.boxSizing = 'border-box';
+  ticketElement.style.textAlign = 'center';
+
+  ticketElement.innerHTML = `
+    <div style="border-bottom: 2px solid rgba(212, 175, 55, 0.4); padding-bottom: 12px; margin-bottom: 15px;">
+      <h2 style="color: #D4AF37; margin: 0; font-size: 22px;">अभिव्यक्ति काव्यपीठ</h2>
+      <p style="color: #CBD5E1; margin: 4px 0 0 0; font-size: 13px;">काव्योत्सव 2026 • आधिकारिक ई-प्रवेश पत्र</p>
+    </div>
+
+    <div style="background: #FFFFFF; color: #0F172A; border-radius: 12px; padding: 16px; text-align: left; margin-bottom: 15px; font-size: 13px;">
+      <div style="margin-bottom: 8px;"><strong>नाम:</strong> ${u.name}</div>
+      <div style="margin-bottom: 8px;"><strong>पास प्रकार:</strong> ${u.type}</div>
+      <div style="margin-bottom: 8px;"><strong>टिकट ID:</strong> <span style="font-family:monospace; color:#D4AF37; font-weight:bold;">${u.ticketId}</span></div>
+      <div style="margin-bottom: 8px;"><strong>दिनांक:</strong> 23 अगस्त 2026 (शाम 05:00 बजे)</div>
+      <div><strong>स्थान:</strong> सीनेट हॉल, प्रयागराज</div>
+    </div>
+
+    <div style="background: rgba(255,255,255,0.06); padding: 12px; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 15px;">
+      <img src="${qrUrl}" crossorigin="anonymous" style="width: 100px; height: 100px; border-radius: 8px; border: 2px solid #D4AF37; background:#fff;" />
+      <div style="text-align: left; font-size: 11px; color: #CBD5E1; max-width: 220px;">
+        <strong style="color: #D4AF37;">प्रवेश निर्देश:</strong><br>
+        यह QR कोड प्रवेश द्वार पर स्कैन किया जाएगा। कृपया इसे सुरक्षित रखें।
+      </div>
+    </div>
+  `;
+
+  const opt = {
+    margin:       10,
+    filename:     `Kavyotsav_Ticket_${u.ticketId}.pdf`,
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, useCORS: true },
+    jsPDF:        { unit: 'mm', format: 'a5', orientation: 'portrait' }
+  };
+
+  html2pdf().set(opt).from(ticketElement).save();
+}
