@@ -7,7 +7,7 @@ const ADMIN_CREDENTIALS = {
     pass: "kavypith@123"
 };
 
-// Apps Script Web App URL
+// अपना Apps Script Web App URL यहाँ डालें:
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzdfT03vf_CLORuq2wULroVn0mceiwgjED3VzaYYHw1efR4bOWlhrBxCW8NB5iQyVcO/exec";
 
 let html5QrCode;
@@ -94,7 +94,6 @@ function closeDownloadModal() {
     if (modal) modal.style.display = 'none';
 }
 
-// Click Outside to Close
 window.addEventListener('click', function(event) {
     const regModal = document.getElementById('registerModal');
     const adminModal = document.getElementById('adminModal');
@@ -114,7 +113,7 @@ window.addEventListener('click', function(event) {
 });
 
 // ==========================================
-// 4. RAZORPAY PAYMENT & AUTO TICKET
+// 4. RAZORPAY PAYMENT & TICKET
 // ==========================================
 document.getElementById('ticketForm').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -149,10 +148,8 @@ document.getElementById('ticketForm').addEventListener('submit', function(e) {
         "handler": function (response) {
             const paymentId = response.razorpay_payment_id;
 
-            // 1. Google Sheet Sync
             sendDataToGoogleSheet(paymentId, name, email, phone, role, vidha, title);
 
-            // 2. Direct Ticket PDF Download
             currentMatchedUser = {
                 ticketId: paymentId,
                 name: name,
@@ -160,15 +157,10 @@ document.getElementById('ticketForm').addEventListener('submit', function(e) {
             };
             generateAndDownloadTicketPDF();
 
-            // Reset & Close
             document.getElementById('ticketForm').reset();
             closeRegisterModal();
         },
-        "prefill": {
-            "name": name,
-            "email": email,
-            "contact": phone
-        },
+        "prefill": { "name": name, "email": email, "contact": phone },
         "theme": { "color": "#78350f" }
     };
 
@@ -199,7 +191,7 @@ function sendDataToGoogleSheet(paymentId, name, email, phone, role, vidha, sampl
 }
 
 // ==========================================
-// 5. DOWNLOAD PORTAL (SEARCH & PDF PASS)
+// 5. DOWNLOAD PORTAL & HIGH-RES PDF
 // ==========================================
 function handlePortalSearch(event) {
     event.preventDefault();
@@ -221,9 +213,7 @@ function handlePortalSearch(event) {
     
     window[callbackName] = function(data) {
         delete window[callbackName];
-        if (document.body.contains(scriptTag)) {
-            document.body.removeChild(scriptTag);
-        }
+        if (document.body.contains(scriptTag)) document.body.removeChild(scriptTag);
         loader.style.display = 'none';
         searchBtn.disabled = false;
 
@@ -269,7 +259,6 @@ function handlePortalSearch(event) {
     document.body.appendChild(scriptTag);
 }
 
-// Pure jsPDF Bulletproof Ticket Generator (Never Blank)
 function generateAndDownloadTicketPDF() {
     if (!currentMatchedUser) return;
 
@@ -281,137 +270,114 @@ function generateAndDownloadTicketPDF() {
         btn.style.pointerEvents = "none";
     }
 
-    const verifyUrl = `${WEB_APP_URL}?id=${encodeURIComponent(u.ticketId)}`;
+    const tempDiv = document.createElement('div');
+    tempDiv.style.position = 'absolute';
+    tempDiv.style.left = '-9999px';
+    document.body.appendChild(tempDiv);
 
-    // Generate QR using QRCode library (Pre-loaded in index.html)
-    const tempQrDiv = document.createElement("div");
-    tempQrDiv.style.display = "none";
-    document.body.appendChild(tempQrDiv);
-
-    new QRCode(tempQrDiv, {
-        text: verifyUrl,
-        width: 200,
-        height: 200,
+    new QRCode(tempDiv, {
+        text: u.ticketId,
+        width: 240,
+        height: 240,
         correctLevel: QRCode.CorrectLevel.H
     });
 
     setTimeout(() => {
-        const qrCanvas = tempQrDiv.querySelector('canvas');
         let qrDataUrl = "";
-        if (qrCanvas) {
-            qrDataUrl = qrCanvas.toDataURL("image/png");
-        }
+        const qrCanvas = tempDiv.querySelector('canvas');
+        if (qrCanvas) qrDataUrl = qrCanvas.toDataURL('image/png');
 
         const { jsPDF } = window.jspdf;
-        const doc = new jsPDF({
-            orientation: "portrait",
-            unit: "mm",
-            format: "a5" // 148 x 210 mm
-        });
+        const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a5" });
 
-        // 1. Navy Blue Background
         doc.setFillColor(10, 25, 49);
         doc.rect(0, 0, 148, 210, "F");
-
-        // 2. Gold Border
         doc.setDrawColor(212, 175, 55);
-        doc.setLineWidth(1.5);
+        doc.setLineWidth(1.2);
         doc.roundedRect(6, 6, 136, 198, 4, 4, "D");
 
-        // 3. Header
         doc.setTextColor(212, 175, 55);
         doc.setFont("helvetica", "bold");
-        doc.setFontSize(20);
-        doc.text("ABHIVYAKTI KAVYAPITH", 74, 22, { align: "center" });
+        doc.setFontSize(18);
+        doc.text("ABHIVYAKTI KAVYAPITH", 74, 20, { align: "center" });
 
         doc.setTextColor(203, 213, 225);
         doc.setFont("helvetica", "normal");
-        doc.setFontSize(10);
-        doc.text("KAVYOTSAV 2026 - OFFICIAL ENTRY PASS", 74, 28, { align: "center" });
+        doc.setFontSize(9.5);
+        doc.text("KAVYOTSAV 2026 - OFFICIAL ENTRY PASS", 74, 26, { align: "center" });
 
-        // Header Line
         doc.setDrawColor(212, 175, 55);
-        doc.setLineWidth(0.5);
-        doc.line(15, 33, 133, 33);
+        doc.setLineWidth(0.4);
+        doc.line(18, 30, 130, 30);
 
-        // 4. White Details Card
         doc.setFillColor(255, 255, 255);
-        doc.roundedRect(14, 38, 120, 68, 3, 3, "F");
+        doc.roundedRect(12, 35, 124, 70, 3, 3, "F");
 
         doc.setTextColor(15, 23, 42);
         doc.setFontSize(11);
         doc.setFont("helvetica", "bold");
-        doc.text("Name:", 20, 48);
+        doc.text("Name:", 18, 46);
         doc.setFont("helvetica", "normal");
-        doc.text(`${u.name}`, 45, 48);
+        doc.text(`${u.name}`, 42, 46);
 
         doc.setFont("helvetica", "bold");
-        doc.text("Pass Type:", 20, 57);
+        doc.text("Pass Type:", 18, 55);
         doc.setFont("helvetica", "normal");
-        doc.text(`${u.type}`, 45, 57);
+        doc.text(`${u.type}`, 42, 55);
 
         doc.setFont("helvetica", "bold");
-        doc.text("Ticket ID:", 20, 66);
+        doc.text("Ticket ID:", 18, 64);
         doc.setTextColor(180, 83, 9);
         doc.setFont("helvetica", "bold");
-        doc.text(`${u.ticketId}`, 45, 66);
+        doc.text(`${u.ticketId}`, 42, 64);
 
         doc.setTextColor(15, 23, 42);
         doc.setFont("helvetica", "bold");
-        doc.text("Date & Time:", 20, 75);
+        doc.text("Date & Time:", 18, 73);
         doc.setFont("helvetica", "normal");
-        doc.text("23 August 2026, 05:00 PM", 48, 75);
+        doc.text("23 August 2026 (05:00 PM)", 46, 73);
 
         doc.setFont("helvetica", "bold");
-        doc.text("Venue:", 20, 84);
+        doc.text("Venue:", 18, 82);
         doc.setFont("helvetica", "normal");
-        doc.text("Senate Hall, University of Allahabad", 38, 84);
+        doc.text("Senate Hall, Prayagraj", 36, 82);
 
         doc.setFont("helvetica", "bold");
-        doc.text("Reg. No:", 20, 93);
+        doc.text("Reg No:", 18, 91);
         doc.setFont("helvetica", "normal");
-        doc.text("UDYAM-UP-03-0155035", 40, 93);
+        doc.text("UDYAM-UP-03-0155035", 38, 91);
 
-        // 5. QR Code Card
         doc.setFillColor(15, 35, 65);
-        doc.roundedRect(14, 112, 120, 75, 3, 3, "F");
+        doc.roundedRect(12, 110, 124, 76, 3, 3, "F");
 
         if (qrDataUrl) {
             doc.setFillColor(255, 255, 255);
-            doc.roundedRect(49, 118, 50, 50, 2, 2, "F");
-            doc.addImage(qrDataUrl, "PNG", 51, 120, 46, 46);
+            doc.roundedRect(48, 115, 52, 52, 2, 2, "F");
+            doc.addImage(qrDataUrl, "PNG", 50, 117, 48, 48);
         }
 
         doc.setTextColor(212, 175, 55);
         doc.setFont("helvetica", "bold");
-        doc.setFontSize(10);
-        doc.text("GATE ENTRY VERIFICATION QR CODE", 74, 175, { align: "center" });
+        doc.setFontSize(9.5);
+        doc.text("GATE ENTRY QR PASS", 74, 173, { align: "center" });
 
         doc.setTextColor(203, 213, 225);
         doc.setFont("helvetica", "normal");
-        doc.setFontSize(8);
-        doc.text("Scan this QR Code at the entrance gate for single entry.", 74, 180, { align: "center" });
-
-        // 6. Footer
-        doc.setTextColor(148, 163, 184);
         doc.setFontSize(7.5);
-        doc.text("This is an authorized computer-generated pass. Valid for 1 person only.", 74, 198, { align: "center" });
+        doc.text("Scan this QR code at the entrance gate using Admin Scanner.", 74, 179, { align: "center" });
 
-        // Save PDF
         doc.save(`Kavyotsav_Pass_${u.ticketId}.pdf`);
 
-        // Clean up
-        if (document.body.contains(tempQrDiv)) {
-            document.body.removeChild(tempQrDiv);
-        }
+        if (document.body.contains(tempDiv)) document.body.removeChild(tempDiv);
         if (btn) {
             btn.innerText = originalText;
             btn.style.pointerEvents = "auto";
         }
-    }, 400);
+    }, 300);
 }
+
 // ==========================================
-// 6. ADMIN LOGIN & SCANNER
+// 6. ADMIN SCANNER (WITH AUDIO & VISUAL FEEDBACK)
 // ==========================================
 function handleAdminLogin(event) {
     if (event) event.preventDefault();
@@ -434,22 +400,16 @@ function handleAdminLogin(event) {
 }
 
 function toggleCamera() {
-    if (!isScanning) {
-        startCamera();
-    } else {
-        stopCamera();
-    }
+    if (!isScanning) startCamera();
+    else stopCamera();
 }
 
 function startCamera() {
     html5QrCode = new Html5Qrcode("reader");
     const config = { fps: 20, qrbox: { width: 260, height: 260 } };
 
-    html5QrCode.start(
-        { facingMode: "environment" }, 
-        config, 
-        onScanSuccess
-    ).then(() => {
+    html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
+    .then(() => {
         isScanning = true;
         document.getElementById('camToggleBtn').innerText = "🛑 Stop Camera";
         document.getElementById('scannerStatus').innerText = "Scanning Active";
@@ -473,33 +433,59 @@ function onScanSuccess(decodedText) {
     if (navigator.vibrate) navigator.vibrate(200);
 
     let scannedId = decodedText.trim();
-    // यदि पूरा URL स्कैन हुआ है तो केवल ID निकालें
     if (scannedId.includes('id=')) {
         scannedId = scannedId.split('id=')[1].split('&')[0];
     }
 
     const resultBox = document.getElementById('scanResultBox');
     resultBox.style.display = 'block';
-    resultBox.innerHTML = `⏳ Verifying Ticket... (${scannedId})`;
+    resultBox.className = "pro-card";
+    resultBox.innerHTML = `⏳ <strong>सत्यापन जारी है...</strong><br><small>Ticket: ${scannedId}</small>`;
 
-    fetch(WEB_APP_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: "markAttendance", ticketId: scannedId })
-    })
-    .then(() => {
-        scannedCount++;
-        document.getElementById('scannedCount').innerText = scannedCount;
-        resultBox.innerHTML = `✅ <strong>प्रवेश स्वीकृत!</strong><br>Ticket ID: ${scannedId}`;
-    })
-    .catch(() => {
-        resultBox.innerHTML = `❌ Connection Error`;
-    });
+    const callbackName = 'gateScanCallback_' + Math.round(100000 * Math.random());
+
+    window[callbackName] = function(data) {
+        delete window[callbackName];
+        if (document.body.contains(scriptTag)) document.body.removeChild(scriptTag);
+
+        if (data && data.status === "approved") {
+            scannedCount++;
+            document.getElementById('scannedCount').innerText = scannedCount;
+            resultBox.style.borderTop = "6px solid #10B981";
+            resultBox.innerHTML = `
+                <div style="background:#DCFCE7; color:#166534; padding:5px 12px; border-radius:15px; display:inline-block; font-weight:bold; font-size:13px; margin-bottom:8px;">✓ ENTRY APPROVED</div>
+                <h3 style="color:#065F46; margin:0 0 5px 0;">प्रवेश मान्य</h3>
+                <p style="margin:4px 0;"><strong>प्रतिभागी:</strong> ${data.name}</p>
+                <p style="margin:0; font-size:12px; color:#64748B;">ID: ${data.ticketId} • समय: ${data.time}</p>
+            `;
+        } else if (data && data.status === "already_scanned") {
+            resultBox.style.borderTop = "6px solid #DC2626";
+            resultBox.innerHTML = `
+                <div style="background:#FEE2E2; color:#991B1B; padding:5px 12px; border-radius:15px; display:inline-block; font-weight:bold; font-size:13px; margin-bottom:8px;">❌ ALREADY SCANNED</div>
+                <h3 style="color:#991B1B; margin:0 0 5px 0;">प्रवेश अस्वीकृत</h3>
+                <p style="margin:4px 0; color:#DC2626; font-weight:bold;">यह टिकट पहले ही इस्तेमाल हो चुका है!</p>
+                <p style="margin:4px 0;"><strong>प्रतिभागी:</strong> ${data.name}</p>
+                <p style="margin:0; font-size:12px; color:#64748B;">प्रथम स्कैन समय: ${data.time}</p>
+            `;
+        } else {
+            resultBox.style.borderTop = "6px solid #DC2626";
+            resultBox.innerHTML = `
+                <h3 style="color:#DC2626; margin:0;">⚠️ अमान्य टिकट</h3>
+                <p style="margin:4px 0;">ID: ${scannedId} डेटाबेस में नहीं मिली।</p>
+            `;
+        }
+    };
+
+    const scriptTag = document.createElement('script');
+    scriptTag.src = `${WEB_APP_URL}?action=markAttendance&ticketId=${encodeURIComponent(scannedId)}&callback=${callbackName}`;
+    scriptTag.onerror = function() {
+        resultBox.innerHTML = `❌ नेटवर्क त्रुटि: सर्वर से संपर्क नहीं हो सका।`;
+    };
+    document.body.appendChild(scriptTag);
 }
 
 // ==========================================
-// 7. COUNTDOWN & FAQS INITIALIZATION
+// 7. COUNTDOWN & FAQS
 // ==========================================
 function initCountdown() {
     const eventDate = new Date("August 23, 2026 17:00:00").getTime();
