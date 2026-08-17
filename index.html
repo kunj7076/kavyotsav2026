@@ -19,6 +19,15 @@
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
 <body>
+    <!-- INTRO SPLASH SCREEN -->
+    <div id="introOverlay" class="intro-screen">
+        <div class="intro-box">
+            <h1 class="intro-title">अभिव्यक्ति काव्यपीठ</h1>
+            <p class="intro-tag">“ऋषयो मन्त्रद्रष्टारः कवयः क्रान्तदर्शिनः”</p>
+        </div>
+    </div>
+
+    <!-- इसके नीचे आपका Navbar, Hero आदि कोड रहेगा -->
 
     <!-- Professional Navigation Bar with Hamburger Menu -->
     <header class="navbar">
@@ -38,6 +47,7 @@
             <a href="#home" onclick="closeNavMenu()">Home</a>
             <a href="#event" onclick="closeNavMenu()">Event Info</a>
             <a href="javascript:void(0)" onclick="openRegisterModal(); closeNavMenu();">Registration</a>
+            <a href="javascript:void(0)" onclick="openDownloadModal()">Download Pass</a>
             <a href="#about" onclick="closeNavMenu()">About Us</a>
             <a href="javascript:void(0)" onclick="openAdminModal(); closeNavMenu();">Admin Portal</a>
         </nav>
@@ -56,8 +66,12 @@
             </div>
             <!-- Pop-up Trigger Button -->
             <button onclick="openRegisterModal()" class="btn-primary">Pass Book Karein</button>
+            <!-- 👇 यहाँ पर यह 3-लाइन वाला बॉक्स लगाएँ 👇 -->
+            <button onclick="openDownloadModal()" class="btn-outline-gold">पहले से पंजीकृत हैं?</button></p>
+        
         </div>
     </section>
+    
 
     <!-- EVENT INFO SECTION (ABOUT EVENT + LOCATION COMBINED) -->
     <section id="event" class="section">
@@ -82,6 +96,55 @@
             </div>
         </div>
     </section>
+    <!-- 1. LIVE COUNTDOWN SECTION -->
+<section class="section countdown-section">
+    <div class="countdown-container">
+        <h3>काव्योत्सव 2026 प्रारंभ होने में शेष</h3>
+        <div class="countdown-timer" id="countdownTimer">
+            <div class="time-box">
+                <span id="days">80</span>
+                <label>दिन</label>
+            </div>
+            <div class="time-box">
+                <span id="hours">90</span>
+                <label>घंटे</label>
+            </div>
+            <div class="time-box">
+                <span id="minutes">40</span>
+                <label>मिनट</label>
+            </div>
+            <div class="time-box">
+                <span id="seconds">50</span>
+                <label>सेकंड</label>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- 3. FAQS SECTION -->
+<section class="section">
+    <h2>अक्सर पूछे जाने वाले सवाल (FAQ)</h2>
+    <div class="gold-divider"></div>
+    <div class="faq-container">
+        <div class="faq-item">
+            <button class="faq-question">क्या प्रवेश के लिए पास का प्रिंटआउट अनिवार्य है? <span>+</span></button>
+            <div class="faq-answer">
+                <p>नहीं, आप अपने मोबाइल पर E-Ticket PDF या QR कोड दिखाकर सीधा प्रवेश पा सकते हैं।</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-question">क्या कार्यक्रम स्थल पर पार्किंग की व्यवस्था है? <span>+</span></button>
+            <div class="faq-answer">
+                <p>हाँ, सीनेट हॉल परिसर में दोपहिया और चार पहिया वाहनों के लिए पर्याप्त पार्किंग उपलब्ध है।</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-question">क्या मुझे सहभागिता प्रमाण-पत्र (Certificate) मिलेगा? <span>+</span></button>
+            <div class="faq-answer">
+                <p>हाँ, सभी पंजीकृत प्रतिभागियों को डिजिटल सत्यापन युक्त ई-सर्टिफिकेट प्रदान किया जाएगा।</p>
+            </div>
+        </div>
+    </div>
+</section>
 
     <!-- ABOUT US SECTION -->
     <section id="about" class="section">
@@ -195,7 +258,7 @@
             <div class="footer-col">
                 <h3 class="footer-brand">अभिव्यक्ति काव्यपीठ</h3>
                 <p class="footer-desc">साहित्य, कला एवं सांस्कृतिक चेतना को समर्पित एक राष्ट्रीय मंच।</p>
-                <span class="reg-tag">UDYAM REG: UDYAM-UP-03-0155035</span>
+                <span class="reg-tag">REG: UDYAM-UP-03-0155035</span>
             </div>
 
             <div class="footer-col">
@@ -231,5 +294,49 @@
     </footer>
 
     <script src="script.js"></script>
+    <div id="downloadModal" class="modal-overlay" style="display: none;">
+      <div class="modal-card">
+        <button type="button" class="close-modal-btn" onclick="closeDownloadModal()">&times;</button>
+        
+        <h3 style="color: var(--primary-navy); margin-bottom: 6px;">पास एवं प्रमाण-पत्र डाउनलोड</h3>
+        <p class="modal-sub">अपना पंजीकृत मोबाइल नंबर या ईमेल आईडी दर्ज करें</p>
+        
+        <form id="modalPortalForm" onsubmit="handlePortalSearch(event)">
+          <div class="input-group">
+            <label for="searchQuery">मोबाइल नंबर / ईमेल आईडी</label>
+            <input type="text" id="searchQuery" class="pro-input" placeholder="उदा. 9876543210 या name@gmail.com" required>
+          </div>
+          <button type="submit" id="portalSearchBtn" class="btn-primary btn-portal">खोजें एवं डाउनलोड करें</button>
+        </form>
+
+        <!-- लोडर -->
+        <div id="portalLoader" class="portal-loader" style="display: none;">
+          <div class="spinner"></div>
+          <p style="font-size: 0.85rem; color: #64748B;">विवरण खोजा जा रहा है...</p>
+        </div>
+
+        <!-- परिणाम -->
+        <div id="portalResult" class="portal-result" style="display: none;">
+          <div class="result-badge">पंजीकरण सत्यापित ✓</div>
+          <h3 id="resUserName" style="font-size: 1.15rem; margin-bottom: 4px;">प्रतिभागी का नाम</h3>
+          <p id="resUserType" class="user-role-tag" style="margin-bottom: 12px;">श्रोता पास</p>
+          
+          <div class="portal-actions">
+            <a id="btnDownloadTicket" href="#" target="_blank" class="btn-outline-gold" style="display: block; text-align: center;">
+              🎟️ E-Ticket PDF
+            </a>
+            <a id="btnDownloadCert" href="#" target="_blank" class="btn-primary" style="display: block; text-align: center; margin-top: 8px;">
+              📜 ई-सर्टिफिकेट PDF
+            </a>
+          </div>
+        </div>
+
+        <!-- त्रुटि संदेश -->
+        <div id="portalNotFound" class="portal-error" style="display: none;">
+          ⚠️ कोई रिकॉर्ड नहीं मिला! कृपया सही विवरण दर्ज करें।
+        </div>
+      </div>
+    </div>
+
 </body>
 </html>

@@ -381,3 +381,244 @@ function markAttendanceInGoogleSheet(ticketId) {
         resultBox.innerHTML = `❌ Connection Error`;
     });
 }
+// --- INTRO SPLASH SCREEN AUTO CLOSE TIMER ---
+window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        const intro = document.getElementById('introOverlay');
+        if (intro) {
+            intro.classList.add('hide-intro');
+        }
+    }, 2400); // 2.4 सेकंड बाद मुख्य वेबसाइट दिखेगी
+});
+// --- 1. COUNTDOWN TIMER LOGIC ---
+function initCountdown() {
+    const eventDate = new Date("August 23, 2026 17:00:00").getTime();
+
+    const timer = setInterval(() => {
+        const now = new Date().getTime();
+        const difference = eventDate - now;
+
+        if (difference < 0) {
+            clearInterval(timer);
+            document.getElementById("countdownTimer").innerHTML = "<p style='color:#fff; font-size:1.2rem;'>कार्यक्रम प्रारंभ हो चुका है!</p>";
+            return;
+        }
+
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+        document.getElementById("days").innerText = days < 10 ? "0" + days : days;
+        document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
+        document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
+        document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
+    }, 1000);
+}
+
+// --- 2. FAQ ACCORDION LOGIC ---
+function initFaq() {
+    const faqButtons = document.querySelectorAll(".faq-question");
+    faqButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const item = btn.parentElement;
+            item.classList.toggle("active");
+        });
+    });
+}
+
+// Window Load Handler
+window.addEventListener("DOMContentLoaded", () => {
+    initCountdown();
+    initFaq();
+});
+
+// =========================================================
+// DOWNLOAD PORTAL (SEARCH TICKET & CERTIFICATE)
+// =========================================================
+// अपनी Google Sheet की ID यहाँ डालें
+// अपनी Google Sheet की ID यहाँ डालें
+const SHEET_ID = "1ZT-rXXm9lU6s5kF3ohvB7NqOggOki73BBjOFRmisNmQ";
+
+async function handlePortalSearch(event) {
+  event.preventDefault();
+
+  const query = document.getElementById('searchQuery').value.trim().toLowerCase();
+  const loader = document.getElementById('portalLoader');
+  const resultBox = document.getElementById('portalResult');
+  const errorBox = document.getElementById('portalNotFound');
+  const searchBtn = document.getElementById('portalSearchBtn');
+
+  if (!query) return;
+
+  // UI Reset
+  resultBox.style.display = 'none';
+  errorBox.style.display = 'none';
+  loader.style.display = 'block';
+  searchBtn.disabled = true;
+
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+    const response = await fetch(url);
+    const text = await response.text();
+    
+    // Google JSON Clean
+    const json = JSON.parse(text.substring(47).slice(0, -2));
+    const rows = json.table.rows;
+
+    let matchedUser = null;
+
+    for (let r of rows) {
+      const rowData = r.c;
+      if (!rowData) continue;
+
+      // Col A (0): Ticket ID, Col B (1): Name, Col C (2): Phone, Col D (3): Email, Col E (4): Role, Col J (9): Cert Link
+      const ticketId = rowData[0] ? String(rowData[0].v).trim() : "";
+      const name = rowData[1] ? String(rowData[1].v).trim() : "";
+      const phone = rowData[2] ? String(rowData[2].v).toLowerCase().trim() : "";
+      const email = rowData[3] ? String(rowData[3].v).toLowerCase().trim() : "";
+      const role = rowData[4] ? String(rowData[4].v).trim() : "श्रोता पास";
+      const certUrl = rowData[9] ? String(rowData[9].v).trim() : "";
+
+      if ((phone && phone.includes(query)) || (email && email === query) || (ticketId && ticketId.toLowerCase() === query)) {
+        matchedUser = { ticketId, name, role, certUrl };
+        break;
+      }
+    }
+
+    loader.style.display = 'none';
+    searchBtn.disabled = false;
+
+    if (matchedUser) {
+      document.getElementById('resUserName').innerText = matchedUser.name;
+      document.getElementById('resUserType').innerText = `${matchedUser.role} • ID: ${matchedUser.ticketId}`;
+
+      // Ticket Action (Auto-Generated QR Pass View)
+      const ticketBtn = document.getElementById('btnDownloadTicket');
+      const qrPassUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(matchedUser.ticketId)}`;
+      ticketBtn.href = qrPassUrl;
+      ticketBtn.target = "_blank";
+      ticketBtn.innerText = "🎟️ डिजिटल पास (QR Pass) देखें";
+      ticketBtn.style.display = "block";
+
+      // Certificate Action
+      const certBtn = document.getElementById('btnDownloadCert');
+      if (matchedUser.certUrl && matchedUser.certUrl.startsWith("http")) {
+        certBtn.href = matchedUser.certUrl;
+        certBtn.style.display = 'block';
+        certBtn.innerText = '📜 ई-सर्टिफिकेट PDF';
+        certBtn.style.pointerEvents = 'auto';
+        certBtn.style.opacity = '1';
+      } else {
+        certBtn.href = '#';
+        certBtn.style.display = 'block';
+        certBtn.innerText = '📜 सर्टिफिकेट कार्यक्रम के बाद उपलब्ध होगा';
+        certBtn.style.opacity = '0.6';
+        certBtn.style.pointerEvents = 'none';
+      }
+
+      resultBox.style.display = 'block';
+    } else {
+      errorBox.innerText = '⚠️ कोई विवरण नहीं मिला! कृपया सही मोबाइल नंबर या ईमेल दर्ज करें।';
+      errorBox.style.display = 'block';
+    }
+  } catch (err) {
+    loader.style.display = 'none';
+    searchBtn.disabled = false;
+    errorBox.innerText = '⚠️ शीट से कनेक्ट करने में समस्या हुई। कृपया Sheet ID और Sharing जाँचें।';
+    errorBox.style.display = 'block';
+  }
+}
+// =========================================================
+// DOWNLOAD MODAL OPEN / CLOSE & SEARCH LOGIC
+// =========================================================
+
+// पॉप-अप खोलने के लिए
+function openDownloadModal() {
+  const modal = document.getElementById('downloadModal');
+  if (modal) {
+    modal.style.display = 'flex';
+    document.getElementById('portalResult').style.display = 'none';
+    document.getElementById('portalNotFound').style.display = 'none';
+    document.getElementById('searchQuery').value = '';
+  }
+}
+
+// पॉप-अप बंद करने के लिए
+function closeDownloadModal() {
+  const modal = document.getElementById('downloadModal');
+  if (modal) {
+    modal.style.display = 'none';
+  }
+}
+
+// पास व सर्टिफिकेट खोजने और डाउनलोड कराने का मुख्य फ़ंक्शन
+async function handlePortalSearch(event) {
+  event.preventDefault();
+
+  const query = document.getElementById('searchQuery').value.trim();
+  const loader = document.getElementById('portalLoader');
+  const resultBox = document.getElementById('portalResult');
+  const errorBox = document.getElementById('portalNotFound');
+  const searchBtn = document.getElementById('portalSearchBtn');
+
+  if (!query) return;
+
+  // UI Reset
+  resultBox.style.display = 'none';
+  errorBox.style.display = 'none';
+  loader.style.display = 'block';
+  searchBtn.disabled = true;
+
+  try {
+    // अपनी Google Apps Script Web App URL से कनेक्ट करें
+    const response = await fetch(`${SCRIPT_URL}?action=searchUser&query=${encodeURIComponent(query)}`);
+    const data = await response.json();
+
+    loader.style.display = 'none';
+    searchBtn.disabled = false;
+
+    if (data.status === 'success' && data.user) {
+      document.getElementById('resUserName').innerText = data.user.name;
+      document.getElementById('resUserType').innerText = data.user.type || 'पंजीकृत प्रतिभागी';
+
+      // Ticket Link Setup
+      const ticketBtn = document.getElementById('btnDownloadTicket');
+      if (data.user.ticketUrl) {
+        ticketBtn.href = data.user.ticketUrl;
+        ticketBtn.style.display = 'block';
+      } else {
+        ticketBtn.style.display = 'none';
+      }
+
+      // Certificate Link Setup
+      const certBtn = document.getElementById('btnDownloadCert');
+      if (data.user.certificateUrl) {
+        certBtn.href = data.user.certificateUrl;
+        certBtn.style.display = 'block';
+        certBtn.innerText = '📜 ई-सर्टिफिकेट PDF';
+      } else {
+        certBtn.href = '#';
+        certBtn.style.display = 'block';
+        certBtn.innerText = '📜 सर्टिफिकेट कार्यक्रम के बाद उपलब्ध होगा';
+        certBtn.style.opacity = '0.6';
+        certBtn.style.pointerEvents = 'none';
+      }
+
+      resultBox.style.display = 'block';
+    } else {
+      errorBox.style.display = 'block';
+    }
+  } catch (err) {
+    loader.style.display = 'none';
+    searchBtn.disabled = false;
+    errorBox.innerText = '⚠️ सर्वर से कनेक्ट करने में समस्या हुई। कृपया पुनः प्रयास करें।';
+    errorBox.style.display = 'block';
+  }
+}
+window.addEventListener('click', (e) => {
+  const downloadModal = document.getElementById('downloadModal');
+  if (e.target === downloadModal) {
+    closeDownloadModal();
+  }
+});
