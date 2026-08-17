@@ -58,10 +58,9 @@ body {
   font-size: clamp(2.2rem, 5vw, 4rem);
   background: linear-gradient(135deg, #FFFFFF 0%, #F5E6BE 40%, #D4AF37 80%, #AA771C 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   filter: drop-shadow(0 6px 20px rgba(212, 175, 55, 0.4));
-  background-clip: text;
-  -webkit-background-clip: text;
   animation: introZoomIn 1.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
@@ -78,6 +77,7 @@ body {
   color: #E2E8F0;
   font-size: clamp(0.9rem, 2vw, 1.15rem);
   letter-spacing: 3px;
+  margin-top: 15px;
   opacity: 0;
   animation: fadeInUp 1s 0.7s forwards;
 }
@@ -97,7 +97,7 @@ body {
   left: 0;
   width: 100%;
   padding: 16px 45px;
-  background: rgba(134, 5, 5, 0.546);
+  background: rgba(134, 5, 5, 0.85);
   backdrop-filter: blur(12px);
   display: flex;
   justify-content: space-between;
@@ -110,11 +110,11 @@ body {
 .logo-container {
   display: flex;
   align-items: center;
-  gap: 23px;
+  gap: 20px;
 }
 
 .nav-logo {
-  height: 70px;
+  height: 65px;
   width: auto;
   border-radius: 50%;
   transition: var(--transition-smooth);
@@ -174,19 +174,18 @@ body {
 }
 
 /* =========================================================
-   4. CLEAN ROYAL HERO SECTION (NO LINES/DEFECTS)
+   4. HERO SECTION
    ========================================================= */
 .hero-overlay,
 .hero::before,
 .hero::after {
   display: none !important;
-  content: none !important;
 }
 
 .hero {
   position: relative;
   min-height: 80vh;
-  background: linear-gradient(135deg, #1304ed 0%, #ce2a05a0 100%) !important;
+  background: linear-gradient(135deg, #1304ed 0%, #ce2a05 100%) !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -228,7 +227,7 @@ body {
 }
 
 .tagline {
-  color: #0c020c;
+  color: #F8FAFC;
   font-size: 1.25rem;
   font-family: 'Yatra One', cursive;
   margin-bottom: 24px;
@@ -268,6 +267,7 @@ body {
   position: relative;
   overflow: hidden;
   display: inline-block;
+  text-decoration: none;
 }
 
 .btn-primary:hover,
@@ -303,6 +303,25 @@ body {
 .btn-outline:hover {
   background: var(--royal-gold);
   color: #0A1931;
+}
+
+.btn-outline-gold {
+  padding: 12px 24px;
+  border: 1.5px solid var(--royal-gold);
+  color: var(--royal-gold);
+  background: transparent;
+  border-radius: 28px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: var(--transition-smooth);
+  cursor: pointer;
+  display: inline-block;
+}
+
+.btn-outline-gold:hover {
+  background: rgba(212, 175, 55, 0.15);
+  transform: translateY(-2px);
 }
 
 /* =========================================================
@@ -349,24 +368,131 @@ body {
 }
 
 /* =========================================================
-   7. POPUP MODALS (STRICT CENTERED FIX)
+   7. COUNTDOWN TIMER STYLING
    ========================================================= */
-.modal-overlay {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  background: rgba(10, 25, 49, 0.8) !important;
-  backdrop-filter: blur(8px);
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  z-index: 9999 !important;
+.countdown-section {
+  padding: 30px 20px;
 }
 
-.modal-overlay[style*="display: none"] {
-  display: none !important;
+.countdown-container {
+  background: linear-gradient(135deg, #0A1931 0%, #172A45 100%);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 16px;
+  padding: 30px 20px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.countdown-container h3 {
+  color: var(--royal-gold);
+  font-family: 'Yatra One', cursive;
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+}
+
+.countdown-timer {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.time-box {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 12px;
+  padding: 12px 18px;
+  min-width: 75px;
+}
+
+.time-box span {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.time-box label {
+  font-size: 0.75rem;
+  color: #CBD5E1;
+  text-transform: uppercase;
+}
+
+/* =========================================================
+   8. FAQ ACCORDION STYLING
+   ========================================================= */
+.faq-container {
+  max-width: 750px;
+  margin: 20px auto 0;
+}
+
+.faq-item {
+  margin-bottom: 12px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #E2E8F0;
+  background: #FFFFFF;
+}
+
+.faq-question {
+  width: 100%;
+  padding: 16px 20px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--primary-navy);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.faq-question span {
+  font-size: 1.3rem;
+  color: var(--royal-gold);
+  transition: transform 0.3s ease;
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  background: #F8FAFC;
+}
+
+.faq-answer p {
+  padding: 0 20px 16px;
+  color: #475569;
+  font-size: 0.92rem;
+  margin: 0;
+}
+
+.faq-item.active .faq-question span {
+  transform: rotate(45deg);
+}
+
+.faq-item.active .faq-answer {
+  max-height: 150px;
+  padding-top: 10px;
+}
+
+/* =========================================================
+   9. POPUP MODALS
+   ========================================================= */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(10, 25, 49, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
 }
 
 .modal-card {
@@ -375,11 +501,13 @@ body {
   padding: 35px 28px;
   max-width: 480px;
   width: 90%;
-  margin: auto !important;
+  margin: auto;
   position: relative;
   border-top: 6px solid var(--royal-gold);
   box-shadow: 0 25px 50px rgba(0,0,0,0.3);
   animation: popScale 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .close-modal-btn {
@@ -405,7 +533,7 @@ body {
   margin-bottom: 15px;
 }
 
-/* Form Styling */
+/* Form Elements */
 .input-group {
   margin-bottom: 15px;
   text-align: left;
@@ -472,7 +600,59 @@ body {
 }
 
 /* =========================================================
-   8. FOOTER
+   10. PORTAL (DOWNLOAD PASS & CERTIFICATE)
+   ========================================================= */
+.btn-portal {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.portal-loader {
+  margin-top: 25px;
+}
+
+.spinner {
+  width: 35px;
+  height: 35px;
+  border: 3px solid rgba(212, 175, 55, 0.2);
+  border-top-color: var(--royal-gold);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 10px;
+}
+
+.portal-result {
+  margin-top: 25px;
+  padding: 20px;
+  background: #F8FAFC;
+  border-radius: 14px;
+  border: 1px solid #E2E8F0;
+  animation: popScale 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.result-badge {
+  color: #15803D;
+  background: #DCFCE7;
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.portal-error {
+  margin-top: 20px;
+  padding: 12px;
+  background: #FEF2F2;
+  color: #DC2626;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  border: 1px solid #FCA5A5;
+}
+
+/* =========================================================
+   11. FOOTER
    ========================================================= */
 .site-footer {
   background: #060D1A;
@@ -533,7 +713,7 @@ body {
 }
 
 /* =========================================================
-   9. KEYFRAME ANIMATIONS & RESPONSIVE
+   12. KEYFRAME ANIMATIONS & RESPONSIVE
    ========================================================= */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(25px); }
@@ -561,6 +741,10 @@ body {
   100% { left: 130%; }
 }
 
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 @media (max-width: 768px) {
   .hamburger { display: block; }
   
@@ -586,334 +770,4 @@ body {
   .hero h1 {
     font-size: 2.3rem;
   }
-}
-/* =========================================================
-   INTRO SPLASH SCREEN (WORKING & CLEAN)
-   ========================================================= */
-.intro-screen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: radial-gradient(circle at center, #0F2347 0%, #060D1A 100%);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 99999;
-  transition: opacity 0.8s ease, visibility 0.8s ease;
-}
-
-.intro-box {
-  text-align: center;
-  padding: 20px;
-}
-
-.intro-title {
-  font-family: 'Yatra One', cursive;
-  font-size: clamp(2.2rem, 5vw, 4rem);
-  background: linear-gradient(135deg, #FFFFFF 0%, #F5E6BE 40%, #D4AF37 80%, #AA771C 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 6px 20px rgba(212, 175, 55, 0.4));
-  animation: introZoomIn 1.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-}
-
-.intro-tag {
-  color: #E2E8F0;
-  font-size: clamp(0.9rem, 2vw, 1.15rem);
-  letter-spacing: 3px;
-  margin-top: 15px;
-  opacity: 0;
-  animation: fadeInUp 1s 0.6s forwards;
-}
-
-.intro-screen.hide-intro {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-}
-
-
-/* =========================================================
-   COUNTDOWN TIMER STYLING
-   ========================================================= */
-.countdown-section {
-  padding: 30px 20px;
-}
-
-.countdown-container {
-  background: linear-gradient(135deg, #0A1931 0%, #172A45 100%);
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  border-radius: 16px;
-  padding: 30px 20px;
-  text-align: center;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-}
-
-.countdown-container h3 {
-  color: var(--royal-gold);
-  font-family: 'Yatra One', cursive;
-  font-size: 1.4rem;
-  margin-bottom: 20px;
-}
-
-.countdown-timer {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  flex-wrap: wrap;
-}
-
-.time-box {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(212, 175, 55, 0.2);
-  border-radius: 12px;
-  padding: 12px 18px;
-  min-width: 75px;
-}
-
-.time-box span {
-  display: block;
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #FFFFFF;
-}
-
-.time-box label {
-  font-size: 0.75rem;
-  color: #CBD5E1;
-  text-transform: uppercase;
-}
-
-/* =========================================================
-   TIMELINE STYLING
-   ========================================================= */
-.timeline-container {
-  position: relative;
-  max-width: 700px;
-  margin: 30px auto 0;
-  padding-left: 30px;
-  border-left: 2px solid var(--royal-gold);
-}
-
-.timeline-item {
-  position: relative;
-  margin-bottom: 25px;
-}
-
-.timeline-dot {
-  position: absolute;
-  left: -37px;
-  top: 4px;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--royal-gold);
-  box-shadow: 0 0 10px var(--royal-gold);
-}
-
-.timeline-content {
-  background: #FFFFFF;
-  padding: 16px 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  border: 1px solid #E2E8F0;
-}
-
-.timeline-content h4 {
-  color: var(--primary-navy);
-  margin-bottom: 4px;
-  font-size: 1.05rem;
-}
-
-.timeline-content p {
-  color: #64748B;
-  font-size: 0.9rem;
-  margin: 0;
-}
-
-/* =========================================================
-   FAQ ACCORDION STYLING
-   ========================================================= */
-.faq-container {
-  max-width: 750px;
-  margin: 20px auto 0;
-}
-
-.faq-item {
-  margin-bottom: 12px;
-  border-radius: 10px;
-  overflow: hidden;
-  border: 1px solid #E2E8F0;
-  background: #FFFFFF;
-}
-
-.faq-question {
-  width: 100%;
-  padding: 16px 20px;
-  background: none;
-  border: none;
-  text-align: left;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--primary-navy);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-}
-
-.faq-question span {
-  font-size: 1.3rem;
-  color: var(--royal-gold);
-  transition: transform 0.3s ease;
-}
-
-.faq-answer {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease, padding 0.3s ease;
-  background: #F8FAFC;
-}
-
-.faq-answer p {
-  padding: 0 20px 16px;
-  color: #475569;
-  font-size: 0.92rem;
-  margin: 0;
-}
-
-.faq-item.active .faq-question span {
-  transform: rotate(45deg);
-}
-
-.faq-item.active .faq-answer {
-  max-height: 150px;
-  padding-top: 10px;
-}
-
-/* =========================================================
-   PORTAL (DOWNLOAD PASS & CERTIFICATE) STYLING
-   ========================================================= */
-.portal-section {
-  text-align: center;
-  padding: 60px 20px;
-}
-
-.portal-sub {
-  color: #64748B;
-  font-size: 0.95rem;
-  max-width: 600px;
-  margin: 0 auto 30px;
-}
-
-.portal-card {
-  max-width: 580px;
-  margin: 0 auto;
-  border-top: 5px solid var(--royal-gold);
-}
-
-.btn-portal {
-  width: 100%;
-  margin-top: 10px;
-}
-
-/* Spinner Loader */
-.portal-loader {
-  margin-top: 25px;
-}
-
-.spinner {
-  width: 35px;
-  height: 35px;
-  border: 3px solid rgba(212, 175, 55, 0.2);
-  border-top-color: var(--royal-gold);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  margin: 0 auto 10px;
-}
-
-/* Result Box */
-.portal-result {
-  margin-top: 25px;
-  padding: 20px;
-  background: #F8FAFC;
-  border-radius: 14px;
-  border: 1px solid #E2E8F0;
-  animation: popScale 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.result-badge {
-  color: #15803D;
-  background: #DCFCE7;
-  display: inline-block;
-  padding: 4px 14px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  margin-bottom: 10px;
-}
-
-.portal-result h3 {
-  color: var(--primary-navy);
-  font-size: 1.3rem;
-  margin-bottom: 4px;
-}
-
-.user-role-tag {
-  color: #64748B;
-  font-size: 0.88rem;
-  margin-bottom: 20px;
-}
-
-.portal-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.btn-outline-gold {
-  padding: 12px 20px;
-  border: 1.5px solid var(--royal-gold);
-  color: var(--primary-navy);
-  background: #FFFFFF;
-  border-radius: 25px;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 0.95rem;
-  transition: var(--transition-smooth);
-}
-
-.btn-outline-gold:hover {
-  background: rgba(212, 175, 55, 0.12);
-  transform: translateY(-2px);
-}
-
-.portal-error {
-  margin-top: 20px;
-  padding: 12px;
-  background: #FEF2F2;
-  color: #DC2626;
-  border-radius: 10px;
-  font-size: 0.9rem;
-  border: 1px solid #FCA5A5;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* डाउनलोड ट्रिगर बॉक्स (3-लाइन कॉम्पैक्ट डिज़ाइन) */
-.download-trigger-box {
-  text-align: center;
-  margin: 20px auto;
-  padding: 10px;
-}
-
-.download-hint {
-  font-size: 0.85rem;
-  color: #CBD5E1;
-  margin-bottom: 6px;
 }

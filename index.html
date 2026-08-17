@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>काव्योत्सव 2026 | अभिव्यक्ति काव्यपीठ</title>
@@ -14,6 +13,7 @@
     <link rel="stylesheet" href="style.css">
 
     <!-- Third-Party Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -27,8 +27,6 @@
             <p class="intro-tag">“ऋषयो मन्त्रद्रष्टारः कवयः क्रान्तदर्शिनः”</p>
         </div>
     </div>
-
-    <!-- इसके नीचे आपका Navbar, Hero आदि कोड रहेगा -->
 
     <!-- Professional Navigation Bar with Hamburger Menu -->
     <header class="navbar">
@@ -48,7 +46,7 @@
             <a href="#home" onclick="closeNavMenu()">Home</a>
             <a href="#event" onclick="closeNavMenu()">Event Info</a>
             <a href="javascript:void(0)" onclick="openRegisterModal(); closeNavMenu();">Registration</a>
-            <a href="javascript:void(0)" onclick="openDownloadModal()">Download Pass</a>
+            <a href="javascript:void(0)" onclick="openDownloadModal(); closeNavMenu();">Download Pass</a>
             <a href="#about" onclick="closeNavMenu()">About Us</a>
             <a href="javascript:void(0)" onclick="openAdminModal(); closeNavMenu();">Admin Portal</a>
         </nav>
@@ -65,22 +63,18 @@
                 <span>📍 प्रयागराज</span>
                 <span>📅 23 अगस्त 2026</span>
             </div>
-            <!-- Pop-up Trigger Button -->
+            <!-- Pop-up Trigger Buttons -->
             <button onclick="openRegisterModal()" class="btn-primary">Pass Book Karein</button>
-            <!-- 👇 यहाँ पर यह 3-लाइन वाला बॉक्स लगाएँ 👇 -->
-            <button onclick="openDownloadModal()" class="btn-outline-gold">पहले से पंजीकृत हैं?</button></p>
-        
+            <button onclick="openDownloadModal()" class="btn-outline-gold">पहले से पंजीकृत हैं?</button>
         </div>
     </section>
-    
 
-    <!-- EVENT INFO SECTION (ABOUT EVENT + LOCATION COMBINED) -->
+    <!-- EVENT INFO SECTION -->
     <section id="event" class="section">
         <h2>काव्योत्सव 2026 के बारे में (About Our Event)</h2>
         <p>काव्योत्सव 2026 प्रयागराज की ऐतिहासिक धरती पर आयोजित होने वाली एक भव्य साहित्यिक एवं काव्य संध्या है। इस आयोजन का मुख्य उद्देश्य नवोदित एवं स्थापित कवियों, शायरों और विचारकों को एक साझा मंच प्रदान करना है।</p>
-        <p style="margin-top: 08px;">यहाँ आप हिंदी साहित्य, ग़ज़ल, छंद, हास्य-व्यंग्य और आधुनिक काव्य-विधाओं के अद्भुत संगम का अनुभव करेंगे। यदि आप साहित्य प्रेमी हैं या मंच पर अपनी रचना प्रस्तुत करना चाहते हैं, तो "Pass Book Karein" बटन पर क्लिक करके अपना Pass सुनिश्चित करें।</p>
+        <p style="margin-top: 8px;">यहाँ आप हिंदी साहित्य, ग़ज़ल, छंद, हास्य-व्यंग्य और आधुनिक काव्य-विधाओं के अद्भुत संगम का अनुभव करेंगे। यदि आप साहित्य प्रेमी हैं या मंच पर अपनी रचना प्रस्तुत करना चाहते हैं, तो "Pass Book Karein" बटन पर क्लिक करके अपना Pass सुनिश्चित करें।</p>
         
-        <!-- Shifted Venue & Location Inside Event Info -->
         <div class="section-container" style="margin-top: 30px;">
             <div class="section-header">
                 <h3>📍 कार्यक्रम स्थल (Venue & Location)</h3>
@@ -97,55 +91,57 @@
             </div>
         </div>
     </section>
-    <!-- 1. LIVE COUNTDOWN SECTION -->
-<section class="section countdown-section">
-    <div class="countdown-container">
-        <h3>काव्योत्सव 2026 प्रारंभ होने में शेष</h3>
-        <div class="countdown-timer" id="countdownTimer">
-            <div class="time-box">
-                <span id="days">80</span>
-                <label>दिन</label>
-            </div>
-            <div class="time-box">
-                <span id="hours">90</span>
-                <label>घंटे</label>
-            </div>
-            <div class="time-box">
-                <span id="minutes">40</span>
-                <label>मिनट</label>
-            </div>
-            <div class="time-box">
-                <span id="seconds">50</span>
-                <label>सेकंड</label>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- 3. FAQS SECTION -->
-<section class="section">
-    <h2>अक्सर पूछे जाने वाले सवाल (FAQ)</h2>
-    <div class="gold-divider"></div>
-    <div class="faq-container">
-        <div class="faq-item">
-            <button class="faq-question">क्या प्रवेश के लिए पास का प्रिंटआउट अनिवार्य है? <span>+</span></button>
-            <div class="faq-answer">
-                <p>नहीं, आप अपने मोबाइल पर E-Ticket PDF या QR कोड दिखाकर सीधा प्रवेश पा सकते हैं।</p>
+
+    <!-- LIVE COUNTDOWN SECTION -->
+    <section class="section countdown-section">
+        <div class="countdown-container">
+            <h3>काव्योत्सव 2026 प्रारंभ होने में शेष</h3>
+            <div class="countdown-timer" id="countdownTimer">
+                <div class="time-box">
+                    <span id="days">00</span>
+                    <label>दिन</label>
+                </div>
+                <div class="time-box">
+                    <span id="hours">00</span>
+                    <label>घंटे</label>
+                </div>
+                <div class="time-box">
+                    <span id="minutes">00</span>
+                    <label>मिनट</label>
+                </div>
+                <div class="time-box">
+                    <span id="seconds">00</span>
+                    <label>सेकंड</label>
+                </div>
             </div>
         </div>
-        <div class="faq-item">
-            <button class="faq-question">क्या कार्यक्रम स्थल पर पार्किंग की व्यवस्था है? <span>+</span></button>
-            <div class="faq-answer">
-                <p>हाँ, सीनेट हॉल परिसर में दोपहिया और चार पहिया वाहनों के लिए पर्याप्त पार्किंग उपलब्ध है।</p>
+    </section>
+
+    <!-- FAQS SECTION -->
+    <section class="section">
+        <h2>अक्सर पूछे जाने वाले सवाल (FAQ)</h2>
+        <div class="gold-divider"></div>
+        <div class="faq-container">
+            <div class="faq-item">
+                <button class="faq-question">क्या प्रवेश के लिए पास का प्रिंटआउट अनिवार्य है? <span>+</span></button>
+                <div class="faq-answer">
+                    <p>नहीं, आप अपने मोबाइल पर E-Ticket PDF या QR कोड दिखाकर सीधा प्रवेश पा सकते हैं।</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">क्या कार्यक्रम स्थल पर पार्किंग की व्यवस्था है? <span>+</span></button>
+                <div class="faq-answer">
+                    <p>हाँ, सीनेट हॉल परिसर में दोपहिया और चार पहिया वाहनों के लिए पर्याप्त पार्किंग उपलब्ध है।</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">क्या मुझे सहभागिता प्रमाण-पत्र (Certificate) मिलेगा? <span>+</span></button>
+                <div class="faq-answer">
+                    <p>हाँ, सभी पंजीकृत प्रतिभागियों को डिजिटल सत्यापन युक्त ई-सर्टिफिकेट प्रदान किया जाएगा।</p>
+                </div>
             </div>
         </div>
-        <div class="faq-item">
-            <button class="faq-question">क्या मुझे सहभागिता प्रमाण-पत्र (Certificate) मिलेगा? <span>+</span></button>
-            <div class="faq-answer">
-                <p>हाँ, सभी पंजीकृत प्रतिभागियों को डिजिटल सत्यापन युक्त ई-सर्टिफिकेट प्रदान किया जाएगा।</p>
-            </div>
-        </div>
-    </div>
-</section>
+    </section>
 
     <!-- ABOUT US SECTION -->
     <section id="about" class="section">
@@ -154,7 +150,7 @@
         <p style="margin-top: 10px;">हमारा उद्देश्य देश के कोने-कोने से युवा प्रतिभाओं को खोजकर उन्हें राष्ट्रीय मंच प्रदान करना है। अभिव्यक्ति काव्यपीठ नियमित रूप से काव्य गोष्ठियों, open-mic प्रतियोगिताओं और साहित्यिक सम्मेलनों का सफल आयोजन करती आ रही है।</p>
     </section>
 
-    <!-- REGISTRATION FORM MODAL (HIDDEN BY DEFAULT - OPENS ON CLICK) -->
+    <!-- REGISTRATION FORM MODAL -->
     <div id="registerModal" class="modal-overlay" style="display: none;">
         <div class="modal-card">
             <button class="close-modal-btn" onclick="closeRegisterModal()">&times;</button>
@@ -203,7 +199,7 @@
                     </div>
                     <div class="input-group">
                         <label for="title">प्रस्तुति का शीर्षक (Title of Performance)</label>
-                        <input type="text" id="title" class="pro-input" placeholder="जैसे: मेरी कविता" required>
+                        <input type="text" id="title" class="pro-input" placeholder="जैसे: मेरी कविता">
                     </div>
                 </div>
 
@@ -253,6 +249,51 @@
         </div>
     </div>
 
+    <!-- DOWNLOAD PASS & CERTIFICATE MODAL -->
+    <div id="downloadModal" class="modal-overlay" style="display: none;">
+      <div class="modal-card">
+        <button type="button" class="close-modal-btn" onclick="closeDownloadModal()">&times;</button>
+        
+        <h3 style="color: var(--primary-navy); margin-bottom: 6px;">पास एवं प्रमाण-पत्र डाउनलोड</h3>
+        <p class="modal-sub">अपना पंजीकृत मोबाइल नंबर या ईमेल आईडी दर्ज करें</p>
+        
+        <form id="modalPortalForm" onsubmit="handlePortalSearch(event)">
+          <div class="input-group">
+            <label for="searchQuery">मोबाइल नंबर / ईमेल आईडी</label>
+            <input type="text" id="searchQuery" class="pro-input" placeholder="उदा. 9876543210 या name@gmail.com" required>
+          </div>
+          <button type="submit" id="portalSearchBtn" class="btn-primary btn-portal">खोजें एवं डाउनलोड करें</button>
+        </form>
+
+        <!-- Loader -->
+        <div id="portalLoader" class="portal-loader" style="display: none;">
+          <div class="spinner"></div>
+          <p style="font-size: 0.85rem; color: #64748B;">विवरण खोजा जा रहा है...</p>
+        </div>
+
+        <!-- Result -->
+        <div id="portalResult" class="portal-result" style="display: none;">
+          <div class="result-badge">पंजीकरण सत्यापित ✓</div>
+          <h3 id="resUserName" style="font-size: 1.15rem; margin-bottom: 4px;">प्रतिभागी का नाम</h3>
+          <p id="resUserType" class="user-role-tag" style="margin-bottom: 12px;">श्रोता पास</p>
+          
+          <div class="portal-actions">
+            <a id="btnDownloadTicket" href="javascript:void(0)" class="btn-outline-gold" style="display: block; text-align: center;">
+              🎟️ E-Ticket PDF
+            </a>
+            <a id="btnDownloadCert" href="javascript:void(0)" class="btn-primary" style="display: block; text-align: center; margin-top: 8px;">
+              📜 ई-सर्टिफिकेट PDF
+            </a>
+          </div>
+        </div>
+
+        <!-- Error Message -->
+        <div id="portalNotFound" class="portal-error" style="display: none;">
+          ⚠️ कोई रिकॉर्ड नहीं मिला! कृपया सही विवरण दर्ज करें।
+        </div>
+      </div>
+    </div>
+
     <!-- Professional Multi-Column Footer -->
     <footer class="site-footer">
         <div class="footer-container">
@@ -294,50 +335,7 @@
         </div>
     </footer>
 
+    <!-- Main JS File -->
     <script src="script.js"></script>
-    <div id="downloadModal" class="modal-overlay" style="display: none;">
-      <div class="modal-card">
-        <button type="button" class="close-modal-btn" onclick="closeDownloadModal()">&times;</button>
-        
-        <h3 style="color: var(--primary-navy); margin-bottom: 6px;">पास एवं प्रमाण-पत्र डाउनलोड</h3>
-        <p class="modal-sub">अपना पंजीकृत मोबाइल नंबर या ईमेल आईडी दर्ज करें</p>
-        
-        <form id="modalPortalForm" onsubmit="handlePortalSearch(event)">
-          <div class="input-group">
-            <label for="searchQuery">मोबाइल नंबर / ईमेल आईडी</label>
-            <input type="text" id="searchQuery" class="pro-input" placeholder="उदा. 9876543210 या name@gmail.com" required>
-          </div>
-          <button type="submit" id="portalSearchBtn" class="btn-primary btn-portal">खोजें एवं डाउनलोड करें</button>
-        </form>
-
-        <!-- लोडर -->
-        <div id="portalLoader" class="portal-loader" style="display: none;">
-          <div class="spinner"></div>
-          <p style="font-size: 0.85rem; color: #64748B;">विवरण खोजा जा रहा है...</p>
-        </div>
-
-        <!-- परिणाम -->
-        <div id="portalResult" class="portal-result" style="display: none;">
-          <div class="result-badge">पंजीकरण सत्यापित ✓</div>
-          <h3 id="resUserName" style="font-size: 1.15rem; margin-bottom: 4px;">प्रतिभागी का नाम</h3>
-          <p id="resUserType" class="user-role-tag" style="margin-bottom: 12px;">श्रोता पास</p>
-          
-          <div class="portal-actions">
-            <a id="btnDownloadTicket" href="#" target="_blank" class="btn-outline-gold" style="display: block; text-align: center;">
-              🎟️ E-Ticket PDF
-            </a>
-            <a id="btnDownloadCert" href="#" target="_blank" class="btn-primary" style="display: block; text-align: center; margin-top: 8px;">
-              📜 ई-सर्टिफिकेट PDF
-            </a>
-          </div>
-        </div>
-
-        <!-- त्रुटि संदेश -->
-        <div id="portalNotFound" class="portal-error" style="display: none;">
-          ⚠️ कोई रिकॉर्ड नहीं मिला! कृपया सही विवरण दर्ज करें।
-        </div>
-      </div>
-    </div>
-
 </body>
 </html>
