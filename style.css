@@ -188,7 +188,7 @@ body {
 .hero {
   position: relative;
   min-height: 55vh; /* ठीक आधी स्क्रीन से थोड़ा सा बड़ा ताकि संतुलित लगे */
-  background: radial-gradient(circle at top, #1e0b57 0%, #0a041f 60%, #1a0305 100%) !important;
+  background: radial-gradient(circle at top, #3503c9c5 0%, #0a041f 60%, #350206 100%) !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -206,7 +206,7 @@ body {
 }
 
 .badge {
-  background: rgba(212, 175, 55, 0.12);
+  background: rgba(212, 175, 55, 0.632);
   color: var(--royal-gold);
   border: 1px solid rgba(212, 175, 55, 0.4);
   padding: 4px 12px;
@@ -221,7 +221,7 @@ body {
   font-family: 'Cinzel', serif;
   font-size: 3.6rem;
   font-weight: 700;
-  background: linear-gradient(180deg, #FFFFFF 0%, #F5E6BE 40%, #D4AF37 100%);
+  background: linear-gradient(180deg, #a62525 0%, #F5E6BE 40%, #D4AF37 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
