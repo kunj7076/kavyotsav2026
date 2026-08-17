@@ -8,7 +8,7 @@ const ADMIN_CREDENTIALS = {
 };
 
 // अपना Apps Script Web App URL यहाँ डालें:
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzdfT03vf_CLORuq2wULroVn0mceiwgjED3VzaYYHw1efR4bOWlhrBxCW8NB5iQyVcO/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyWiS60UTLK6IeEFjrfnkBm7YUgeU7eiLjF651GaPjdileehBxFeiyc0j_TXQuGyn7R/exec";
 
 let html5QrCode;
 let isScanning = false;
