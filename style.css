@@ -217,9 +217,9 @@ body {
 
 .hero h1 {
   font-family: 'Cinzel', serif;
-  font-size: 2.8rem;
+  font-size: 3.8rem;
   font-weight: 700;
-  background: linear-gradient(180deg, #FFFFFF 0%, #F5E6BE 40%, #D4AF37 100%);
+  background: linear-gradient(180deg, #bca108 0%, #F5E6BE 40%, #D4AF37 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -269,7 +269,7 @@ body {
   }
 
   .hero h1 {
-    font-size: 2.2rem; /* मोबाइल स्क्रीन पर टेक्स्ट सही आकार में */
+    font-size: 2.9rem; /* मोबाइल स्क्रीन पर टेक्स्ट सही आकार में */
     margin-bottom: 6px;
   }
 
