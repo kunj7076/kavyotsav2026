@@ -185,12 +185,12 @@ body {
 .hero {
   position: relative;
   min-height: auto;
-  background: linear-gradient(135deg, #1304ed 0%, #ce2a05 100%) !important;
+  background: linear-gradient(135deg, #3b7fe4 0%, #e44926ac 100%) !important;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 105px 20px 40px;
+  padding: 115px 25px 48px;
   overflow: hidden;
   border-bottom: 2px solid rgba(212, 175, 55, 0.2);
 }
