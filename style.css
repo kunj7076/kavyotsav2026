@@ -126,29 +126,77 @@ body {
 /* =========================================================
    3. HERO SECTION (Dynamic Shimmer & Floating Elements)
    ========================================================= */
+/* --- PREMIUM ROYAL & ANIMATED HERO BACKGROUND --- */
 .hero {
   position: relative;
-  min-height: 75vh;
-  background: var(--bg-gradient);
+  min-height: 80vh;
+  /* डीप नेवी, रॉयल इंडिगो और गोल्डन शैडो का मल्टी-लेयर बैकग्राउंड */
+  background: 
+    radial-gradient(circle at 50% 20%, rgba(212, 175, 55, 0.18) 0%, transparent 50%),
+    radial-gradient(circle at 15% 85%, rgba(99, 102, 241, 0.15) 0%, transparent 45%),
+    radial-gradient(circle at 85% 75%, rgba(184, 134, 11, 0.15) 0%, transparent 45%),
+    linear-gradient(145deg, #070e1c 0%, #0d1e38 40%, #152b4d 70%, #08101e 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 130px 20px 30px;
+  padding: 120px 20px 50px;
   overflow: hidden;
 }
 
+/* फ्लोटिंग गोल्ड लाइट इफ़ेक्ट (Ambient Glow) */
 .hero::before {
   content: '';
   position: absolute;
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 70%);
-  top: 20%;
-  left: 10%;
-  animation: floatOrb 8s infinite alternate ease-in-out;
+  top: -10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 650px;
+  height: 450px;
+  background: radial-gradient(ellipse, rgba(212, 175, 55, 0.22) 0%, rgba(245, 158, 11, 0.05) 50%, transparent 70%);
+  filter: blur(50px);
+  pointer-events: none;
+  animation: pulseGlow 6s ease-in-out infinite alternate;
 }
 
+/* बैकग्राउंड पर सूक्ष्म ग्रिड पैटर्न (वैकल्पिक टेक्सचर) */
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* हेडिंग को 3D गोल्डन लुक देने के लिए */
+.hero h1 {
+  font-family: 'Cinzel', serif;
+  font-size: 3.4rem;
+  font-weight: 700;
+  background: linear-gradient(180deg, #FFFFFF 20%, #F5E6BE 65%, #D4AF37 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 4px 18px rgba(0, 0, 0, 0.6));
+  letter-spacing: 1px;
+}
+
+/* पल्स ग्लो एनिमेशन */
+@keyframes pulseGlow {
+  0% {
+    transform: translateX(-50%) scale(0.9);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateX(-50%) scale(1.15);
+    opacity: 1;
+  }
+}
 .hero-content {
   position: relative;
   z-index: 2;
@@ -266,66 +314,176 @@ body {
 }
 
 /* =========================================================
-   5. POPUP MODALS & FORMS
+   REGISTRATION MODAL & ANIMATED BUTTONS
    ========================================================= */
+
+/* 1. Modal Overlay (Smooth Blur & Fade) */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(10, 25, 49, 0.8);
+  background: rgba(10, 25, 49, 0.75);
   backdrop-filter: blur(8px);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 2000;
-  animation: fadeIn 0.3s ease;
+  animation: fadeInModal 0.3s ease-out;
 }
 
+/* 2. Modal Card (Smooth Slide & Bounce Animation) */
 .modal-card {
-  background: #FFFFFF;
-  border-radius: 24px;
-  padding: 40px;
-  max-width: 520px;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 30px 25px;
+  max-width: 440px;
   width: 90%;
   position: relative;
-  border-top: 6px solid var(--royal-gold);
-  box-shadow: 0 25px 50px rgba(0,0,0,0.25);
-  animation: popScale 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border-top: 5px solid #D4AF37;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
+  animation: slideUpBounce 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+/* 3. Close Button */
 .close-modal-btn {
   position: absolute;
   top: 15px;
-  right: 20px;
-  font-size: 2rem;
+  right: 18px;
+  font-size: 1.8rem;
   background: none;
   border: none;
   cursor: pointer;
-  color: #64748B;
-  transition: var(--transition-smooth);
+  color: #64748b;
+  transition: all 0.2s ease;
 }
 
 .close-modal-btn:hover {
-  color: #DC2626;
-  transform: rotate(90deg);
+  color: #dc2626;
+  transform: rotate(90deg) scale(1.1);
+}
+
+/* 4. Form Labels & Input Fields */
+.form-card .input-group {
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.form-card label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 6px;
 }
 
 .pro-input {
   width: 100%;
-  padding: 12px 16px;
-  border: 1.5px solid #E2E8F0;
+  padding: 12px 14px;
+  border: 1.5px solid #cbd5e1;
   border-radius: 10px;
   font-size: 0.95rem;
+  background: #f8fafc;
+  color: #0f172a;
   outline: none;
-  transition: var(--transition-smooth);
-  margin-top: 6px;
+  transition: all 0.25s ease;
+  box-sizing: border-box;
 }
 
 .pro-input:focus {
-  border-color: var(--royal-gold);
-  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.15);
+  background: #ffffff;
+  border-color: #D4AF37;
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.2);
+  transform: translateY(-1px);
+}
+
+/* 5. Summary & Price Box */
+.summary-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f1f5f9;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin: 15px 0;
+  border: 1px dashed #cbd5e1;
+}
+
+.summary-card span {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #334155;
+}
+
+.price-text {
+  font-size: 1.2rem;
+  color: #78350f;
+  font-weight: 700;
+}
+
+/* 6. Glowing Shimmer Payment Button */
+.btn-pay {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #D4AF37 0%, #b48512 100%);
+  color: #0A1931;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(212, 175, 55, 0.35);
+  transition: all 0.3s ease;
+}
+
+.btn-pay:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(212, 175, 55, 0.5);
+}
+
+.btn-pay:active {
+  transform: translateY(1px);
+}
+
+/* Button Shimmer Effect */
+.btn-pay::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 30%;
+  height: 200%;
+  background: rgba(255, 255, 255, 0.45);
+  transform: rotate(25deg);
+  animation: buttonShine 3s infinite ease-in-out;
+}
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+@keyframes fadeInModal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUpBounce {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes buttonShine {
+  0% { left: -60%; }
+  35% { left: 130%; }
+  100% { left: 130%; }
 }
 
 /* =========================================================
@@ -424,4 +582,30 @@ body {
   .hero h1 {
     font-size: 2.3rem;
   }
+}
+/* --- POPUP CENTERING FIX --- */
+.modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(10, 25, 49, 0.8) !important;
+  backdrop-filter: blur(8px);
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 9999 !important;
+}
+
+/* Jab popup hidden ho */
+.modal-overlay[style*="display: none"] {
+  display: none !important;
+}
+
+.modal-card {
+  margin: auto !important;
+  position: relative !important;
+  max-width: 480px !important;
+  width: 90% !important;
 }

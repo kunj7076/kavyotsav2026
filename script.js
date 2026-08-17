@@ -25,7 +25,7 @@ function updateTicketPrice() {
         priceDisplay.innerText = '₹299';
         if (performerFields) performerFields.style.display = 'block';
     } else {
-        priceDisplay.innerText = '₹99';
+        priceDisplay.innerText = '₹49';
         if (performerFields) performerFields.style.display = 'none';
     }
 }
@@ -135,7 +135,7 @@ document.getElementById('ticketForm').addEventListener('submit', function(e) {
             generateAndDownloadPDF(paymentId, name, email, phone, role, vidha);
 
             // 2. Google Sheet Sync
-            sendDataToGoogleSheet(paymentId, name, email, phone, role, vidha, poetrySample);
+            sendDataToGoogleSheet(paymentId, name, email, phone, role, vidha, title);
 
             // Reset & Close
             document.getElementById('ticketForm').reset();
@@ -277,7 +277,7 @@ function sendDataToGoogleSheet(paymentId, name, email, phone, role, vidha, poetr
             phone: phone,
             role: role,
             vidha: vidha,
-            sample: poetrySample
+            sample: title,
         })
     });
 }
@@ -296,7 +296,7 @@ function handleAdminLogin(event) {
         if (loginError) loginError.style.display = 'none';
         document.getElementById('adminLoginForm').reset();
         closeAdminModal(); 
-        document.getElementById('adminDashboard').style.display = 'block'; 
+        document.getElementById('adminDashboard').style.display = 'flex'; 
     } else {
         if (loginError) {
             loginError.innerText = "❌ अमान्य Email/Phone या Password!";
@@ -316,7 +316,8 @@ function toggleCamera() {
 
 function startCamera() {
     html5QrCode = new Html5Qrcode("reader");
-    const config = { fps: 10, qrbox: { width: 220, height: 220 } };
+    const config = { fps: 20, qrbox: { width: 290, height: 280, centre: true } };
+    
 
     html5QrCode.start(
         { facingMode: "environment" }, 
