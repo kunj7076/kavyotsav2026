@@ -185,7 +185,7 @@ body {
 .hero {
   position: relative;
   min-height: auto;
-  background: linear-gradient(135deg, #3b7fe4 0%, #e44926ac 100%) !important;
+  background: linear-gradient(135deg, #3c32c0 0%, #0f0401 100%) !important;
   display: flex;
   align-items: center;
   justify-content: center;
