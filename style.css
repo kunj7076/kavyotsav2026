@@ -1084,3 +1084,31 @@ body {
   cursor: pointer;
   color: #0F172A;
 }
+.audio-player-pill {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  background: #0F172A;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  padding: 6px 14px;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 99;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+
+.audio-play-btn {
+  background: none;
+  border: none;
+  color: #D4AF37;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.audio-player-pill span {
+  font-size: 0.8rem;
+  color: #F8FAFC;
+  font-weight: 500;
+}

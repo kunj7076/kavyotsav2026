@@ -18,6 +18,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <!-- Floating WhatsApp Support Button -->
 <a href="https://wa.me/918933952683?text=नमस्ते%20अभिव्यक्ति%20काव्यपीठ,%20मुझे%20काव्योत्सव%202026%20के%20संबंध%20में%20जानकारी%20चाहिए।" 
@@ -41,7 +42,7 @@
 
     <!-- Professional Navigation Bar with Hamburger Menu -->
     <header class="navbar">
-        <!-- Live Announcement Banner -->
+       <!-- Live Announcement Banner -->
         <div class="announcement-bar" id="announcementBar">
            <span>📢 <strong>सूचना:</strong> कार्यक्रम स्थल पर प्रवेश दोपहर 03:00 बजे से प्रारंभ होगा। कृपया ई-पास साथ लाएँ।</span>
            <button class="close-alert-btn" onclick="document.getElementById('announcementBar').style.display='none'">✕</button>
@@ -67,7 +68,6 @@
             <a href="javascript:void(0)" onclick="openAdminModal(); closeNavMenu();">Admin Portal</a>
         </nav>
     </header>
-
     <!-- Hero Section -->
     <section id="home" class="hero">
         <div class="hero-overlay"></div>
@@ -118,7 +118,7 @@
     <!-- ==========================================
      RULES & GUIDELINES (3-CARD GRID)
      ========================================== -->
-<section class="section" id="rulesSection">
+    <section class="section" id="rulesSection">
     <h2>नियम एवं दिशा-निर्देश</h2>
     <div class="gold-divider"></div>
     <p style="text-align: center; color: #f31707; margin-bottom: 30px; font-size: 0.95rem;">
@@ -329,7 +329,9 @@
           <div class="result-badge">पंजीकरण सत्यापित ✓</div>
           <h3 id="resUserName" style="font-size: 1.15rem; margin-bottom: 4px;">प्रतिभागी का नाम</h3>
           <p id="resUserType" class="user-role-tag" style="margin-bottom: 12px;">श्रोता पास</p>
-          
+          <button class="btn btn-secondary" onclick="downloadPassAsImage()">
+          🖼️ इमेज डाउनलोड करें
+          </button>
           <div class="portal-actions">
             <a id="btnDownloadTicket" href="javascript:void(0)" class="btn-outline-gold" style="display: block; text-align: center;">
               🎟️ E-Ticket PDF
@@ -339,12 +341,25 @@
             </a>
           </div>
         </div>
+        <div class="badge-gen-card">
+    <h3>✨ अपना आधिकारिक स्टेटस पोस्टर बनाएं</h3>
+    <p>सोशल मीडिया पर अपनी सहभागिता साझा करें</p>
+    <button class="share-btn btn-copy" onclick="generateStoryBadge()">
+        🎨 'I Am Attending' पोस्टर डाउनलोड करें
+    </button>
+    <canvas id="badgeCanvas" width="720" height="1280" style="display:none;"></canvas>
+        </div>
 
         <!-- Error Message -->
         <div id="portalNotFound" class="portal-error" style="display: none;">
           ⚠️ कोई रिकॉर्ड नहीं मिला! कृपया सही विवरण दर्ज करें।
         </div>
       </div>
+    </div>
+    <div class="audio-player-pill">
+    <button id="musicToggleBtn" onclick="toggleAudio()" class="audio-play-btn">▶️</button>
+    <span>साहित्यिक संगीत</span>
+    <audio id="bgAudio" loop src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=indian-flute-meditation-112194.mp3"></audio>
     </div>
 
     <!-- Professional Multi-Column Footer -->

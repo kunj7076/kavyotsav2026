@@ -597,3 +597,89 @@ async function loadGuestsDirectly() {
 document.addEventListener("DOMContentLoaded", () => {
     loadGuestsDirectly();
 });
+function toggleAudio() {
+    const audio = document.getElementById('bgAudio');
+    const btn = document.getElementById('musicToggleBtn');
+    if (audio.paused) {
+        audio.play();
+        btn.innerText = '⏸️';
+    } else {
+        audio.pause();
+        btn.innerText = '▶️';
+    }
+}
+function downloadPassAsImage() {
+    const passElement = document.getElementById('ticketPassModal') || document.querySelector('.ticket-card');
+    if (!passElement) return;
+
+    html2canvas(passElement, { scale: 2 }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `Kavyotsav_Pass_${Date.now()}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    });
+}
+function generateStoryBadge() {
+    const canvas = document.getElementById('badgeCanvas');
+    const ctx = canvas.getContext('2d');
+    const userName = document.getElementById('userName')?.value || "साहित्य प्रेमी";
+
+    // Background Navy Gradient
+    const grad = ctx.createLinearGradient(0, 0, 0, 1280);
+    grad.addColorStop(0, '#0F172A');
+    grad.addColorStop(1, '#1E293B');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 720, 1280);
+
+    // Gold Border Frame
+    ctx.strokeStyle = '#D4AF37';
+    ctx.lineWidth = 10;
+    ctx.strokeRect(30, 30, 660, 1220);
+
+    // Header Titles
+    ctx.fillStyle = '#D4AF37';
+    ctx.font = 'bold 36px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('अभिव्यक्ति काव्यपीठ प्रस्तुत करता है', 360, 180);
+
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 64px sans-serif';
+    ctx.fillText('काव्योत्सव 2026', 360, 270);
+
+    ctx.fillStyle = '#94A3B8';
+    ctx.font = '30px sans-serif';
+    ctx.fillText('साहित्यिक चेतना एवं युवा काव्य संध्या', 360, 330);
+
+    // Center Badge Circle
+    ctx.beginPath();
+    ctx.arc(360, 560, 130, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(212, 175, 55, 0.15)';
+    ctx.fill();
+    ctx.lineWidth = 4;
+    ctx.stroke();
+
+    ctx.fillStyle = '#D4AF37';
+    ctx.font = 'bold 44px sans-serif';
+    ctx.fillText('PROUD', 360, 540);
+    ctx.fillText('ATTENDEE', 360, 590);
+
+    // User Name
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 48px sans-serif';
+    ctx.fillText(userName, 360, 780);
+
+    // Venue & Date
+    ctx.fillStyle = '#D4AF37';
+    ctx.font = '34px sans-serif';
+    ctx.fillText('📍 प्रयागराज  |  📅 23 अगस्त 2026', 360, 870);
+
+    ctx.fillStyle = '#64748B';
+    ctx.font = '24px sans-serif';
+    ctx.fillText('www.abhivyaktikavyapeeth.in', 360, 1150);
+
+    // Trigger Download
+    const link = document.createElement('a');
+    link.download = `Kavyotsav_Status_${userName}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+}
