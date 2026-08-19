@@ -29,7 +29,7 @@ function updateTicketPrice() {
         priceDisplay.innerText = '₹299';
         if (performerFields) performerFields.style.display = 'block';
     } else {
-        priceDisplay.innerText = '₹49';
+        priceDisplay.innerText = '₹00';
         if (performerFields) performerFields.style.display = 'none';
     }
 }
@@ -530,4 +530,70 @@ document.addEventListener("DOMContentLoaded", () => {
         const intro = document.getElementById('introOverlay');
         if (intro) intro.classList.add('hide-intro');
     }, 2400);
+});
+
+/// =========================================================
+// 100% BULLETPROOF DIRECT CSV GUEST LOADER (NO APPS SCRIPT NEEDED)
+// =========================================================
+const SHEET_ID = "1ZT-rXXm9lU6s5kF3ohvB7NqOggOki73BBjOFRmisNmQ";
+
+async function loadGuestsDirectly() {
+    const grid = document.getElementById('guestGrid');
+    if (!grid) return;
+
+    try {
+        // Google Sheet से 'Guest' टैब का सीधा डेटा फेच करें
+        const csvUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Guest&t=${Date.now()}`;
+        const response = await fetch(csvUrl);
+        const text = await response.text();
+
+        // CSV की पंक्तियाँ अलग करें
+        const rows = text.split("\n").map(row => {
+            return row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(val => val.replace(/^"|"$/g, '').trim());
+        });
+
+        if (!rows || rows.length <= 1) {
+            grid.innerHTML = `<p style="text-align:center; grid-column:1/-1; color:#64748B;">अतिथियों की सूची शीघ्र ही प्रकाशित की जाएगी।</p>`;
+            return;
+        }
+
+        let html = "";
+
+        // Row 1 (Header: Name, Role, Tag, Link) को छोड़कर लूप चलाएँ
+        for (let i = 1; i < rows.length; i++) {
+            const cols = rows[i];
+            const name = cols[0] || "";
+            const role = cols[1] || "विशिष्ट अतिथि";
+            const tag  = cols[2] || "";
+            let photo  = cols[3] || "";
+
+            if (!name) continue;
+
+            if (!photo || !photo.startsWith("http")) {
+                photo = "https://i.postimg.cc/BvCpXsBY/file-000000004b2c82119a54e5fe960f91e8.png";
+            }
+
+            html += `
+                <div class="guest-card">
+                    <div class="guest-img-wrapper">
+                        <img src="${photo}" alt="${name}" class="guest-img" onerror="this.src='https://i.postimg.cc/BvCpXsBY/file-000000004b2c82119a54e5fe960f91e8.png'" />
+                    </div>
+                    <h3 class="guest-name">${name}</h3>
+                    <div class="guest-role">${role}</div>
+                    <p class="guest-tagline">${tag}</p>
+                </div>
+            `;
+        }
+
+        grid.innerHTML = html || `<p style="text-align:center; grid-column:1/-1; color:#64748B;">अतिथियों की सूची शीघ्र ही प्रकाशित की जाएगी।</p>`;
+
+    } catch (error) {
+        console.error("Guest loading failed:", error);
+        grid.innerHTML = `<p style="text-align:center; grid-column:1/-1; color:#64748B;">अतिथियों की सूची लोड करने में समस्या हुई।</p>`;
+    }
+}
+
+// पेज लोड होते ही चलाएँ
+document.addEventListener("DOMContentLoaded", () => {
+    loadGuestsDirectly();
 });

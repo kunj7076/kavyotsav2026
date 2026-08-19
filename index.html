@@ -19,6 +19,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
+<!-- Floating WhatsApp Support Button -->
+<a href="https://wa.me/918933952683?text=नमस्ते%20अभिव्यक्ति%20काव्यपीठ,%20मुझे%20काव्योत्सव%202026%20के%20संबंध%20में%20जानकारी%20चाहिए।" 
+   class="whatsapp-float" 
+   target="_blank" 
+   rel="noopener noreferrer"
+   aria-label="WhatsApp Support">
+    <svg viewBox="0 0 32 32" class="whatsapp-icon">
+        <path fill="currentColor" d="M16 2a13.9 13.9 0 0 0-12 21L2 30l7.3-1.9A13.9 13.9 0 1 0 16 2zm0 25.5a11.5 11.5 0 0 1-5.9-1.6l-.4-.3-4.4 1.1 1.2-4.2-.3-.4A11.6 11.6 0 1 1 16 27.5zm6.4-8.6c-.3-.2-2-.1-2.3-1.1s-.6-.3-.9.1-.9 1.1-1.1 1.3-.4.2-.7.1a9.2 9.2 0 0 1-2.7-1.7 10.2 10.2 0 0 1-1.9-2.3c-.2-.3 0-.5.1-.7l.5-.6c.2-.2.2-.4.3-.6a.6.6 0 0 0 0-.6c-.1-.2-.9-2.2-1.2-3s-.6-.7-.9-.7h-.7a1.4 1.4 0 0 0-1 1 5.3 5.3 0 0 0 1.1 4.5 13.8 13.8 0 0 0 5.4 4.8c.8.3 1.4.5 1.9.6a4.5 4.5 0 0 0 2.1.1 3.5 3.5 0 0 0 2.3-1.6 2.8 2.8 0 0 0 .2-1.6c-.1-.2-.4-.3-.7-.5z"/>
+    </svg>
+    <span class="whatsapp-tooltip">सहायता चाहिए? WhatsApp करें</span>
+</a>
 <body>
     <!-- INTRO SPLASH SCREEN -->
     <div id="introOverlay" class="intro-screen">
@@ -30,6 +41,11 @@
 
     <!-- Professional Navigation Bar with Hamburger Menu -->
     <header class="navbar">
+        <!-- Live Announcement Banner -->
+        <div class="announcement-bar" id="announcementBar">
+           <span>📢 <strong>सूचना:</strong> कार्यक्रम स्थल पर प्रवेश दोपहर 03:00 बजे से प्रारंभ होगा। कृपया ई-पास साथ लाएँ।</span>
+           <button class="close-alert-btn" onclick="document.getElementById('announcementBar').style.display='none'">✕</button>
+        </div>
         <div class="logo-container">
             <img src="https://i.postimg.cc/BvCpXsBY/file-000000004b2c82119a54e5fe960f91e8.png" alt="Abhivyakti Logo" class="nav-logo">
             <div class="logo-brand">
@@ -57,10 +73,18 @@
         <div class="hero-overlay"></div>
         <div class="hero-content">
             <span class="badge">REG. NO: UDYAM-UP-03-0155035</span>
-            <h1>काव्योत्सव 2026</h1>
+            <h1>काव्योत्सव</h1>
             <p class="tagline">साहित्यिक चेतना एवं युवा काव्य संध्या</p>
             <div class="hero-meta">
-                <span>📍 प्रयागराज</span>
+                <!-- Clickable Location Badge for Google Maps Redirect -->
+                   <div class="map-actions" style="margin-top:10px;"></div>
+            <a href="https://www.google.com/maps/search/?api=1&query=Prayagraj,+Uttar+Pradesh" 
+   target="_blank" 
+   rel="noopener noreferrer" 
+   class="badge-pill location-badge"
+   title="Google Maps पर स्थान देखें">
+    📍 प्रयागराज
+            </a>
                 <span>📅 23 अगस्त 2026</span>
             </div>
             <!-- Pop-up Trigger Buttons -->
@@ -75,22 +99,55 @@
         <p>काव्योत्सव 2026 प्रयागराज की ऐतिहासिक धरती पर आयोजित होने वाली एक भव्य साहित्यिक एवं काव्य संध्या है। इस आयोजन का मुख्य उद्देश्य नवोदित एवं स्थापित कवियों, शायरों और विचारकों को एक साझा मंच प्रदान करना है।</p>
         <p style="margin-top: 8px;">यहाँ आप हिंदी साहित्य, ग़ज़ल, छंद, हास्य-व्यंग्य और आधुनिक काव्य-विधाओं के अद्भुत संगम का अनुभव करेंगे। यदि आप साहित्य प्रेमी हैं या मंच पर अपनी रचना प्रस्तुत करना चाहते हैं, तो "Pass Book Karein" बटन पर क्लिक करके अपना Pass सुनिश्चित करें।</p>
         
-        <div class="section-container" style="margin-top: 30px;">
-            <div class="section-header">
-                <h3>📍 कार्यक्रम स्थल (Venue & Location)</h3>
-                <div class="gold-divider"></div>
-            </div>
-            <div class="pro-card map-wrapper">
-                <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3602.5115206148386!2d81.85461137597148!3d25.454583921239127!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x399bfd0a8764b857%3A0xb35a0928e469e38e!2sUniversity%20of%20Allahabad!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" 
-                    width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy">
-                </iframe>
-                <div class="map-actions" style="margin-top:10px;">
-                    <a href="https://maps.google.com/?q=University+of+Allahabad+Prayagraj" target="_blank" class="btn-outline">Google Maps पर दिशा देखें 📍</a>
-                </div>
-            </div>
-        </div>
+        <!-- ==========================================
+     CHIEF GUESTS & POETS SECTION
+     ========================================== -->
+    <section class="section" id="guestsSection">
+    <h2>विशिष्ट अतिथि एवं आमंत्रित कवि</h2>
+    <div class="gold-divider"></div>
+    <p style="text-align: center; color: #64748B; margin-bottom: 20px; font-size: 0.95rem;">
+        काव्योत्सव के मंच को सुशोभित करने वाली प्रख्यात हस्तियाँ
+    </p>
+
+    <!-- यहाँ Google Sheet से डेटा लोड होगा -->
+    <div class="guest-grid" id="guestGrid">
+        <div style="text-align:center; width:100%; color:#64748B;">⏳ विवरण लोड हो रहा है...</div>
+    </div>
     </section>
+
+    <!-- ==========================================
+     RULES & GUIDELINES (3-CARD GRID)
+     ========================================== -->
+<section class="section" id="rulesSection">
+    <h2>नियम एवं दिशा-निर्देश</h2>
+    <div class="gold-divider"></div>
+    <p style="text-align: center; color: #64748B; margin-bottom: 30px; font-size: 0.95rem;">
+        काव्योत्सव 2026 की गरिमा एवं सुचारु संचालन हेतु आवश्यक निर्देश
+    </p>
+
+    <div class="rules-grid">
+        <!-- Card 1 -->
+        <div class="rule-card">
+            <div class="rule-icon">⏱️</div>
+            <h3>समय सीमा</h3>
+            <p>प्रत्येक रचनाकार को मंच प्रस्तुति हेतु अधिकतम <strong>5 मिनट</strong> का समय दिया जाएगा। समय का अनुशासन अनिवार्य है।</p>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="rule-card">
+            <div class="rule-icon">📜</div>
+            <h3>मौलिकता व मर्यादा</h3>
+            <p>रचना स्वरचित एवं मौलिक होनी चाहिए। किसी भी प्रकार की अभद्र, असामाजिक या विवादित भाषा का प्रयोग पूर्णतः वर्जित है।</p>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="rule-card">
+            <div class="rule-icon">🎟️</div>
+            <h3>प्रवेश एवं सत्यापन</h3>
+            <p>कार्यक्रम स्थल पर ई-पास QR कोड का सत्यापन अनिवार्य है। कृपया कार्यक्रम प्रारंभ होने से <strong>30 मिनट पूर्व</strong> स्थान ग्रहण करें।</p>
+        </div>
+    </div>
+</section>
 
     <!-- LIVE COUNTDOWN SECTION -->
     <section class="section countdown-section">
@@ -146,7 +203,7 @@
     <!-- ABOUT US SECTION -->
     <section id="about" class="section">
         <h2>हमारे बारे में (About Us)</h2>
-        <p><strong>अभिव्यक्ति काव्यपीठ</strong> साहित्य, कला एवं सांस्कृतिक चेतना को समर्पित एक पंजीकृत एवं अग्रणी संस्था है (UDYAM REG. NO: UDYAM-UP-03-0155035)।</p>
+        <p><strong>अभिव्यक्ति काव्यपीठ</strong> साहित्य, कला एवं सांस्कृतिक चेतना को समर्पित एक पंजीकृत एवं अग्रणी संस्था है (REG. NO: UDYAM-UP-03-0155035)।</p>
         <p style="margin-top: 10px;">हमारा उद्देश्य देश के कोने-कोने से युवा प्रतिभाओं को खोजकर उन्हें राष्ट्रीय मंच प्रदान करना है। अभिव्यक्ति काव्यपीठ नियमित रूप से काव्य गोष्ठियों, open-mic प्रतियोगिताओं और साहित्यिक सम्मेलनों का सफल आयोजन करती आ रही है।</p>
     </section>
 
@@ -164,7 +221,7 @@
                 <div class="input-group">
                     <label for="userRole">आप किस रूप में शामिल होना चाहते हैं?</label>
                     <select id="userRole" class="pro-input" required onchange="updateTicketPrice()">
-                        <option value="Audience">श्रोता / दर्शक (Audience Pass - ₹49)</option>
+                        <option value="Audience">श्रोता / दर्शक (Audience Pass - ₹00)</option>
                         <option value="Performer">कवि / मंच प्रस्तुतकर्ता (Performer Pass - ₹299)</option>
                     </select>
                 </div>
@@ -206,7 +263,7 @@
                 <!-- Price Summary Box -->
                 <div class="summary-card">
                     <span>कुल पंजीकरण शुल्क:</span>
-                    <strong id="priceDisplay" class="price-text">₹49</strong>
+                    <strong id="priceDisplay" class="price-text">₹00</strong>
                 </div>
 
                 <button type="submit" class="btn-pay">Pay & Download Ticket PDF</button>
@@ -325,7 +382,7 @@
             <div class="footer-col">
                 <h4>संपर्क एवं सहायता (Support)</h4>
                 <p>📧 Email: <a href="mailto:abhivyaktikavypith@gmail.com">abhivyaktikavypith@gmail.com</a></p>
-                <p>📞 Helpline: +91 8528537076</p>
+                <p>📞 Helpline: +91 8933952683</p>
                 <p>📍 Prayagraj</p>
             </div>
         </div>

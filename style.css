@@ -206,9 +206,9 @@ body {
 }
 
 .badge {
-  background: rgba(212, 175, 55, 0.632);
+  background: rgba(230, 14, 2, 0.708);
   color: var(--royal-gold);
-  border: 1px solid rgba(212, 175, 55, 0.4);
+  border: 1px solid rgba(240, 186, 7, 0.863);
   padding: 4px 12px;
   border-radius: 20px;
   font-size: 0.75rem;
@@ -304,7 +304,7 @@ body {
   border: none;
   border-radius: 28px;
   cursor: pointer;
-  box-shadow: 0 8px 22px rgba(212, 175, 55, 0.35);
+  box-shadow: 0 8px 22px rgba(230, 177, 3, 0.728);
   transition: var(--transition-smooth);
   position: relative;
   overflow: hidden;
@@ -812,4 +812,275 @@ body {
   .hero h1 {
     font-size: 2.3rem;
   }
+}
+/* =========================================================
+   DYNAMIC GUEST CARDS STYLING
+   ========================================================= */
+.guest-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 25px;
+  margin-top: 20px;
+}
+
+.guest-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 24px 20px;
+  text-align: center;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  box-shadow: var(--shadow-soft);
+  transition: var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.guest-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px rgba(212, 175, 55, 0.2);
+  border-color: var(--royal-gold);
+}
+
+.guest-img-wrapper {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  padding: 4px;
+  background: linear-gradient(135deg, #D4AF37, #78350F);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.guest-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #fff;
+}
+
+.guest-name {
+  font-family: 'Yatra One', cursive;
+  font-size: 1.25rem;
+  color: var(--primary-navy);
+  margin-bottom: 4px;
+}
+
+.guest-role {
+  display: inline-block;
+  background: rgba(212, 175, 55, 0.12);
+  color: #B45309;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 3px 12px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.guest-tagline {
+  color: #64748B;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  margin: 0;
+}
+/* =========================================================
+   FLOATING WHATSAPP BUTTON WITH PULSE & TOOLTIP
+   ========================================================= */
+.whatsapp-float {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background-color: #25D366;
+  color: #FFFFFF;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.45);
+  z-index: 999;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  animation: pulse-green 2s infinite;
+}
+
+.whatsapp-float:hover {
+  background-color: #1EBE5D;
+  transform: scale(1.1);
+  box-shadow: 0 8px 25px rgba(37, 211, 102, 0.6);
+}
+
+.whatsapp-icon {
+  width: 32px;
+  height: 32px;
+  fill: #FFFFFF;
+}
+
+/* Tooltip Text */
+.whatsapp-tooltip {
+  visibility: hidden;
+  opacity: 0;
+  width: 170px;
+  background-color: #0F172A;
+  color: #FFFFFF;
+  text-align: center;
+  border-radius: 8px;
+  padding: 6px 10px;
+  position: absolute;
+  right: 70px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  pointer-events: none;
+}
+
+.whatsapp-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent #0F172A;
+}
+
+.whatsapp-float:hover .whatsapp-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Pulse Animation */
+@keyframes pulse-green {
+  0% {
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 14px rgba(37, 211, 102, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+  }
+}
+
+/* Mobile Screen Adjustment */
+@media (max-width: 768px) {
+  .whatsapp-float {
+    bottom: 18px;
+    right: 18px;
+    width: 50px;
+    height: 50px;
+  }
+  .whatsapp-icon {
+    width: 28px;
+    height: 28px;
+  }
+  .whatsapp-tooltip {
+    display: none; /* मोबाइल पर टूलटिप छुपाएँ ताकि स्क्रीन साफ़ रहे */
+  }
+}
+/* =========================================================
+   3-COLUMN RULES & GUIDELINES GRID
+   ========================================================= */
+.rules-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 20px;
+}
+
+.rule-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 28px 20px;
+  text-align: center;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  box-shadow: var(--shadow-soft);
+  transition: var(--transition-smooth);
+  position: relative;
+}
+
+.rule-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--royal-gold);
+  box-shadow: 0 14px 28px rgba(212, 175, 55, 0.18);
+}
+
+.rule-icon {
+  font-size: 2.2rem;
+  margin-bottom: 12px;
+  display: inline-block;
+}
+
+.rule-card h3 {
+  font-family: 'Yatra One', cursive;
+  color: var(--primary-navy);
+  font-size: 1.25rem;
+  margin-bottom: 10px;
+}
+
+.rule-card p {
+  color: #475569;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Tablet & Mobile Responsive */
+@media (max-width: 900px) {
+  .rules-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .rule-card {
+    padding: 20px 16px;
+  }
+}
+/* Clickable Location Badge */
+.location-badge {
+  text-decoration: none;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.25s ease;
+}
+
+.location-badge:hover {
+  background: rgba(212, 175, 55, 0.25);
+  border-color: #D4AF37;
+  transform: translateY(-2px);
+  color: #F8FAFC;
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+.announcement-bar {
+  background: linear-gradient(90deg, #D4AF37, #F59E0B, #D4AF37);
+  color: #0F172A;
+  padding: 8px 16px;
+  font-size: 0.88rem;
+  text-align: center;
+  position: relative;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.close-alert-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  color: #0F172A;
 }
