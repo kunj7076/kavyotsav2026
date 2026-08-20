@@ -1,14 +1,18 @@
 // ==========================================
 // 1. CONFIGURATION & CREDENTIALS
 // ==========================================
-const ADMIN_CREDENTIALS = {
-    user: "8528537076",
-    email: "abhivyaktikavypith@gmail.com",
-    pass: "kavypith@123"
-};
+// Admin login now happens on the server (Code.gs "adminLogin" action) which
+// checks credentials stored in Apps Script Script Properties and returns a
+// short-lived session token. No credentials live in this file anymore.
+// The token is kept only in memory (adminSessionToken below) and is required
+// by the gate scanner's markAttendance calls.
+let adminSessionToken = null;
 
 // अपना Apps Script Web App URL यहाँ डालें:
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyWiS60UTLK6IeEFjrfnkBm7YUgeU7eiLjF651GaPjdileehBxFeiyc0j_TXQuGyn7R/exec";
+// Payment success is now verified server-side too: Code.gs re-checks each
+// Razorpay payment against Razorpay's API before marking a row "Paid", and
+// the gate scanner refuses entry for anything not "Paid"/"Free"/"Present".
 
 let html5QrCode;
 let isScanning = false;
@@ -77,6 +81,7 @@ function closeAdminDashboard() {
     const dashboard = document.getElementById('adminDashboard');
     if (dashboard) dashboard.style.display = 'none';
     stopCamera();
+    adminSessionToken = null; // require re-login next time the scanner is opened
 }
 
 function openDownloadModal() {
@@ -118,8 +123,11 @@ window.addEventListener('click', function(event) {
 document.getElementById('ticketForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
-    if (typeof Razorpay === 'undefined') {
-        alert("Razorpay SDK लोड नहीं हो सका।");
+    // e.preventDefault() disables the browser's native validation popup for
+    // required/pattern fields, so we must trigger it manually.
+    const form = e.target;
+    if (!form.checkValidity()) {
+        form.reportValidity();
         return;
     }
 
@@ -127,7 +135,7 @@ document.getElementById('ticketForm').addEventListener('submit', function(e) {
     const name = document.getElementById('name').value.trim();
     const email = document.getElementById('email').value.trim();
     const phone = document.getElementById('phone').value.trim();
-    
+
     let vidha = "N/A";
     let title = "";
     if (role === 'Performer') {
@@ -135,8 +143,36 @@ document.getElementById('ticketForm').addEventListener('submit', function(e) {
         title = document.getElementById('title') ? document.getElementById('title').value : "";
     }
 
-    const priceText = document.getElementById('priceDisplay').innerText;
-    const amount = parseInt(priceText.replace('₹', '').trim());
+    // NOTE: Amount is derived directly from the selected role (not from the
+    // displayed price text) so it can't be tampered with by editing the DOM.
+    // TRUE security still requires re-verifying the amount & Razorpay payment
+    // signature on your server (Apps Script) before marking a ticket "paid" -
+    // see the note near WEB_APP_URL at the top of this file.
+    const TICKET_PRICES = { Audience: 0, Performer: 299 };
+    const amount = TICKET_PRICES[role] ?? 0;
+
+    // Free "Audience" pass: skip the payment gateway entirely. Razorpay does
+    // not support ₹0 checkouts, so trying to open it here would fail.
+    if (amount <= 0) {
+        const freeTicketId = 'AUD-' + Date.now();
+        sendDataToGoogleSheet(freeTicketId, name, email, phone, role, vidha, title);
+
+        currentMatchedUser = {
+            ticketId: freeTicketId,
+            name: name,
+            type: 'श्रोता / दर्शक'
+        };
+        generateAndDownloadTicketPDF();
+
+        form.reset();
+        closeRegisterModal();
+        return;
+    }
+
+    if (typeof Razorpay === 'undefined') {
+        alert("Payment Gateway लोड नहीं हो सका। कृपया इंटरनेट कनेक्शन जांचें और पुनः प्रयास करें।");
+        return;
+    }
 
     var options = {
         "key": "rzp_live_TO8bx7fvQmzQ5w",
@@ -157,8 +193,14 @@ document.getElementById('ticketForm').addEventListener('submit', function(e) {
             };
             generateAndDownloadTicketPDF();
 
-            document.getElementById('ticketForm').reset();
+            form.reset();
             closeRegisterModal();
+        },
+        "modal": {
+            "ondismiss": function () {
+                // User closed the checkout without paying - nothing to clean up,
+                // but this avoids a silent no-op that can confuse first-time devs.
+            }
         },
         "prefill": { "name": name, "email": email, "contact": phone },
         "theme": { "color": "#78350f" }
@@ -166,6 +208,9 @@ document.getElementById('ticketForm').addEventListener('submit', function(e) {
 
     try {
         var rzp1 = new Razorpay(options);
+        rzp1.on('payment.failed', function (response) {
+            alert("भुगतान असफल रहा: " + (response.error && response.error.description ? response.error.description : "कृपया पुनः प्रयास करें।"));
+        });
         rzp1.open();
     } catch (err) {
         alert("Payment Error: " + err.message);
@@ -380,18 +425,41 @@ function handleAdminLogin(event) {
     const userInput = document.getElementById('adminUser').value.trim();
     const passInput = document.getElementById('adminPass').value.trim();
     const loginError = document.getElementById('loginError');
+    const submitBtn = document.querySelector('#adminLoginForm button[type="submit"]');
 
-    if ((userInput === ADMIN_CREDENTIALS.user || userInput === ADMIN_CREDENTIALS.email) && passInput === ADMIN_CREDENTIALS.pass) {
-        if (loginError) loginError.style.display = 'none';
-        document.getElementById('adminLoginForm').reset();
-        closeAdminModal(); 
-        document.getElementById('adminDashboard').style.display = 'flex'; 
-    } else {
+    if (loginError) loginError.style.display = 'none';
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.innerText = "जांच हो रही है..."; }
+
+    const callbackName = 'adminLoginCallback_' + Math.round(100000 * Math.random());
+
+    window[callbackName] = function (data) {
+        delete window[callbackName];
+        if (document.body.contains(scriptTag)) document.body.removeChild(scriptTag);
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.innerText = "Verify & Access Scanner"; }
+
+        if (data && data.status === 'success' && data.token) {
+            adminSessionToken = data.token;
+            document.getElementById('adminLoginForm').reset();
+            closeAdminModal();
+            document.getElementById('adminDashboard').style.display = 'flex';
+        } else {
+            if (loginError) {
+                loginError.innerText = "❌ अमान्य Email/Phone या Password!";
+                loginError.style.display = 'block';
+            }
+        }
+    };
+
+    const scriptTag = document.createElement('script');
+    scriptTag.src = `${WEB_APP_URL}?action=adminLogin&user=${encodeURIComponent(userInput)}&pass=${encodeURIComponent(passInput)}&callback=${callbackName}`;
+    scriptTag.onerror = function () {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.innerText = "Verify & Access Scanner"; }
         if (loginError) {
-            loginError.innerText = "❌ अमान्य Email/Phone या Password!";
+            loginError.innerText = "⚠️ सर्वर से कनेक्ट करने में समस्या हुई।";
             loginError.style.display = 'block';
         }
-    }
+    };
+    document.body.appendChild(scriptTag);
 }
 
 function toggleCamera() {
@@ -462,17 +530,29 @@ function onScanSuccess(decodedText) {
                 <p style="margin:4px 0;"><strong>प्रतिभागी:</strong> ${data.name}</p>
                 <p style="margin:0; font-size:12px; color:#64748B;">प्रथम स्कैन समय: ${data.time}</p>
             `;
+        } else if (data && data.status === "unauthorized") {
+            resultBox.style.borderTop = "6px solid #DC2626";
+            resultBox.innerHTML = `
+                <h3 style="color:#DC2626; margin:0;">🔒 सत्र समाप्त</h3>
+                <p style="margin:4px 0;">कृपया दोबारा Admin Login करें।</p>
+            `;
+            adminSessionToken = null;
         } else {
             resultBox.style.borderTop = "6px solid #DC2626";
             resultBox.innerHTML = `
                 <h3 style="color:#DC2626; margin:0;">⚠️ अमान्य टिकट</h3>
-                <p style="margin:4px 0;">ID: ${scannedId} डेटाबेस में नहीं मिली।</p>
+                <p style="margin:4px 0;">ID: ${scannedId} या तो डेटाबेस में नहीं मिली, या भुगतान सत्यापित नहीं है।</p>
             `;
         }
     };
 
+    if (!adminSessionToken) {
+        resultBox.innerHTML = `🔒 <strong>पहले Admin Login करें।</strong>`;
+        return;
+    }
+
     const scriptTag = document.createElement('script');
-    scriptTag.src = `${WEB_APP_URL}?action=markAttendance&ticketId=${encodeURIComponent(scannedId)}&callback=${callbackName}`;
+    scriptTag.src = `${WEB_APP_URL}?action=markAttendance&ticketId=${encodeURIComponent(scannedId)}&token=${encodeURIComponent(adminSessionToken)}&callback=${callbackName}`;
     scriptTag.onerror = function() {
         resultBox.innerHTML = `❌ नेटवर्क त्रुटि: सर्वर से संपर्क नहीं हो सका।`;
     };
@@ -520,6 +600,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateTicketPrice();
     initCountdown();
     initFaq();
+    loadGuestsDirectly();
 
     setTimeout(() => {
         const intro = document.getElementById('introOverlay');
@@ -588,10 +669,6 @@ async function loadGuestsDirectly() {
     }
 }
 
-// पेज लोड होते ही चलाएँ
-document.addEventListener("DOMContentLoaded", () => {
-    loadGuestsDirectly();
-});
 function toggleAudio() {
     const audio = document.getElementById('bgAudio');
     const btn = document.getElementById('musicToggleBtn');
