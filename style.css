@@ -981,21 +981,21 @@ body {
 }
 
 /* =========================================================
-   12. FULL WIDTH PROFESSIONAL DARK FOOTER (NO WHITE EDGES)
+   100% EDGE-TO-EDGE FULL WIDTH FOOTER (NO WHITE BORDER)
    ========================================================= */
 .site-footer {
   width: 100vw !important;
-  max-width: 100% !important;
+  max-width: 100vw !important;
   position: relative !important;
   left: 50% !important;
   right: 50% !important;
   margin-left: -50vw !important;
   margin-right: -50vw !important;
-  margin-top: 50px !important;
+  margin-top: 40px !important;
   margin-bottom: 0 !important;
-  background: #0B1120 !important;
+  background: #0A111E !important; /* वही डार्क नेवी कलर जो कार्ड का है */
   border-top: 1px solid rgba(212, 175, 55, 0.4);
-  padding: 45px 20px 25px 20px !important;
+  padding: 40px 20px 85px 20px !important;
   box-sizing: border-box !important;
   color: #E2E8F0;
   display: block !important;
@@ -1003,6 +1003,7 @@ body {
 
 .site-footer .footer-container {
   max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -1078,6 +1079,54 @@ body {
   text-align: center;
   font-size: 0.8rem;
   color: #64748B;
+}
+
+@media (max-width: 768px) {
+  .site-footer {
+    padding: 30px 16px 90px 16px !important;
+  }
+  .site-footer .footer-container {
+    grid-template-columns: 1fr !important;
+    gap: 24px;
+  }
+}
+/* =========================================================
+   13. MOBILE VIEW FIX (FOR SCREENS < 768px)
+   ========================================================= */
+@media (max-width: 768px) {
+  .site-footer {
+    padding: 30px 16px 90px 16px !important;
+  }
+
+  .site-footer .footer-container {
+    grid-template-columns: 1fr !important;
+    gap: 22px;
+    text-align: left; /* मोबाइल पर सेंटर के बजाय क्लीन लेफ्ट-अलाइन ज्यादा प्रोफेशनल दिखता है */
+  }
+
+  .footer-col h4 {
+    display: block;
+    margin-top: 5px;
+  }
+
+  .audio-player-pill {
+    bottom: 16px;
+    left: 12px;
+    padding: 5px 10px;
+    font-size: 0.75rem;
+  }
+
+  .whatsapp-float {
+    bottom: 16px;
+    right: 14px;
+    width: 46px;
+    height: 46px;
+  }
+
+  .whatsapp-icon {
+    width: 24px;
+    height: 24px;
+  }
 }
 
 /* =========================================================
@@ -1187,4 +1236,35 @@ body {
   .footer-col h4 {
     display: inline-block;
   }
+}
+/* हीरो सेक्शन का लेआउट स्थिर रखने के लिए */
+.hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* मोबाइल फेयरी लाइट्स को अपनी जगह पर लॉक करने के लिए */
+.mobile-fairy-lights {
+  width: 100%;
+  max-width: 100%;
+  position: relative;
+  margin-top: 0 !important;
+  margin-bottom: 6px !important;
+  padding: 0;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 10;
+  display: block;
+}
+
+.fairy-svg-mobile {
+  width: 100%;
+  height: 55px;
+  display: block;
+  filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.7));
 }
