@@ -981,116 +981,121 @@ body {
 }
 
 /* =========================================================
-   12. COMPACT RECTANGULAR FOOTER (SHORT HEIGHT)
+   12. ULTRA-COMPACT MOBILE-FIRST HORIZONTAL FOOTER
    ========================================================= */
 .site-footer {
   width: 100% !important;
-  background: #0A111E !important;
-  border-top: 1px solid rgba(212, 175, 55, 0.35);
-  padding: 24px 16px 75px 16px !important;
-  margin-top: 25px !important;
+  background: #060B14 !important; /* प्रीमियम डीप नेवी/डार्क बैकग्राउंड */
+  border-top: 1px solid rgba(212, 175, 55, 0.35) !important;
+  padding: 20px 15px 75px 15px !important; /* नीचे 75px ताकि फ्लोटिंग बटन्स टेक्स्ट को न दबाएं */
+  margin: 30px 0 0 0 !important;
   box-sizing: border-box !important;
   color: #E2E8F0;
-  display: block !important;
-}
-
-.site-footer .footer-container {
-  max-width: 1100px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr) !important;
-  gap: 16px 12px !important;
-  text-align: left;
-}
-
-.footer-col:first-child {
-  grid-column: span 2;
   text-align: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  padding-bottom: 10px;
-  margin-bottom: 4px;
 }
 
-.footer-col h3.footer-brand {
+.footer-inner {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Brand & Tag */
+.footer-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.footer-title {
   color: #FBBF24;
-  font-size: 1.15rem;
-  margin: 0 0 4px 0;
+  font-size: 1.1rem;
+  margin: 0;
   font-family: 'Yatra One', cursive;
 }
 
-.footer-col .footer-desc {
-  font-size: 0.78rem;
-  line-height: 1.3;
-  color: #94A3B8;
-  margin-bottom: 6px;
-}
-
 .reg-tag {
-  display: inline-block;
-  background: rgba(212, 175, 55, 0.1);
+  background: rgba(212, 175, 55, 0.12);
   border: 1px solid #D4AF37;
   color: #FDE047;
-  padding: 2px 6px;
+  padding: 2px 8px;
   border-radius: 4px;
   font-size: 0.68rem;
+  font-weight: 600;
 }
 
-.footer-col h4 {
-  color: #FFFFFF;
-  font-size: 0.85rem;
-  margin: 0 0 8px 0;
-  border-bottom: 1px solid rgba(212, 175, 55, 0.25);
-  padding-bottom: 3px;
-}
-
-.footer-links {
-  list-style: none;
-  padding: 0;
+.footer-tagline {
+  font-size: 0.76rem;
+  color: #94A3B8;
   margin: 0;
-}
-
-.footer-links li {
-  margin-bottom: 4px;
-}
-
-.footer-links a, .footer-col a {
-  color: #CBD5E1;
-  text-decoration: none;
-  font-size: 0.75rem;
   line-height: 1.3;
 }
 
-.footer-links a:hover, .footer-col a:hover {
+/* Horizontal Side-by-Side Links */
+.footer-nav-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0;
+}
+
+.footer-nav-row a {
+  color: #CBD5E1;
+  text-decoration: none;
+  font-size: 0.78rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.footer-nav-row a:hover {
   color: #FBBF24;
 }
 
-.footer-col p {
-  font-size: 0.75rem;
-  margin: 4px 0;
-  color: #CBD5E1;
-}
-
-.site-footer .footer-bottom {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  margin-top: 15px !important;
-  padding-top: 10px !important;
-  text-align: center;
+.footer-nav-row .dot {
+  color: rgba(212, 175, 55, 0.5);
   font-size: 0.7rem;
-  color: #64748B;
 }
 
-@media (min-width: 769px) {
-  .site-footer .footer-container {
-    grid-template-columns: repeat(4, 1fr) !important;
-    gap: 25px !important;
-  }
-  .footer-col:first-child {
-    grid-column: auto;
-    text-align: left;
-    border-bottom: none;
-    padding-bottom: 0;
-    margin-bottom: 0;
-  }
+/* Contact Info (Inline Bar) */
+.footer-contact-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.74rem;
+  color: #94A3B8;
+  margin-top: 2px;
+}
+
+.footer-contact-row a {
+  color: #94A3B8;
+  text-decoration: none;
+}
+
+.footer-contact-row a:hover {
+  color: #FBBF24;
+}
+
+/* Copyright Bar */
+.footer-bottom-row {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  width: 100%;
+  padding-top: 8px;
+  margin-top: 4px;
+}
+
+.footer-bottom-row p {
+  font-size: 0.68rem;
+  color: #64748B;
+  margin: 0;
 }
 /* =========================================================
    13. KEYFRAME ANIMATIONS & RESPONSIVE BREAKPOINTS
