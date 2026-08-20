@@ -1112,3 +1112,31 @@ body {
   color: #F8FAFC;
   font-weight: 500;
 }
+
+
+/* =========================================================
+   GOLDEN INK SPARKLE TRAIL
+   ========================================================= */
+.ink-sparkle {
+  position: fixed;
+  pointer-events: none;
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle, #FFF 10%, #D4AF37 80%);
+  border-radius: 50%;
+  box-shadow: 0 0 10px #D4AF37, 0 0 20px #F59E0B;
+  z-index: 99999;
+  transform: translate(-50%, -50%);
+  animation: sparkle-fade 0.8s ease-out forwards;
+}
+
+@keyframes sparkle-fade {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.2) translateY(15px);
+  }
+}

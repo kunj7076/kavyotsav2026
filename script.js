@@ -604,3 +604,32 @@ function toggleAudio() {
     }
 }
 
+// =========================================================
+// GOLDEN INK CURSOR TRAIL (Only on non-touch desktop screens)
+// =========================================================
+(function initInkCursor() {
+    let lastTime = 0;
+    window.addEventListener('mousemove', (e) => {
+        const now = Date.now();
+        // Limit sparkle creation for smooth performance (every 40ms)
+        if (now - lastTime < 40) return;
+        lastTime = now;
+
+        const sparkle = document.createElement('div');
+        sparkle.className = 'ink-sparkle';
+        sparkle.style.left = `${e.clientX}px`;
+        sparkle.style.top = `${e.clientY}px`;
+
+        // Slight random variation in size
+        const size = Math.random() * 6 + 4;
+        sparkle.style.width = `${size}px`;
+        sparkle.style.height = `${size}px`;
+
+        document.body.appendChild(sparkle);
+
+        // Remove element after animation ends
+        setTimeout(() => {
+            sparkle.remove();
+        }, 800);
+    });
+})();
