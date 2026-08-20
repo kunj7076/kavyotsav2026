@@ -694,65 +694,104 @@ body {
 }
 
 /* =========================================================
-   11. FOOTER
+   DARK THEME FOOTER (NO WHITE BACKGROUND)
    ========================================================= */
 .site-footer {
-  background: #060D1A;
-  color: #94A3B8;
-  padding: 55px 20px 20px;
-  border-top: 2px solid var(--royal-gold);
+  width: 100%;
+  /* ऊपर के डार्क सेक्शन से मैच करता हुआ डीप नेवी/रॉयल डार्क बैकग्राउंड */
+  background: linear-gradient(180deg, #0F172A 0%, #030712 100%) !important;
+  border-top: 1px solid rgba(212, 175, 55, 0.4);
+  color: #E2E8F0;
+  padding: 45px 20px 25px;
+  margin-top: 0 !important; /* अगर बीच में कोई सफ़ेद गैप आ रहा हो */
+  box-sizing: border-box;
+  position: static !important;
 }
 
 .footer-container {
-  max-width: 1050px;
+  max-width: 1150px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 35px;
+  gap: 30px;
+  text-align: left;
 }
 
-.footer-brand {
-  color: var(--royal-gold);
-  font-family: 'Yatra One', cursive;
-  font-size: 1.35rem;
-  margin-bottom: 10px;
+.footer-col h3.footer-brand {
+  color: #FBBF24;
+  font-size: 1.3rem;
+  margin: 0 0 10px;
+}
+
+.footer-col .footer-desc {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: #CBD5E1;
+  margin-bottom: 12px;
 }
 
 .reg-tag {
   display: inline-block;
-  margin-top: 10px;
-  font-size: 0.75rem;
-  color: var(--royal-gold);
-  border: 1px solid var(--royal-gold);
-  padding: 3px 8px;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid #D4AF37;
+  color: #FDE047;
+  padding: 4px 8px;
   border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.footer-col h4 {
+  color: #FFFFFF;
+  font-size: 1rem;
+  margin: 0 0 14px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+  padding-bottom: 6px;
 }
 
 .footer-links {
   list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.footer-links li a {
+.footer-links li {
+  margin-bottom: 8px;
+}
+
+.footer-links a, .footer-col a {
   color: #94A3B8;
   text-decoration: none;
-  transition: var(--transition-smooth);
-  display: inline-block;
-  margin-bottom: 8px;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  transition: color 0.2s ease;
 }
 
-.footer-links li a:hover {
-  color: var(--royal-gold);
-  transform: translateX(4px);
+.footer-links a:hover, .footer-col a:hover {
+  color: #FBBF24;
+}
+
+.footer-col p {
+  font-size: 0.85rem;
+  margin: 6px 0;
+  color: #CBD5E1;
 }
 
 .footer-bottom {
-  text-align: center;
-  padding-top: 25px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   margin-top: 35px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  font-size: 0.85rem;
+  padding-top: 15px;
+  text-align: center;
+  font-size: 0.78rem;
+  color: #64748B;
 }
+
+@media (max-width: 600px) {
+  .footer-container {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 24px;
+  }
+} 
 
 /* =========================================================
    12. KEYFRAME ANIMATIONS & RESPONSIVE
@@ -1180,4 +1219,53 @@ body {
     opacity: 1;
     filter: drop-shadow(0 0 10px #FDE047) drop-shadow(0 0 20px #F59E0B);
   }
+}
+/* =========================================================
+   FULL WIDTH DARK FOOTER (REMOVES WHITE EDGES/MARGINS)
+   ========================================================= */
+
+/* पूरे पेज और बॉडी का एक्स्ट्रा मार्जिन हटाएं */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* फुटर को स्क्रीन के दोनों छोर तक फैलाएं */
+.site-footer {
+  width: 100vw !important;           /* पूरी व्यू-पोर्ट चौड़ाई */
+  max-width: 100% !important;
+  position: relative !important;
+  left: 50% !important;
+  right: 50% !important;
+  margin-left: -50vw !important;     /* अगर किसी कंटेनर में हो तो भी बाहर खींच लेगा */
+  margin-right: -50vw !important;
+  margin-top: 50px !important;
+  margin-bottom: 0 !important;
+  
+  background: #0B1120 !important;     /* गहरा डार्क बैकग्राउंड */
+  border-top: 1px solid rgba(212, 175, 55, 0.4);
+  padding: 40px 20px 25px 20px !important;
+  box-sizing: border-box !important;
+}
+
+/* अंदर का कंटेंट बीच में सीमित रहेगा */
+.site-footer .footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 30px;
+  text-align: auto;
+}
+
+.site-footer .footer-bottom {
+  max-width: 1200px;
+  margin: 30px auto 0 auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 15px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #64748B;
 }
