@@ -79,7 +79,7 @@ body {
   letter-spacing: 3px;
   margin-top: 15px;
   opacity: 0;
-  animation: expandLine  1s 0.8s forwards;
+  animation: fadeInUp 1s 0.7s forwards;
 }
 
 .intro-screen.hide-intro {
