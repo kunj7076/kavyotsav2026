@@ -1193,14 +1193,51 @@ body {
   color: #64748B;
 }
 
-/* मोबाइल स्क्रीन के लिए */
+/* मोबाइल स्क्रीन के लिए - असली websites जैसा 2-column grid layout,
+   ना कि सब कुछ center में एक लंबी list की तरह */
 @media (max-width: 600px) {
   .footer-container {
-    grid-template-columns: 1fr;
-    text-align: center;
-    gap: 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 24px;
+    row-gap: 32px;
+    text-align: left;
   }
+
+  /* ब्रांड/परिचय वाला हिस्सा ऊपर पूरी चौड़ाई में */
+  .footer-col:nth-child(1) {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding-bottom: 22px;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.18);
+  }
+
+  /* लिंक व नीति वाले दो कॉलम एक साथ, बीच में हल्की divider line */
+  .footer-col:nth-child(2) {
+    border-right: 1px solid rgba(148, 163, 184, 0.15);
+    padding-right: 16px;
+  }
+
+  /* संपर्क वाला हिस्सा नीचे पूरी चौड़ाई में */
+  .footer-col:nth-child(4) {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding-top: 22px;
+    border-top: 1px solid rgba(212, 175, 55, 0.18);
+  }
+
   .footer-col h4 {
+    display: block;
+    font-size: 0.92rem;
+  }
+
+  .footer-links li {
+    margin-bottom: 10px;
+  }
+
+  .footer-links a, .footer-col a {
+    font-size: 0.8rem;
+    line-height: 1.4;
     display: inline-block;
   }
 }
