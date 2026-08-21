@@ -44,12 +44,24 @@ function updateTicketPrice() {
 function toggleNavMenu(e) {
     if (e) e.stopPropagation();
     const navMenu = document.getElementById('navMenu');
-    if (navMenu) navMenu.classList.toggle('active');
+    const backdrop = document.getElementById('navBackdrop');
+    const hamburger = document.querySelector('.hamburger');
+    if (!navMenu) return;
+
+    const isOpen = navMenu.classList.toggle('active');
+    if (backdrop) backdrop.classList.toggle('active', isOpen);
+    if (hamburger) hamburger.innerText = isOpen ? '✕' : '☰';
+    document.body.style.overflow = isOpen ? 'hidden' : '';
 }
 
 function closeNavMenu() {
     const navMenu = document.getElementById('navMenu');
+    const backdrop = document.getElementById('navBackdrop');
+    const hamburger = document.querySelector('.hamburger');
     if (navMenu) navMenu.classList.remove('active');
+    if (backdrop) backdrop.classList.remove('active');
+    if (hamburger) hamburger.innerText = '☰';
+    document.body.style.overflow = '';
 }
 
 function openRegisterModal(e) {
@@ -112,7 +124,7 @@ window.addEventListener('click', function(event) {
     
     if (navMenu && navMenu.classList.contains('active')) {
         if (!navMenu.contains(event.target) && hamburger && !hamburger.contains(event.target)) {
-            navMenu.classList.remove('active');
+            closeNavMenu();
         }
     }
 });
@@ -179,7 +191,7 @@ document.getElementById('ticketForm').addEventListener('submit', function(e) {
         "amount": amount * 100,
         "currency": "INR",
         "name": "अभिव्यक्ति काव्यपीठ",
-        "description": `Kavyotsav 2026 Ticket (${role})`,
+        "description": `Kavykatta 2026 Ticket (${role})`,
         "image": "https://i.postimg.cc/BvCpXsBY/file-000000004b2c82119a54e5fe960f91e8.png",
         "handler": function (response) {
             const paymentId = response.razorpay_payment_id;
@@ -349,7 +361,7 @@ function generateAndDownloadTicketPDF() {
         doc.setTextColor(203, 213, 225);
         doc.setFont("helvetica", "normal");
         doc.setFontSize(9.5);
-        doc.text("KAVYOTSAV - OFFICIAL ENTRY PASS", 74, 26, { align: "center" });
+        doc.text("KAVYKATTA - OFFICIAL ENTRY PASS", 74, 26, { align: "center" });
 
         doc.setDrawColor(212, 175, 55);
         doc.setLineWidth(0.4);
@@ -406,7 +418,7 @@ function generateAndDownloadTicketPDF() {
         doc.setFontSize(7.5);
         doc.text("Scan this QR code at the entrance gate using Admin Scanner.", 74, 179, { align: "center" });
 
-        doc.save(`Kavyotsav_Pass_${u.ticketId}.pdf`);
+        doc.save(`Kavykatta_Pass_${u.ticketId}.pdf`);
 
         if (document.body.contains(tempDiv)) document.body.removeChild(tempDiv);
         if (btn) {

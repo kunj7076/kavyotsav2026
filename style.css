@@ -79,7 +79,7 @@ body {
   letter-spacing: 3px;
   margin-top: 15px;
   opacity: 0;
-  animation: fadeInUp 1s 0.7s forwards;
+  animation: expandLine  1s 0.8s forwards;
 }
 
 .intro-screen.hide-intro {
@@ -174,6 +174,93 @@ body {
   font-size: 1.8rem;
   color: var(--royal-gold);
   cursor: pointer;
+  z-index: 1100;
+  line-height: 1;
+}
+
+/* =========================================================
+   MOBILE NAVBAR & SLIDE-IN MENU
+   ========================================================= */
+@media (max-width: 900px) {
+  .navbar {
+    padding: 10px 16px;
+  }
+
+  .logo-container {
+    gap: 10px;
+  }
+
+  .nav-logo {
+    height: 42px;
+    width: 42px;
+  }
+
+  .logo-title {
+    font-size: 1.15rem;
+    line-height: 1.15;
+  }
+
+  .logo-sub {
+    font-size: 0.68rem;
+    line-height: 1.2;
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  /* Hidden by default, slides in from the right when .active is toggled by JS */
+  .nav-links {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: min(78vw, 300px);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    background: linear-gradient(165deg, rgba(46, 8, 24, 0.99) 0%, rgba(10, 25, 49, 0.99) 100%);
+    padding: 90px 28px 30px;
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: -12px 0 34px rgba(0, 0, 0, 0.45);
+    z-index: 1050;
+    overflow-y: auto;
+  }
+
+  .nav-links.active {
+    transform: translateX(0);
+  }
+
+  .nav-links a {
+    width: 100%;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+    font-size: 1rem;
+  }
+
+  .nav-links a::after {
+    display: none;
+  }
+
+  /* Dark backdrop behind the slide-in menu; JS toggles .active on this too */
+  .nav-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1040;
+  }
+
+  .nav-backdrop.active {
+    display: block;
+  }
+}
+
+@media (min-width: 901px) {
+  .nav-backdrop {
+    display: none !important;
+  }
 }
 
 /* =========================================================
