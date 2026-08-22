@@ -1,18 +1,41 @@
 // ==========================================
 // 1. CONFIGURATION & CREDENTIALS
+//
+// ⚠️ SECURITY WARNING (please read):
+// यह पूरी फाइल browser पर चलती है, इसलिए यहाँ लिखी हर चीज़ कोई भी
+// "View Page Source" या DevTools से पढ़ सकता है — नीचे दिया गया
+// ADMIN_CREDENTIALS सिर्फ हल्का gatekeeping है, असली सुरक्षा नहीं।
+// एक तकनीकी व्यक्ति चाहे तो बिना password के भी सीधे कंसोल से
+// document.getElementById('adminDashboard').style.display='flex'
+// चलाकर स्कैनर खोल सकता है।
+//
+// PRODUCTION के लिए ज़रूरी: असली login आपके Apps Script (या किसी भी
+// backend) पर होना चाहिए — user सिर्फ एक request भेजे, backend
+// password check करके एक session token लौटाए, और स्कैनर की हर API
+// call उस token के साथ जाए। तब तक इसे सिर्फ एक "देखा-देखी" ताला समझें।
 // ==========================================
-// Admin login now happens on the server (Code.gs "adminLogin" action) which
-// checks credentials stored in Apps Script Script Properties and returns a
-// short-lived session token. No credentials live in this file anymore.
-// The token is kept only in memory (adminSessionToken below) and is required
-// by the gate scanner's markAttendance calls.
-let adminSessionToken = null;
+const ADMIN_CREDENTIALS = {
+    user: "8528537076",
+    email: "abhivyaktikavypith@gmail.com",
+    // password अब plaintext नहीं, SHA-256 hash के रूप में रखा है ताकि
+    // कोई भी script.js खोलकर सीधे असली password न पढ़ सके।
+    // (ध्यान रहे: ये फिर भी सिर्फ "देखा-देखी" सुरक्षा है, असली सुरक्षा नहीं —
+    // ऊपर की चेतावनी देखें।)
+    passHash: "4788376ed08f25eb9cfab92f4b0b414ccc9a7a31baac3431fbcbc3b836af8f61"
+};
+
+// पासवर्ड को SHA-256 से hash करके ADMIN_CREDENTIALS.passHash से मिलाने के लिए
+async function sha256Hex(text) {
+    const buffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+    return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// गलत पासवर्ड के बार-बार प्रयास को थोड़ा धीमा करने के लिए (basic client-side throttle only)
+const ADMIN_LOGIN_LOCK_MS = 30000; // गलत प्रयासों के बाद 30 सेकंड लॉक
+const ADMIN_LOGIN_MAX_ATTEMPTS = 5;
 
 // अपना Apps Script Web App URL यहाँ डालें:
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyWiS60UTLK6IeEFjrfnkBm7YUgeU7eiLjF651GaPjdileehBxFeiyc0j_TXQuGyn7R/exec";
-// Payment success is now verified server-side too: Code.gs re-checks each
-// Razorpay payment against Razorpay's API before marking a row "Paid", and
-// the gate scanner refuses entry for anything not "Paid"/"Free"/"Present".
 
 let html5QrCode;
 let isScanning = false;
@@ -44,24 +67,12 @@ function updateTicketPrice() {
 function toggleNavMenu(e) {
     if (e) e.stopPropagation();
     const navMenu = document.getElementById('navMenu');
-    const backdrop = document.getElementById('navBackdrop');
-    const hamburger = document.querySelector('.hamburger');
-    if (!navMenu) return;
-
-    const isOpen = navMenu.classList.toggle('active');
-    if (backdrop) backdrop.classList.toggle('active', isOpen);
-    if (hamburger) hamburger.innerText = isOpen ? '✕' : '☰';
-    document.body.style.overflow = isOpen ? 'hidden' : '';
+    if (navMenu) navMenu.classList.toggle('active');
 }
 
 function closeNavMenu() {
     const navMenu = document.getElementById('navMenu');
-    const backdrop = document.getElementById('navBackdrop');
-    const hamburger = document.querySelector('.hamburger');
     if (navMenu) navMenu.classList.remove('active');
-    if (backdrop) backdrop.classList.remove('active');
-    if (hamburger) hamburger.innerText = '☰';
-    document.body.style.overflow = '';
 }
 
 function openRegisterModal(e) {
@@ -93,7 +104,6 @@ function closeAdminDashboard() {
     const dashboard = document.getElementById('adminDashboard');
     if (dashboard) dashboard.style.display = 'none';
     stopCamera();
-    adminSessionToken = null; // require re-login next time the scanner is opened
 }
 
 function openDownloadModal() {
@@ -115,122 +125,164 @@ window.addEventListener('click', function(event) {
     const regModal = document.getElementById('registerModal');
     const adminModal = document.getElementById('adminModal');
     const downloadModal = document.getElementById('downloadModal');
+    const policyModal = document.getElementById('policyModal');
     const navMenu = document.getElementById('navMenu');
     const hamburger = document.querySelector('.hamburger');
 
     if (regModal && event.target === regModal) regModal.style.display = 'none';
     if (adminModal && event.target === adminModal) adminModal.style.display = 'none';
     if (downloadModal && event.target === downloadModal) downloadModal.style.display = 'none';
+    if (policyModal && event.target === policyModal) policyModal.style.display = 'none';
     
     if (navMenu && navMenu.classList.contains('active')) {
         if (!navMenu.contains(event.target) && hamburger && !hamburger.contains(event.target)) {
-            closeNavMenu();
+            navMenu.classList.remove('active');
         }
     }
 });
 
 // ==========================================
-// 4. RAZORPAY PAYMENT & TICKET
+// POLICY MODAL (Terms / Privacy / Refund)
 // ==========================================
-document.getElementById('ticketForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    // e.preventDefault() disables the browser's native validation popup for
-    // required/pattern fields, so we must trigger it manually.
-    const form = e.target;
-    if (!form.checkValidity()) {
-        form.reportValidity();
-        return;
+const POLICY_CONTENT = {
+    terms: {
+        title: "नियम एवं शर्तें (Terms & Conditions)",
+        body: `
+            <p>1. Kavyotsav 2026 में पंजीकरण करके आप इन शर्तों से सहमत होते हैं।</p>
+            <p>2. पंजीकरण के समय दी गई जानकारी (नाम, मोबाइल नंबर, ईमेल) सही एवं सत्यापित होनी चाहिए।</p>
+            <p>3. मंच पर प्रस्तुत की जाने वाली रचना स्वरचित एवं मौलिक होनी चाहिए।</p>
+            <p>4. अभद्र, असामाजिक या विवादित भाषा का प्रयोग पूर्णतः वर्जित है, अन्यथा प्रवेश/मंच से हटाया जा सकता है।</p>
+            <p>5. आयोजक किसी भी अपरिहार्य कारणवश कार्यक्रम की तिथि, समय या स्थान में परिवर्तन का अधिकार सुरक्षित रखते हैं।</p>
+        `
+    },
+    privacy: {
+        title: "गोपनीयता नीति (Privacy Policy)",
+        body: `
+            <p>1. पंजीकरण फॉर्म में दी गई जानकारी (नाम, मोबाइल नंबर, ईमेल) केवल पास सत्यापन, प्रवेश एवं कार्यक्रम संबंधी सूचनाओं हेतु उपयोग की जाएगी।</p>
+            <p>2. आपकी जानकारी किसी तीसरे पक्ष को बेची या साझा नहीं की जाएगी।</p>
+            <p>3. भुगतान प्रक्रिया सुरक्षित Razorpay गेटवे के माध्यम से होती है; हम आपकी कार्ड/बैंक जानकारी संग्रहीत नहीं करते।</p>
+            <p>4. अपनी जानकारी हटाने या अपडेट करने हेतु आप हमें नीचे दिए हेल्पलाइन/ईमेल पर संपर्क कर सकते हैं।</p>
+        `
+    },
+    refund: {
+        title: "रिफंड नीति (Refund Policy)",
+        body: `
+            <p>1. एक बार पंजीकरण शुल्क का भुगतान हो जाने के बाद, सामान्यतः वह वापस (refund) नहीं किया जाता।</p>
+            <p>2. यदि कार्यक्रम आयोजकों द्वारा रद्द किया जाता है, तो पूर्ण राशि उसी भुगतान माध्यम से वापस कर दी जाएगी।</p>
+            <p>3. भुगतान संबंधी किसी भी समस्या (जैसे राशि कटी पर टिकट न मिला) के लिए कृपया Payment ID के साथ तुरंत हमें WhatsApp/ईमेल करें।</p>
+            <p>4. रिफंड अनुरोध सामान्यतः 5-7 कार्यदिवसों में प्रोसेस किए जाते हैं।</p>
+        `
     }
+};
 
-    const role = document.getElementById('userRole').value;
-    const name = document.getElementById('name').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const phone = document.getElementById('phone').value.trim();
+function openPolicyModal(type) {
+    const modal = document.getElementById('policyModal');
+    const titleEl = document.getElementById('policyTitle');
+    const bodyEl = document.getElementById('policyBody');
+    const content = POLICY_CONTENT[type];
 
-    let vidha = "N/A";
-    let title = "";
-    if (role === 'Performer') {
-        vidha = document.getElementById('vidha') ? document.getElementById('vidha').value : "N/A";
-        title = document.getElementById('title') ? document.getElementById('title').value : "";
-    }
+    if (!modal || !content) return;
 
-    // NOTE: Amount is derived directly from the selected role (not from the
-    // displayed price text) so it can't be tampered with by editing the DOM.
-    // TRUE security still requires re-verifying the amount & Razorpay payment
-    // signature on your server (Apps Script) before marking a ticket "paid" -
-    // see the note near WEB_APP_URL at the top of this file.
-    const TICKET_PRICES = { Audience: 0, Performer: 299 };
-    const amount = TICKET_PRICES[role] ?? 0;
+    titleEl.innerText = content.title;
+    bodyEl.innerHTML = content.body;
+    modal.style.display = 'flex';
+}
 
-    // Free "Audience" pass: skip the payment gateway entirely. Razorpay does
-    // not support ₹0 checkouts, so trying to open it here would fail.
-    if (amount <= 0) {
-        const freeTicketId = 'AUD-' + Date.now();
-        sendDataToGoogleSheet(freeTicketId, name, email, phone, role, vidha, title);
+function closePolicyModal() {
+    const modal = document.getElementById('policyModal');
+    if (modal) modal.style.display = 'none';
+}
 
-        currentMatchedUser = {
-            ticketId: freeTicketId,
-            name: name,
-            type: 'श्रोता / दर्शक'
+// ==========================================
+// 4. RAZORPAY PAYMENT & TICKET
+//
+// ⚠️ SECURITY WARNING (please read):
+// नीचे दिया गया "handler" पूरी तरह browser (client) में चलता है।
+// Razorpay checkout बंद होते ही यह मान लेता है कि पैसा मिल गया और
+// तुरंत टिकट PDF बना देता है — बीच में कोई backend verification
+// नहीं है। कोई भी तकनीकी व्यक्ति DevTools से यही handler function
+// खुद बुला सकता है और बिना पैसे दिए valid-दिखने वाला टिकट बना सकता है।
+//
+// PRODUCTION के लिए ज़रूरी: Razorpay से मिला razorpay_payment_id,
+// razorpay_order_id और razorpay_signature अपने Apps Script backend
+// को भेजें, वहाँ Razorpay के Key Secret से signature verify करें,
+// और तभी Google Sheet में "paid" मार्क करें व टिकट को वैध मानें।
+// (Razorpay docs: Payment Signature Verification)
+// ==========================================
+const ticketForm = document.getElementById('ticketForm');
+if (ticketForm) {
+    ticketForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (typeof Razorpay === 'undefined') {
+            alert("Razorpay SDK लोड नहीं हो सका। कृपया इंटरनेट कनेक्शन जांचें और पुनः प्रयास करें।");
+            return;
+        }
+
+        const role = document.getElementById('userRole').value;
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+
+        if (!/^[6-9][0-9]{9}$/.test(phone)) {
+            alert("कृपया एक वैध 10 अंकों का मोबाइल नंबर दर्ज करें।");
+            return;
+        }
+
+        let vidha = "N/A";
+        let title = "";
+        if (role === 'Performer') {
+            vidha = document.getElementById('vidha') ? document.getElementById('vidha').value : "N/A";
+            title = document.getElementById('title') ? document.getElementById('title').value : "";
+        }
+
+        const priceText = document.getElementById('priceDisplay').innerText;
+        const amount = parseInt(priceText.replace('₹', '').trim());
+
+        var options = {
+            "key": "rzp_live_TO8bx7fvQmzQ5w",
+            "amount": amount * 100,
+            "currency": "INR",
+            "name": "अभिव्यक्ति काव्यपीठ",
+            "description": `Kavyotsav 2026 Ticket (${role})`,
+            "image": "https://i.postimg.cc/BvCpXsBY/file-000000004b2c82119a54e5fe960f91e8.png",
+            "handler": function (response) {
+                const paymentId = response.razorpay_payment_id;
+
+                sendDataToGoogleSheet(paymentId, name, email, phone, role, vidha, title)
+                    .catch(() => {
+                        console.error('Google Sheet सेव करने में समस्या हुई, payment ID सुरक्षित रखें:', paymentId);
+                        alert("भुगतान सफल रहा, लेकिन विवरण सर्वर पर सेव करने में समस्या आई। कृपया अपनी Payment ID (" + paymentId + ") स्क्रीनशॉट लेकर सहेज लें और हमें WhatsApp पर भेजें।");
+                    });
+
+                currentMatchedUser = {
+                    ticketId: paymentId,
+                    name: name,
+                    type: role === 'Performer' ? 'कवि / मंच प्रस्तुतकर्ता' : 'श्रोता / दर्शक'
+                };
+                generateAndDownloadTicketPDF();
+
+                ticketForm.reset();
+                closeRegisterModal();
+            },
+            "prefill": { "name": name, "email": email, "contact": phone },
+            "theme": { "color": "#78350f" }
         };
-        generateAndDownloadTicketPDF();
 
-        form.reset();
-        closeRegisterModal();
-        return;
-    }
-
-    if (typeof Razorpay === 'undefined') {
-        alert("Payment Gateway लोड नहीं हो सका। कृपया इंटरनेट कनेक्शन जांचें और पुनः प्रयास करें।");
-        return;
-    }
-
-    var options = {
-        "key": "rzp_live_TO8bx7fvQmzQ5w",
-        "amount": amount * 100,
-        "currency": "INR",
-        "name": "अभिव्यक्ति काव्यपीठ",
-        "description": `Kavyotsav 2026 Ticket (${role})`,
-        "image": "https://i.postimg.cc/BvCpXsBY/file-000000004b2c82119a54e5fe960f91e8.png",
-        "handler": function (response) {
-            const paymentId = response.razorpay_payment_id;
-
-            sendDataToGoogleSheet(paymentId, name, email, phone, role, vidha, title);
-
-            currentMatchedUser = {
-                ticketId: paymentId,
-                name: name,
-                type: role === 'Performer' ? 'कवि / मंच प्रस्तुतकर्ता' : 'श्रोता / दर्शक'
-            };
-            generateAndDownloadTicketPDF();
-
-            form.reset();
-            closeRegisterModal();
-        },
-        "modal": {
-            "ondismiss": function () {
-                // User closed the checkout without paying - nothing to clean up,
-                // but this avoids a silent no-op that can confuse first-time devs.
-            }
-        },
-        "prefill": { "name": name, "email": email, "contact": phone },
-        "theme": { "color": "#78350f" }
-    };
-
-    try {
-        var rzp1 = new Razorpay(options);
-        rzp1.on('payment.failed', function (response) {
-            alert("भुगतान असफल रहा: " + (response.error && response.error.description ? response.error.description : "कृपया पुनः प्रयास करें।"));
-        });
-        rzp1.open();
-    } catch (err) {
-        alert("Payment Error: " + err.message);
-    }
-});
+        try {
+            var rzp1 = new Razorpay(options);
+            rzp1.on('payment.failed', function (response) {
+                alert("भुगतान असफल रहा: " + (response.error && response.error.description ? response.error.description : "कृपया पुनः प्रयास करें।"));
+            });
+            rzp1.open();
+        } catch (err) {
+            alert("Payment Error: " + err.message);
+        }
+    });
+}
 
 function sendDataToGoogleSheet(paymentId, name, email, phone, role, vidha, sampleTitle) {
-    fetch(WEB_APP_URL, {
+    return fetch(WEB_APP_URL, {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
@@ -431,47 +483,46 @@ function generateAndDownloadTicketPDF() {
 // ==========================================
 // 6. ADMIN SCANNER (WITH AUDIO & VISUAL FEEDBACK)
 // ==========================================
-function handleAdminLogin(event) {
+async function handleAdminLogin(event) {
     if (event) event.preventDefault();
+
+    const loginError = document.getElementById('loginError');
+    const lockUntil = parseInt(sessionStorage.getItem('adminLockUntil') || '0', 10);
+
+    if (Date.now() < lockUntil) {
+        const waitSec = Math.ceil((lockUntil - Date.now()) / 1000);
+        if (loginError) {
+            loginError.innerText = `⏳ बहुत बार गलत प्रयास हुए, कृपया ${waitSec} सेकंड बाद दोबारा कोशिश करें।`;
+            loginError.style.display = 'block';
+        }
+        return;
+    }
 
     const userInput = document.getElementById('adminUser').value.trim();
     const passInput = document.getElementById('adminPass').value.trim();
-    const loginError = document.getElementById('loginError');
-    const submitBtn = document.querySelector('#adminLoginForm button[type="submit"]');
+    const passInputHash = await sha256Hex(passInput);
 
-    if (loginError) loginError.style.display = 'none';
-    if (submitBtn) { submitBtn.disabled = true; submitBtn.innerText = "जांच हो रही है..."; }
+    if ((userInput === ADMIN_CREDENTIALS.user || userInput === ADMIN_CREDENTIALS.email) && passInputHash === ADMIN_CREDENTIALS.passHash) {
+        sessionStorage.removeItem('adminLoginAttempts');
+        sessionStorage.removeItem('adminLockUntil');
+        if (loginError) loginError.style.display = 'none';
+        document.getElementById('adminLoginForm').reset();
+        closeAdminModal(); 
+        document.getElementById('adminDashboard').style.display = 'flex'; 
+    } else {
+        const attempts = parseInt(sessionStorage.getItem('adminLoginAttempts') || '0', 10) + 1;
+        sessionStorage.setItem('adminLoginAttempts', attempts);
 
-    const callbackName = 'adminLoginCallback_' + Math.round(100000 * Math.random());
-
-    window[callbackName] = function (data) {
-        delete window[callbackName];
-        if (document.body.contains(scriptTag)) document.body.removeChild(scriptTag);
-        if (submitBtn) { submitBtn.disabled = false; submitBtn.innerText = "Verify & Access Scanner"; }
-
-        if (data && data.status === 'success' && data.token) {
-            adminSessionToken = data.token;
-            document.getElementById('adminLoginForm').reset();
-            closeAdminModal();
-            document.getElementById('adminDashboard').style.display = 'flex';
-        } else {
-            if (loginError) {
-                loginError.innerText = "❌ अमान्य Email/Phone या Password!";
-                loginError.style.display = 'block';
-            }
+        if (attempts >= ADMIN_LOGIN_MAX_ATTEMPTS) {
+            sessionStorage.setItem('adminLockUntil', Date.now() + ADMIN_LOGIN_LOCK_MS);
+            sessionStorage.removeItem('adminLoginAttempts');
         }
-    };
 
-    const scriptTag = document.createElement('script');
-    scriptTag.src = `${WEB_APP_URL}?action=adminLogin&user=${encodeURIComponent(userInput)}&pass=${encodeURIComponent(passInput)}&callback=${callbackName}`;
-    scriptTag.onerror = function () {
-        if (submitBtn) { submitBtn.disabled = false; submitBtn.innerText = "Verify & Access Scanner"; }
         if (loginError) {
-            loginError.innerText = "⚠️ सर्वर से कनेक्ट करने में समस्या हुई।";
+            loginError.innerText = "❌ अमान्य Email/Phone या Password!";
             loginError.style.display = 'block';
         }
-    };
-    document.body.appendChild(scriptTag);
+    }
 }
 
 function toggleCamera() {
@@ -542,29 +593,17 @@ function onScanSuccess(decodedText) {
                 <p style="margin:4px 0;"><strong>प्रतिभागी:</strong> ${data.name}</p>
                 <p style="margin:0; font-size:12px; color:#64748B;">प्रथम स्कैन समय: ${data.time}</p>
             `;
-        } else if (data && data.status === "unauthorized") {
-            resultBox.style.borderTop = "6px solid #DC2626";
-            resultBox.innerHTML = `
-                <h3 style="color:#DC2626; margin:0;">🔒 सत्र समाप्त</h3>
-                <p style="margin:4px 0;">कृपया दोबारा Admin Login करें।</p>
-            `;
-            adminSessionToken = null;
         } else {
             resultBox.style.borderTop = "6px solid #DC2626";
             resultBox.innerHTML = `
                 <h3 style="color:#DC2626; margin:0;">⚠️ अमान्य टिकट</h3>
-                <p style="margin:4px 0;">ID: ${scannedId} या तो डेटाबेस में नहीं मिली, या भुगतान सत्यापित नहीं है।</p>
+                <p style="margin:4px 0;">ID: ${scannedId} डेटाबेस में नहीं मिली।</p>
             `;
         }
     };
 
-    if (!adminSessionToken) {
-        resultBox.innerHTML = `🔒 <strong>पहले Admin Login करें।</strong>`;
-        return;
-    }
-
     const scriptTag = document.createElement('script');
-    scriptTag.src = `${WEB_APP_URL}?action=markAttendance&ticketId=${encodeURIComponent(scannedId)}&token=${encodeURIComponent(adminSessionToken)}&callback=${callbackName}`;
+    scriptTag.src = `${WEB_APP_URL}?action=markAttendance&ticketId=${encodeURIComponent(scannedId)}&callback=${callbackName}`;
     scriptTag.onerror = function() {
         resultBox.innerHTML = `❌ नेटवर्क त्रुटि: सर्वर से संपर्क नहीं हो सका।`;
     };
@@ -612,7 +651,6 @@ document.addEventListener("DOMContentLoaded", () => {
     updateTicketPrice();
     initCountdown();
     initFaq();
-    loadGuestsDirectly();
 
     setTimeout(() => {
         const intro = document.getElementById('introOverlay');
@@ -681,6 +719,10 @@ async function loadGuestsDirectly() {
     }
 }
 
+// पेज लोड होते ही चलाएँ
+document.addEventListener("DOMContentLoaded", () => {
+    loadGuestsDirectly();
+});
 function toggleAudio() {
     const audio = document.getElementById('bgAudio');
     const btn = document.getElementById('musicToggleBtn');
