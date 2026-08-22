@@ -517,18 +517,25 @@ function onScanSuccess(decodedText) {
     resultBox.style.display = 'block';
     resultBox.innerHTML = `⏳ <strong>सत्यापन जारी है...</strong><br><small>Ticket: ${scannedId}</small>`;
 
-    const oldScript = document.getElementById('jsonp_gate_script');
-    if (oldScript) oldScript.remove();
+    const callbackName = 'scanCallback_' + Math.round(100000 * Math.random());
+
+    // कॉलबैक फ़ंक्शन
+    window[callbackName] = function(data) {
+        delete window[callbackName];
+        if (scriptTag && scriptTag.parentNode) scriptTag.parentNode.removeChild(scriptTag);
+        window.handleScanResult(data);
+    };
 
     const scriptTag = document.createElement('script');
-    scriptTag.id = 'jsonp_gate_script';
-    scriptTag.src = `${WEB_APP_URL}?action=markAttendance&ticketId=${encodeURIComponent(scannedId)}&callback=handleScanResult&t=${Date.now()}`;
+    scriptTag.src = `${WEB_APP_URL}?action=markAttendance&ticketId=${encodeURIComponent(scannedId)}&callback=${callbackName}&t=${Date.now()}`;
+    
     scriptTag.onerror = function() {
-        resultBox.innerHTML = `❌ नेटवर्क त्रुटि: सर्वर से संपर्क नहीं हो सका।`;
+        resultBox.style.borderTop = "6px solid #DC2626";
+        resultBox.innerHTML = `❌ <strong>कनेक्शन एरर:</strong> Apps Script Deployment एक्सेस "Anyone" पर सेट करें और नया URL script.js में डालें।`;
     };
+
     document.body.appendChild(scriptTag);
 }
-
 // ==========================================
 // 8. COUNTDOWN & FAQ INITIALIZATION
 // ==========================================
