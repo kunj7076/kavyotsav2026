@@ -1,242 +1,382 @@
 /* =========================================================
-   1. ROOT VARIABLES & THEME SETUP
+   1. BASE STYLING & VARIABLES
    ========================================================= */
 :root {
   --primary-navy: #0A1931;
-  --secondary-navy: #152C52;
+  --secondary-navy: #150E28;
   --royal-gold: #D4AF37;
-  --gold-glow: #FDE047;
-  --accent-gold: #B8860B;
+  --dark-maroon: #78350F;
   --text-dark: #1E293B;
   --text-light: #F8FAFC;
-  --card-bg: rgba(255, 255, 255, 0.98);
-  --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.12);
-  --shadow-hover: 0 18px 36px rgba(212, 175, 55, 0.25);
-  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --bg-creme: #FCFBF7;
+  --shadow-soft: 0 10px 25px rgba(0, 0, 0, 0.08);
+  --transition-smooth: all 0.3s ease;
 }
 
-/* Base Reset */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
-  scroll-behavior: smooth;
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 body {
-  background-color: #F8FAFC;
+  background-color: var(--bg-creme);
   color: var(--text-dark);
-  line-height: 1.7;
-  overflow-x: hidden;
+  line-height: 1.6;
 }
 
 /* =========================================================
-   2. INTRO SPLASH SCREEN ANIMATION
+   CINEMATIC 3D ROYAL INTRO ANIMATION
    ========================================================= */
-.intro-screen {
+.intro-splash {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: radial-gradient(circle at center, #0F2347 0%, #060D1A 100%);
+  background: radial-gradient(circle at center, #1b0c33 0%, #06030e 85%);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 99999;
-  transition: opacity 0.8s ease, visibility 0.8s ease;
+  z-index: 999999;
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s ease;
 }
 
-.intro-box {
-  text-align: center;
-  padding: 20px;
-}
-
-.intro-title {
-  font-family: 'Yatra One', cursive;
-  font-size: clamp(2.2rem, 5vw, 4rem);
-  background: linear-gradient(135deg, #FFFFFF 0%, #F5E6BE 40%, #D4AF37 80%, #AA771C 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 6px 20px rgba(212, 175, 55, 0.4));
-  animation: introZoomIn 1.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-}
-
-.intro-divider {
-  width: 0;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, #D4AF37, transparent);
-  margin: 15px auto;
-  border-radius: 2px;
-  animation: expandLine 1.2s 0.4s ease forwards;
-}
-
-.intro-tag {
-  color: #E2E8F0;
-  font-size: clamp(0.9rem, 2vw, 1.15rem);
-  letter-spacing: 3px;
-  margin-top: 15px;
+.intro-splash.hide-splash {
   opacity: 0;
-  animation: fadeInUp 1s 0.7s forwards;
-}
-
-.intro-screen.hide-intro {
-  opacity: 0;
-  visibility: hidden;
+  transform: scale(1.08);
   pointer-events: none;
 }
 
+.splash-content {
+  text-align: center;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 1. लोगो पर 3D ज़ूम और पल्स ग्लो */
+.splash-logo {
+  width: 95px;
+  height: 95px;
+  border-radius: 50%;
+  border: 2.5px solid var(--royal-gold);
+  padding: 4px;
+  background: rgba(10, 25, 49, 0.8);
+  box-shadow: 0 0 35px rgba(212, 175, 55, 0.6), inset 0 0 15px rgba(212, 175, 55, 0.4);
+  animation: logoPopIn 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, pulseGold 2s infinite alternate;
+}
+
+/* 2. टेक्स्ट पर गोल्डन शिमर / वेव इफ़ेक्ट */
+.splash-title {
+  font-family: 'Yatra One', cursive;
+  font-size: 2.5rem;
+  background: linear-gradient(90deg, #D4AF37 0%, #FFFFFF 50%, #D4AF37 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 14px 0 0;
+  opacity: 0;
+  filter: drop-shadow(0 4px 15px rgba(0, 0, 0, 0.8));
+  animation: textSlideUp 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s forwards, shineWave 2.5s linear infinite;
+}
+
+/* 3. बीच की एक्सपैंडिंग गोल्डन लाइन */
+.splash-line {
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #D4AF37, transparent);
+  margin: 10px auto;
+  animation: expandWidth 0.8s ease 0.6s forwards;
+}
+
+/* 4. सब-टाइटल फेड-इन */
+.splash-subtitle {
+  color: #E2E8F0;
+  font-size: 0.95rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: fadeInSub 0.8s ease 0.8s forwards;
+}
+
 /* =========================================================
-   3. LARGE & PROMINENT NAVBAR
+   KEYFRAME ANIMATIONS
+   ========================================================= */
+@keyframes logoPopIn {
+  0% { transform: scale(0.3) rotate(-15deg); opacity: 0; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+@keyframes pulseGold {
+  0% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
+  100% { box-shadow: 0 0 45px rgba(212, 175, 55, 0.85), 0 0 10px #FFFFFF; }
+}
+
+@keyframes textSlideUp {
+  0% { transform: translateY(25px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes shineWave {
+  to { background-position: 200% center; }
+}
+
+@keyframes expandWidth {
+  0% { width: 0; opacity: 0; }
+  100% { width: 160px; opacity: 1; }
+}
+
+@keyframes fadeInSub {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================================
+   2. EXPANDED GRAND NAVBAR
    ========================================================= */
 .navbar {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  padding: 14px 45px;
-  background: linear-gradient(120deg, rgba(58, 6, 20, 0.97) 0%, rgba(24, 6, 20, 0.97) 100%);
-  backdrop-filter: blur(14px);
+  background: rgba(10, 25, 49, 0.98);
+  backdrop-filter: blur(12px);
+  z-index: 1000;
+  border-bottom: 2px solid rgba(212, 175, 55, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.nav-container {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 14px 24px; /* ऊँचाई बढ़ाई गई */
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 1000;
-  border-bottom: 1px solid rgba(212, 175, 55, 0.4);
-  box-shadow: 0 4px 24px rgba(0,0,0,0.35);
 }
 
-.logo-container {
+.brand-logo {
   display: flex;
   align-items: center;
-  gap: 20px;
-}
-
-.nav-logo {
-  height: 56px;
-  width: 56px;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 2px solid rgba(212, 175, 55, 0.55);
-  transition: var(--transition-smooth);
-}
-
-.logo-title {
-  font-family: 'Yatra One', cursive;
-  color: var(--royal-gold);
-  font-size: 1.5rem;
-  display: block;
-}
-
-.logo-sub {
-  color: var(--text-light);
-  font-size: 0.85rem;
-  letter-spacing: 1px;
-}
-
-.nav-links {
-  display: flex;
-  gap: 30px;
-}
-
-.nav-links a {
-  color: rgba(248, 250, 252, 0.9);
+  gap: 16px;
   text-decoration: none;
-  font-size: 0.95rem;
-  font-weight: 500;
-  letter-spacing: 0.3px;
-  position: relative;
-  transition: var(--transition-smooth);
 }
 
-.nav-links a::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--royal-gold);
-  transition: var(--transition-smooth);
+.logo-img {
+  width: 58px;  /* बड़ा लोगो */
+  height: 58px;
+  border-radius: 50%;
+  border: 2px solid var(--royal-gold);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
 }
 
-.nav-links a:hover::after {
-  width: 100%;
-}
-
-.nav-links a:hover {
+.brand-title {
+  display: block;
+  font-family: 'Yatra One', cursive;
+  font-size: 1.45rem; /* बड़ा टाइटल फ़ॉन्ट */
   color: var(--royal-gold);
+  line-height: 1.2;
+}
+
+.brand-subtitle {
+  display: block;
+  font-size: 0.82rem;
+  color: #CBD5E1;
+  letter-spacing: 0.5px;
 }
 
 .hamburger {
   display: none;
-  font-size: 1.8rem;
+  background: none;
+  border: none;
   color: var(--royal-gold);
+  font-size: 1.8rem;
   cursor: pointer;
 }
 
-/* =========================================================
-   4. HERO SECTION
-   ========================================================= */
-.hero-overlay,
-.hero::before,
-.hero::after {
-  display: none !important;
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 22px;
 }
 
+.nav-menu a {
+  color: #E2E8F0;
+  text-decoration: none;
+  font-size: 1.02rem; /* मेन्यू लिंक्स बड़े किए गए */
+  font-weight: 500;
+  transition: var(--transition-smooth);
+}
+
+.nav-menu a:hover {
+  color: var(--royal-gold);
+}
+
+.btn-nav-gold {
+  background: linear-gradient(135deg, #D4AF37, #B45309);
+  color: #000;
+  font-weight: 700;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 24px;
+  cursor: pointer;
+  font-size: 0.92rem;
+  box-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+}
+
+.btn-nav-outline {
+  background: transparent;
+  color: #CBD5E1;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  padding: 9px 18px;
+  border-radius: 24px;
+  cursor: pointer;
+  font-size: 0.92rem;
+}
+
+.btn-nav-admin {
+  background: transparent;
+  color: var(--royal-gold);
+  border: 1.5px solid var(--royal-gold);
+  padding: 9px 18px;
+  border-radius: 24px;
+  cursor: pointer;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+/* =========================================================
+   3. HERO SECTION ADJUSTMENT (हेडर बड़ा होने के कारण पैडिंग बढ़ाई गई)
+   ========================================================= */
 .hero {
-  position: relative;
   min-height: 58vh;
-  background: radial-gradient(ellipse at top, #241046 0%, #170a26 45%, #34091a 100%) !important;
+  background: radial-gradient(circle at top, #1e0b57 0%, #0a041f 60%, #1a0305 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 110px 20px 50px;
-  overflow: hidden;
-  border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+  padding: 120px 20px 40px; /* टॉप पैडिंग 120px */
+  border-bottom: 2px solid rgba(212, 175, 55, 0.25);
 }
 
+/* मोबाइल रिस्पॉन्सिव */
+/* =========================================================
+   ROYAL MOBILE DRAWER MENU (MATCHED WITH HOMEPAGE BG)
+   ========================================================= */
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+    font-size: 1.8rem;
+    color: var(--royal-gold);
+  }
+
+  .nav-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    /* होमपेज जैसा डार्क रॉयल ग्रेडिएंट */
+    background: radial-gradient(circle at top, #1e0b57 0%, #0a041f 60%, #150E28 100%);
+    flex-direction: column;
+    align-items: center;
+    padding: 25px 20px 30px;
+    gap: 0;
+    border-bottom: 2px solid var(--royal-gold);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.85);
+  }
+
+  .nav-menu.active {
+    display: flex;
+    animation: menuSlideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  /* मेन्यू लिंक्स की व्यवस्थित स्टाइलिंग */
+  .nav-menu a {
+    width: 100%;
+    text-align: center;
+    padding: 12px 0;
+    font-size: 1.05rem;
+    color: #F1F5F9;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.12);
+    display: block;
+    transition: all 0.2s ease;
+  }
+
+  .nav-menu a:first-child {
+    border-top: 1px solid rgba(212, 175, 55, 0.12);
+  }
+
+  .nav-menu a:hover, .nav-menu a:active {
+    color: var(--royal-gold);
+    background: rgba(212, 175, 55, 0.06);
+  }
+
+  /* बटन्स को नीचे व्यवस्थित करना */
+  .nav-menu button {
+    width: 85%;
+    max-width: 280px;
+    margin-top: 12px;
+    padding: 11px 0;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+  }
+
+  .btn-nav-gold {
+    margin-top: 18px !important;
+  }
+
+  .btn-nav-outline {
+    border-color: rgba(212, 175, 55, 0.35);
+  }
+}
+
+@keyframes menuSlideDown {
+  0% { opacity: 0; transform: translateY(-10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
 .hero-content {
-  position: relative;
-  z-index: 2;
   max-width: 800px;
   width: 100%;
 }
 
+
 .badge {
-  background: rgba(212, 175, 55, 0.1);
+  background: rgba(212, 175, 55, 0.12);
   color: var(--royal-gold);
-  border: 1px solid rgba(212, 175, 55, 0.45);
-  padding: 5px 16px;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  padding: 4px 14px;
   border-radius: 20px;
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 1.2px;
+  font-size: 0.75rem;
   display: inline-block;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 
 .hero h1 {
   font-family: 'Cinzel', serif;
-  font-size: 4.6rem;
+  font-size: 3.2rem;
   font-weight: 700;
-  background: linear-gradient(180deg, #f3ca02 0%, #F5E6BE 40%, #D4AF37 100%);
+  background: linear-gradient(180deg, #FFFFFF 0%, #F5E6BE 40%, #D4AF37 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.5));
-  margin-bottom: 10px;
+  margin-bottom: 4px;
   line-height: 1.15;
 }
 
 .tagline {
   color: #E2E8F0;
-  font-size: 1.15rem;
-  letter-spacing: 0.3px;
+  font-size: 1.1rem;
   font-family: 'Yatra One', cursive;
-  margin-bottom: 26px;
+  margin-bottom: 14px;
 }
 
 .hero-meta {
@@ -244,469 +384,193 @@ body {
   justify-content: center;
   gap: 12px;
   color: var(--text-light);
-  font-size: 0.9rem;
-  margin-bottom: 30px;
+  font-size: 0.88rem;
+  margin-bottom: 18px;
+}
+
+.hero-meta span {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 5px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.hero-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
-.hero-meta span,
-.hero-meta .location-badge {
-  background: rgba(255, 255, 255, 0.06);
-  padding: 6px 14px;
-  border-radius: 8px;
-  border: 1px solid rgba(212, 175, 55, 0.22);
-  font-size: 0.9rem;
-  line-height: 1.4;
-}
-
-.map-actions:empty {
-  display: none;
-}
-
-/* Mobile Responsive Hero */
-@media (max-width: 768px) {
-  .hero {
-    min-height: 56vh;
-    padding: 85px 15px 25px;
-  }
-
-  .hero h1 {
-    font-size: 2.7rem;
-    margin-bottom: 4px;
-  }
-
-  .tagline {
-    font-size: 0.98rem;
-    margin-bottom: 12px;
-  }
-
-  .hero-meta {
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-  .hero-meta span,
-  .hero-meta .location-badge {
-    font-size: 0.8rem;
-    padding: 4px 10px;
-  }
-
-  .hero-content .btn-primary,
-  .hero-content .btn-outline-gold {
-    padding: 10px 18px;
-    font-size: 0.88rem;
-    margin: 4px;
-  }
-}
-
-/* =========================================================
-   5. SHINING GOLD BUTTONS
-   ========================================================= */
-.btn-primary,
-.btn-pay {
-  background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
-  color: #0A1931;
+.btn-primary {
+  background: linear-gradient(135deg, #D4AF37 0%, #B45309 100%);
+  color: #111827;
   font-weight: 700;
-  font-size: 1rem;
-  letter-spacing: 0.2px;
-  padding: 13px 34px;
-  margin-right: 12px;
   border: none;
-  border-radius: 28px;
+  padding: 11px 24px;
+  border-radius: 24px;
   cursor: pointer;
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
   transition: var(--transition-smooth);
-  position: relative;
-  overflow: hidden;
-  display: inline-block;
-  text-decoration: none;
-}
-.btn-primary:hover,
-.btn-pay:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 28px rgba(212, 175, 55, 0.5);
+  font-size: 0.95rem;
 }
 
-.btn-primary::after,
-.btn-pay::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -60%;
-  width: 30%;
-  height: 200%;
-   background: rgba(255, 255, 255, 0.3);
-  transform: rotate(25deg);
-  animation: buttonShine 4s infinite ease-in-out;
-}
-
-.btn-outline {
-  display: inline-block;
-  padding: 10px 22px;
-  border: 1.5px solid var(--accent-gold);
-  color: var(--primary-navy);
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 600;
-  transition: var(--transition-smooth);
-}
-
-.btn-outline:hover {
-  background: var(--royal-gold);
-  color: #0A1931;
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
 }
 
 .btn-outline-gold {
-  padding: 12px 24px;
-  border: 1.5px solid var(--royal-gold);
+  background: rgba(120, 53, 15, 0.3);
   color: var(--royal-gold);
-  background: transparent;
-  border-radius: 28px;
-  text-decoration: none;
+  border: 1.5px solid var(--royal-gold);
+  padding: 10px 22px;
+  border-radius: 24px;
+  cursor: pointer;
   font-weight: 600;
   font-size: 0.95rem;
-  transition: var(--transition-smooth);
-  cursor: pointer;
-  display: inline-block;
 }
 
-.btn-outline-gold:hover {
-  background: rgba(212, 175, 55, 0.15);
-  transform: translateY(-2px);
-}
+.w-100 { width: 100%; }
 
 /* =========================================================
-   6. EVENT & ABOUT SECTIONS
+   5. COUNTDOWN & SPONSORS
    ========================================================= */
-.section {
-  padding: 55px 20px;
-  max-width: 1050px;
+.countdown-section {
+  background: #0A1931;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.timer-container {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  max-width: 500px;
   margin: 0 auto;
 }
 
-.section h2 {
-  font-family: 'Cinzel', serif;
-  color: var(--primary-navy);
-  font-size: 2.1rem;
+.timer-box {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  padding: 8px 14px;
+  border-radius: 8px;
   text-align: center;
-  margin-bottom: 18px;
+  min-width: 65px;
+}
+
+.timer-box span {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--royal-gold);
+}
+
+.timer-box label {
+  font-size: 0.7rem;
+  color: #94A3B8;
+}
+
+.sponsors-grid {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+
+.sponsor-card {
+  background: #FFF;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 12px;
+  padding: 15px 25px;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transition: var(--transition-smooth);
+}
+
+.sponsor-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--royal-gold);
+  box-shadow: var(--shadow-soft);
+}
+
+.sponsor-card img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.sponsor-card span {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary-navy);
+}
+
+/* =========================================================
+   6. SECTIONS & GUESTS
+   ========================================================= */
+.section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 50px 20px;
+}
+
+.section-title {
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  font-size: 2rem;
+  color: var(--primary-navy);
 }
 
 .gold-divider {
   width: 60px;
   height: 3px;
   background: var(--royal-gold);
-  margin: 10px auto 20px;
+  margin: 10px auto 25px;
   border-radius: 2px;
 }
 
-.pro-card {
-  background: var(--card-bg);
-  border-radius: 18px;
-  padding: 30px;
-  box-shadow: var(--shadow-soft);
-  border: 1px solid rgba(212, 175, 55, 0.2);
-  transition: var(--transition-smooth);
-}
-
-.pro-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-hover);
-}
-
-.map-wrapper iframe {
-  border-radius: 12px;
-}
-
-/* =========================================================
-   7. COUNTDOWN TIMER STYLING
-   ========================================================= */
-.countdown-section {
-  padding: 30px 20px;
-}
-
-.countdown-container {
-  background: linear-gradient(135deg, #0A1931 0%, #172A45 100%);
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  border-radius: 16px;
-  padding: 30px 20px;
+.section-desc {
   text-align: center;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-}
-
-.countdown-container h3 {
-  color: var(--royal-gold);
-  font-family: 'Yatra One', cursive;
-  font-size: 1.4rem;
-  margin-bottom: 20px;
-}
-
-.countdown-timer {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  flex-wrap: wrap;
-}
-
-.time-box {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(212, 175, 55, 0.2);
-  border-radius: 12px;
-  padding: 12px 18px;
-  min-width: 75px;
-}
-
-.time-box span {
-  display: block;
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #FFFFFF;
-}
-
-.time-box label {
-  font-size: 0.75rem;
-  color: #CBD5E1;
-  text-transform: uppercase;
-}
-
-/* =========================================================
-   8. FAQ ACCORDION STYLING
-   ========================================================= */
-.faq-container {
-  max-width: 750px;
-  margin: 20px auto 0;
-}
-
-.faq-item {
-  margin-bottom: 12px;
-  border-radius: 10px;
-  overflow: hidden;
-  border: 1px solid #E2E8F0;
-  background: #FFFFFF;
-}
-
-.faq-question {
-  width: 100%;
-  padding: 16px 20px;
-  background: none;
-  border: none;
-  text-align: left;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--primary-navy);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-}
-
-.faq-question span {
-  font-size: 1.3rem;
-  color: var(--royal-gold);
-  transition: transform 0.3s ease;
-}
-
-.faq-answer {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease, padding 0.3s ease;
-  background: #F8FAFC;
-}
-
-.faq-answer p {
-  padding: 0 20px 16px;
-  color: #475569;
-  font-size: 0.92rem;
-  margin: 0;
-}
-
-.faq-item.active .faq-question span {
-  transform: rotate(45deg);
-}
-
-.faq-item.active .faq-answer {
-  max-height: 150px;
-  padding-top: 10px;
-}
-
-/* =========================================================
-   9. POPUP MODALS
-   ========================================================= */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(10, 25, 49, 0.85);
-  backdrop-filter: blur(8px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
-
-.modal-card {
-  background: #FFFFFF;
-  border-radius: 20px;
-  padding: 35px 28px;
-  max-width: 480px;
-  width: 90%;
-  margin: auto;
-  position: relative;
-  border-top: 6px solid var(--royal-gold);
-  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
-  animation: popScale 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
-.close-modal-btn {
-  position: absolute;
-  top: 14px;
-  right: 18px;
-  font-size: 1.8rem;
-  background: none;
-  border: none;
-  cursor: pointer;
   color: #64748B;
-  transition: var(--transition-smooth);
-}
-
-.close-modal-btn:hover {
-  color: #DC2626;
-  transform: rotate(90deg);
-}
-
-.modal-sub {
-  color: #64748B;
-  font-size: 0.85rem;
-  margin-bottom: 15px;
-}
-
-.input-group {
-  margin-bottom: 15px;
-  text-align: left;
-}
-
-.input-group label {
-  display: block;
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: #1E293B;
-  margin-bottom: 5px;
-}
-
-.pro-input {
-  width: 100%;
-  padding: 12px 14px;
-  border: 1.5px solid #CBD5E1;
-  border-radius: 9px;
+  margin-bottom: 30px;
   font-size: 0.95rem;
-  background: #F8FAFC;
-  outline: none;
-  transition: var(--transition-smooth);
 }
 
-.pro-input:focus {
-  background: #FFFFFF;
-  border-color: var(--royal-gold);
-  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
-}
-
-.summary-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #F1F5F9;
-  padding: 12px 16px;
-  border-radius: 9px;
-  margin: 16px 0;
-  border: 1px dashed #CBD5E1;
-}
-
-.price-text {
-  font-size: 1.2rem;
-  color: #78350F;
-  font-weight: 700;
-}
-
-.scanner-viewport {
-  width: 100%;
+.about-card, .about-us-box {
+  background: #FFF;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  padding: 25px;
   border-radius: 12px;
-  overflow: hidden;
-  margin: 15px 0;
+  box-shadow: var(--shadow-soft);
 }
 
-.stats-badge {
-  background: #EFF6FF;
-  color: #1D4ED8;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  display: inline-block;
-  margin-bottom: 10px;
-}
-
-/* =========================================================
-   10. PORTAL (DOWNLOAD PASS & CERTIFICATE)
-   ========================================================= */
-.btn-portal {
-  width: 100%;
-  margin-top: 10px;
-}
-
-.portal-loader {
-  margin-top: 25px;
-}
-
-.spinner {
-  width: 35px;
-  height: 35px;
-  border: 3px solid rgba(212, 175, 55, 0.2);
-  border-top-color: var(--royal-gold);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  margin: 0 auto 10px;
-}
-
-.portal-result {
-  margin-top: 25px;
-  padding: 20px;
-  background: #F8FAFC;
-  border-radius: 14px;
-  border: 1px solid #E2E8F0;
-  animation: popScale 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.result-badge {
-  color: #15803D;
-  background: #DCFCE7;
-  display: inline-block;
-  padding: 4px 14px;
-  border-radius: 20px;
-  font-size: 0.8rem;
+.event-details-grid {
+  display: flex;
+  gap: 20px;
+  margin-top: 15px;
   font-weight: 600;
+  color: var(--dark-maroon);
+}
+
+.about-line {
+  font-size: 0.95rem;
   margin-bottom: 10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
 }
 
-.portal-error {
-  margin-top: 20px;
-  padding: 12px;
-  background: #FEF2F2;
-  color: #DC2626;
-  border-radius: 10px;
-  font-size: 0.9rem;
-  border: 1px solid #FCA5A5;
-}
+.about-line i { color: var(--royal-gold); margin-top: 4px; }
 
-/* =========================================================
-   11. GUEST CARDS, RULES, AUDIO & FLOATING WHATSAPP
-   ========================================================= */
+/* Guest Cards */
 .guest-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 25px;
-  margin-top: 20px;
+  gap: 24px;
 }
 
 .guest-card {
@@ -717,24 +581,21 @@ body {
   border: 1px solid rgba(212, 175, 55, 0.25);
   box-shadow: var(--shadow-soft);
   transition: var(--transition-smooth);
-  position: relative;
-  overflow: hidden;
 }
 
 .guest-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 16px 32px rgba(212, 175, 55, 0.2);
+  transform: translateY(-5px);
   border-color: var(--royal-gold);
+  box-shadow: 0 12px 25px rgba(212, 175, 55, 0.2);
 }
 
 .guest-img-wrapper {
-  width: 120px;
-  height: 120px;
-  margin: 0 auto 16px;
+  width: 110px;
+  height: 110px;
+  margin: 0 auto 14px;
   border-radius: 50%;
-  padding: 4px;
+  padding: 3px;
   background: linear-gradient(135deg, #D4AF37, #78350F);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
 .guest-img {
@@ -742,7 +603,7 @@ body {
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
-  background: #fff;
+  background: #FFF;
 }
 
 .guest-name {
@@ -760,284 +621,327 @@ body {
   font-weight: 600;
   padding: 3px 12px;
   border-radius: 12px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   border: 1px solid rgba(212, 175, 55, 0.3);
 }
 
-.guest-tagline {
-  color: #64748B;
-  font-size: 0.88rem;
-  line-height: 1.5;
-  margin: 0;
-}
+.guest-tagline { color: #64748B; font-size: 0.85rem; }
+.guest-loader { grid-column: 1 / -1; text-align: center; color: #64748B; padding: 20px; }
 
-.whatsapp-float {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  background-color: #25D366;
-  color: #FFFFFF;
-  width: 58px;
-  height: 58px;
-  border-radius: 50%;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.45);
-  z-index: 999;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  animation: pulse-green 2s infinite;
-}
-
-.whatsapp-float:hover {
-  background-color: #1EBE5D;
-  transform: scale(1.1);
-  box-shadow: 0 8px 25px rgba(37, 211, 102, 0.6);
-}
-
-.whatsapp-icon {
-  width: 32px;
-  height: 32px;
-  fill: #FFFFFF;
-}
-
-.whatsapp-tooltip {
-  visibility: hidden;
-  opacity: 0;
-  width: 170px;
-  background-color: #0F172A;
-  color: #FFFFFF;
-  text-align: center;
+/* FAQ */
+.faq-accordion { max-width: 800px; margin: 0 auto; }
+.faq-item {
+  background: #FFF;
+  border: 1px solid rgba(212, 175, 55, 0.2);
   border-radius: 8px;
-  padding: 6px 10px;
-  position: absolute;
-  right: 70px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  white-space: nowrap;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-  pointer-events: none;
-}
-
-.whatsapp-tooltip::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 100%;
-  margin-top: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: transparent transparent transparent #0F172A;
-}
-
-.whatsapp-float:hover .whatsapp-tooltip {
-  visibility: visible;
-  opacity: 1;
-}
-
-.rules-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  margin-top: 20px;
-}
-
-.rule-card {
-  background: #FFFFFF;
-  border-radius: 16px;
-  padding: 28px 20px;
-  text-align: center;
-  border: 1px solid rgba(212, 175, 55, 0.25);
-  box-shadow: var(--shadow-soft);
-  transition: var(--transition-smooth);
-  position: relative;
-}
-
-.rule-card:hover {
-  transform: translateY(-5px);
-  border-color: var(--royal-gold);
-  box-shadow: 0 14px 28px rgba(212, 175, 55, 0.18);
-}
-
-.rule-icon {
-  font-size: 2.2rem;
-  margin-bottom: 12px;
-  display: inline-block;
-}
-
-.rule-card h3 {
-  font-family: 'Yatra One', cursive;
-  color: var(--primary-navy);
-  font-size: 1.25rem;
   margin-bottom: 10px;
+  overflow: hidden;
 }
 
-.rule-card p {
-  color: #475569;
-  font-size: 0.92rem;
-  line-height: 1.6;
-  margin: 0;
-}
-
-.location-badge {
-  text-decoration: none;
-  color: #FFFFFF;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  transition: all 0.25s ease;
-}
-
-.location-badge:hover {
-  background: rgba(212, 175, 55, 0.25);
-  border-color: #D4AF37;
-  transform: translateY(-2px);
-  color: #F8FAFC;
-  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
-}
-
-.announcement-bar {
-  background: linear-gradient(90deg, #D4AF37, #F59E0B, #D4AF37);
-  color: #0F172A;
-  padding: 8px 16px;
-  font-size: 0.88rem;
-  text-align: center;
-  position: relative;
-  font-weight: 500;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-}
-
-.close-alert-btn {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
+.faq-question {
+  width: 100%;
+  text-align: left;
   background: none;
   border: none;
+  padding: 15px 20px;
   font-size: 1rem;
-  font-weight: bold;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   cursor: pointer;
-  color: #0F172A;
 }
 
-.ink-sparkle {
-  position: fixed;
-  pointer-events: none;
-  width: 6px;
-  height: 6px;
-  background: radial-gradient(circle, #FFF 10%, #D4AF37 80%);
-  border-radius: 50%;
-  box-shadow: 0 0 10px #D4AF37, 0 0 20px #F59E0B;
-  z-index: 99999;
-  transform: translate(-50%, -50%);
-  animation: sparkle-fade 0.8s ease-out forwards;
-}
+.faq-answer { display: none; padding: 0 20px 15px; color: #475569; font-size: 0.92rem; }
+.faq-item.active .faq-answer { display: block; }
+.faq-item.active .faq-question i { transform: rotate(180deg); }
 
 /* =========================================================
-   CLEAN NORMAL MULTI-COLUMN FOOTER
+   PROFESSIONAL MULTI-COLUMN FOOTER
    ========================================================= */
-.site-footer {
-  position: static !important; /* किसी भी प्रकार का पॉपअप/फिक्स्ड मोड हटाता है */
-  width: 100%;
-  background: #0B1120;
-  border-top: 2px solid #D4AF37;
+.footer {
+  background: radial-gradient(circle at top, #0d172a 0%, #050a14 100%);
   color: #94A3B8;
-  padding: 45px 20px 20px;
-  margin-top: 60px;
-  box-sizing: border-box;
-  display: block !important;
+  border-top: 2px solid rgba(212, 175, 55, 0.25);
+  padding: 50px 0 0;
+  margin-top: 40px;
 }
 
 .footer-container {
-  max-width: 1150px;
+  max-width: 1200px;
   margin: 0 auto;
+  padding: 0 20px 35px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: 1.3fr 1fr 1.2fr 1.1fr;
   gap: 30px;
-  text-align: left;
-}
-
-.footer-col h3.footer-brand {
-  color: #D4AF37;
-  font-size: 1.3rem;
-  margin: 0 0 10px;
-}
-
-.footer-col .footer-desc {
-  font-size: 0.88rem;
-  line-height: 1.5;
-  color: #CBD5E1;
-  margin-bottom: 12px;
-}
-
-.reg-tag {
-  display: inline-block;
-  background: rgba(212, 175, 55, 0.15);
-  border: 1px solid #D4AF37;
-  color: #FBBF24;
-  padding: 3px 8px;
-  border-radius: 4px;
-  font-size: 0.72rem;
-  font-weight: 600;
 }
 
 .footer-col h4 {
-  color: #F8FAFC;
-  font-size: 1rem;
-  margin: 0 0 14px;
-  border-bottom: 1px solid rgba(212, 175, 55, 0.3);
-  padding-bottom: 6px;
+  font-family: 'Cinzel', serif;
+  color: var(--royal-gold);
+  font-size: 1.05rem;
+  margin-bottom: 16px;
+  position: relative;
 }
 
-.footer-links {
+.footer-col h4::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 28px;
+  height: 2px;
+  background: var(--royal-gold);
+  border-radius: 2px;
+}
+
+/* Brand Column */
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.footer-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid var(--royal-gold);
+}
+
+.footer-brand h3 {
+  font-family: 'Yatra One', cursive;
+  color: #FFF;
+  font-size: 1.15rem;
+  margin: 0;
+}
+
+.brand-sub {
+  font-size: 0.75rem;
+  color: #94A3B8;
+  margin: 0;
+}
+
+.footer-about {
+  font-size: 0.86rem;
+  color: #94A3B8;
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+.reg-badge {
+  display: inline-block;
+  background: rgba(212, 175, 55, 0.1);
+  color: var(--royal-gold);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Links & Contact Lists */
+.footer-links, .footer-contact {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.footer-links li {
-  margin-bottom: 8px;
-}
-
-.footer-links a, .footer-col a {
-  color: #94A3B8;
+.footer-links li { margin-bottom: 9px; }
+.footer-links a {
+  color: #CBD5E1;
   text-decoration: none;
-  font-size: 0.85rem;
-  transition: color 0.2s;
+  font-size: 0.88rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
 }
 
-.footer-links a:hover, .footer-col a:hover {
-  color: #D4AF37;
+.footer-links a i {
+  font-size: 0.75rem;
+  color: var(--royal-gold);
 }
 
-.footer-col p {
-  font-size: 0.85rem;
-  margin: 6px 0;
+.footer-links a:hover {
+  color: var(--royal-gold);
+  transform: translateX(3px);
+}
+
+.footer-contact li {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 0.86rem;
   color: #CBD5E1;
 }
 
-.footer-bottom {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  margin-top: 35px;
-  padding-top: 15px;
-  text-align: center;
-  font-size: 0.78rem;
-  color: #64748B;
+.footer-contact li i {
+  color: var(--royal-gold);
+  margin-top: 3px;
+  font-size: 0.9rem;
 }
 
-/* मोबाइल स्क्रीन के लिए */
+.footer-contact a {
+  color: #CBD5E1;
+  text-decoration: none;
+}
+
+.footer-contact a:hover { color: var(--royal-gold); }
+
+/* Social Icons */
+.footer-socials {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.social-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #FFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.social-btn.whatsapp:hover { background: #25D366; }
+.social-btn.youtube:hover { background: #FF0000; }
+.social-btn.instagram:hover { background: #E1306C; }
+.social-btn.facebook:hover { background: #1877F2; }
+
+/* Bottom Strip */
+.footer-bottom {
+  background: #030712;
+  padding: 16px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.8rem;
+}
+
+.footer-bottom-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.footer-admin-link a {
+  color: #64748B;
+  text-decoration: none;
+  font-size: 0.78rem;
+  transition: color 0.2s ease;
+}
+
+.footer-admin-link a:hover {
+  color: var(--royal-gold);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .footer-container {
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+  }
+}
+
 @media (max-width: 600px) {
   .footer-container {
     grid-template-columns: 1fr;
-    text-align: center;
-    gap: 24px;
+    gap: 25px;
   }
-  .footer-col h4 {
-    display: inline-block;
+  .footer-bottom-container {
+    flex-direction: column;
+    text-align: center;
   }
 }
+/* =========================================================
+   8. MODALS & FORMS
+   ========================================================= */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-box {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 28px;
+  max-width: 480px;
+  width: 100%;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid var(--royal-gold);
+}
+
+.modal-lg { max-width: 580px; }
+.modal-close {
+  position: absolute;
+  top: 15px;
+  right: 18px;
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  cursor: pointer;
+  color: #64748B;
+}
+
+.modal-title { font-family: 'Cinzel', serif; color: var(--primary-navy); font-size: 1.4rem; }
+.modal-sub { color: #64748B; font-size: 0.85rem; margin-bottom: 20px; }
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; }
+.form-group input, .form-group select { width: 100%; padding: 10px 14px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 0.95rem; }
+
+.price-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #F8FAFC;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin: 15px 0;
+  border: 1px solid #E2E8F0;
+}
+
+.price-summary strong { color: #B45309; font-size: 1.3rem; }
+
+.portal-result-card { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; margin-top: 15px; text-align: center; }
+.portal-btn-group { display: flex; flex-direction: column; gap: 10px; }
+.btn-download-pass, .btn-download-cert { display: block; width: 100%; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer; }
+.btn-download-pass { background: #0A1931; color: #FFF; }
+.btn-download-cert { background: #166534; color: #FFF; }
+.error-box { background: #FEE2E2; color: #991B1B; padding: 10px; border-radius: 8px; font-size: 0.85rem; margin-top: 12px; text-align: center; }
+.loader-box { text-align: center; color: #64748B; margin-top: 12px; }
+.scanner-box { width: 100%; max-width: 320px; margin: 0 auto; border-radius: 12px; overflow: hidden; }
+.scanner-controls { text-align: center; margin-top: 12px; }
+#scannerStatus { display: block; font-size: 0.8rem; color: #64748B; margin-top: 5px; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hamburger { display: block; }
+  .nav-menu { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: #0A1931; flex-direction: column; padding: 20px; gap: 15px; }
+  .nav-menu.active { display: flex; }
+  .hero { min-height: 56vh; padding: 85px 15px 25px; }
+  .hero h1 { font-size: 2.6rem; }
+}
+

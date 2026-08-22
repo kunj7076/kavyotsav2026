@@ -3,397 +3,380 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>काव्योत्सव 2026 | अभिव्यक्ति काव्यपीठ</title>
+    <title>अभिव्यक्ति काव्यपीठ | काव्योत्सव 2026</title>
     
-    <!-- Google Fonts -->
+    <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Yatra+One&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Yatra+One&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <link rel="stylesheet" href="style.css">
-
-    <!-- Third-Party Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- External Libraries -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+
+    <link rel="stylesheet" href="style.css">
 </head>
-<!-- Floating WhatsApp Support Button -->
-<a href="https://wa.me/918933952683?text=नमस्ते%20अभिव्यक्ति%20काव्यपीठ,%20मुझे%20काव्योत्सव%202026%20के%20संबंध%20में%20जानकारी%20चाहिए।" 
-   class="whatsapp-float" 
-   target="_blank" 
-   rel="noopener noreferrer"
-   aria-label="WhatsApp Support">
-    <svg viewBox="0 0 32 32" class="whatsapp-icon">
-        <path fill="currentColor" d="M16 2a13.9 13.9 0 0 0-12 21L2 30l7.3-1.9A13.9 13.9 0 1 0 16 2zm0 25.5a11.5 11.5 0 0 1-5.9-1.6l-.4-.3-4.4 1.1 1.2-4.2-.3-.4A11.6 11.6 0 1 1 16 27.5zm6.4-8.6c-.3-.2-2-.1-2.3-1.1s-.6-.3-.9.1-.9 1.1-1.1 1.3-.4.2-.7.1a9.2 9.2 0 0 1-2.7-1.7 10.2 10.2 0 0 1-1.9-2.3c-.2-.3 0-.5.1-.7l.5-.6c.2-.2.2-.4.3-.6a.6.6 0 0 0 0-.6c-.1-.2-.9-2.2-1.2-3s-.6-.7-.9-.7h-.7a1.4 1.4 0 0 0-1 1 5.3 5.3 0 0 0 1.1 4.5 13.8 13.8 0 0 0 5.4 4.8c.8.3 1.4.5 1.9.6a4.5 4.5 0 0 0 2.1.1 3.5 3.5 0 0 0 2.3-1.6 2.8 2.8 0 0 0 .2-1.6c-.1-.2-.4-.3-.7-.5z"/>
-    </svg>
-    <span class="whatsapp-tooltip">सहायता चाहिए? WhatsApp करें</span>
-</a>
-<body>
-    <!-- INTRO SPLASH SCREEN -->
-    <div id="introOverlay" class="intro-screen">
-        <div class="intro-box">
-            <h1 class="intro-title">अभिव्यक्ति काव्यपीठ</h1>
-            <p class="intro-tag">“ऋषयो मन्त्रद्रष्टारः कवयः क्रान्तदर्शिनः”</p>
+
+
+
+    <!-- 1. INTRO SPLASH SCREEN -->
+    <div id="introSplash" class="intro-splash">
+        <div class="splash-content">
+            <h1 class="splash-title">अभिव्यक्ति काव्यपीठ</h1>
+            <div class="splash-line"></div>
+            <p class="splash-subtitle">ऋषयो मन्त्रद्रष्टारः कवय क्रान्तदर्शिन:</p>
         </div>
     </div>
 
-    <!-- Professional Navigation Bar with Hamburger Menu -->
+    <!-- 2. NAVBAR -->
     <header class="navbar">
-        <div class="logo-container">
-            <img src="https://i.postimg.cc/BvCpXsBY/file-000000004b2c82119a54e5fe960f91e8.png" alt="Abhivyakti Logo" class="nav-logo">
-            <div class="logo-brand">
-                <span class="logo-title">अभिव्यक्ति काव्यपीठ</span>
-                <small class="logo-sub">प्रयागराज, उत्तर प्रदेश</small>
-            </div>
+        <div class="nav-container">
+            <a href="#" class="brand-logo">
+                <img src="image/logo.png" alt="Logo" class="logo-img">
+                <div class="brand-text">
+                    <span class="brand-title">अभिव्यक्ति काव्यपीठ</span>
+                    <span class="brand-subtitle">प्रयागराज, उत्तर प्रदेश</span>
+                </div>
+            </a>
+            
+            <button class="hamburger" onclick="toggleNavMenu(event)" aria-label="Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <nav class="nav-menu" id="navMenu">
+                <a href="#about" onclick="closeNavMenu()">परिचय</a>
+                <a href="#sponsorsSection" onclick="closeNavMenu()">प्रायोजक</a>
+                <a href="#guestsSection" onclick="closeNavMenu()">अतिथि</a>
+                <a href="#aboutUsSection" onclick="closeNavMenu()">हमारे बारे में</a>
+                <a href="#faq" onclick="closeNavMenu()">FAQ</a>
+                <button class="btn-nav-gold" onclick="closeNavMenu(); openRegisterModal(event);">पास बुक करें</button>
+                <button class="btn-nav-outline" onclick="closeNavMenu(); openDownloadModal();">पास / सर्टिफिकेट</button>
+                <button class="btn-nav-admin" onclick="closeNavMenu(); openAdminModal();"><i class="fas fa-shield-alt"></i> एडमिन</button>
+            </nav>
         </div>
-
-        <!-- 3-Lines Hamburger Icon -->
-        <div class="hamburger" onclick="toggleNavMenu()">☰</div>
-
-        <!-- Sliding Navigation Links -->
-        <nav class="nav-links" id="navMenu">
-            <a href="#home" onclick="closeNavMenu()">Home</a>
-            <a href="#event" onclick="closeNavMenu()">Event Info</a>
-            <a href="javascript:void(0)" onclick="openRegisterModal(); closeNavMenu();">Registration</a>
-            <a href="javascript:void(0)" onclick="openDownloadModal(); closeNavMenu();">Download Pass</a>
-            <a href="#about" onclick="closeNavMenu()">About Us</a>
-            <a href="javascript:void(0)" onclick="openAdminModal(); closeNavMenu();">Admin Portal</a>
-        </nav>
     </header>
 
-   </main>
-    <!-- Hero Section -->
-    <section id="home" class="hero">
+    <!-- 3. HERO SECTION -->
+    <section class="hero">
         <div class="hero-content">
             <span class="badge">REG. NO: UDYAM-UP-03-0155035</span>
-            <h1>काव्योत्सव</h1>
-            <p class="tagline">साहित्यिक चेतना एवं युवा काव्य संध्या</p>
+            <h1>काव्योत्सव 2026</h1>
+            <p class="tagline">साहित्यिक चेतना एवं भव्य युवा काव्य संध्या</p>
+            
             <div class="hero-meta">
-                <!-- Clickable Location Badge for Google Maps Redirect -->
-                   <div class="map-actions" style="margin-top:10px;"></div>
-            <a href="https://www.google.com/maps/search/?api=1&query=Prayagraj,+Uttar+Pradesh" 
-   target="_blank" 
-   rel="noopener noreferrer" 
-   class="badge-pill location-badge"
-   title="Google Maps पर स्थान देखें">
-    📍 प्रयागराज
-            </a>
-                <span>📅 23 अगस्त 2026</span>
+                <span><i class="fas fa-map-marker-alt"></i> प्रयागराज, उ.प्र.</span>
+                <span><i class="fas fa-calendar-alt"></i> 23 अगस्त 2026</span>
+                <span><i class="fas fa-clock"></i> सायं 05:00 बजे</span>
             </div>
-            <!-- Pop-up Trigger Buttons -->
-            <button onclick="openRegisterModal()" class="btn-primary">Pass Book Karein</button>
-            <button onclick="openDownloadModal()" class="btn-outline-gold">पहले से पंजीकृत हैं?</button>
+
+            <div class="hero-actions">
+                <button class="btn-primary" onclick="openRegisterModal(event)">पास बुक करें</button>
+                <button class="btn-outline-gold" onclick="openDownloadModal()">पहले से पंजीकृत हैं?</button>
+            </div>
         </div>
     </section>
 
-    <!-- EVENT INFO SECTION -->
-    <section id="event" class="section">
-        <h2>काव्योत्सव के बारे में (About Our Event)</h2>
-        <p>काव्योत्सव प्रयागराज की ऐतिहासिक धरती पर आयोजित होने वाली एक भव्य साहित्यिक एवं काव्य संध्या है। इस आयोजन का मुख्य उद्देश्य नवोदित एवं स्थापित कवियों, शायरों और विचारकों को एक साझा मंच प्रदान करना है।</p>
-        <p style="margin-top: 8px;">यहाँ आप हिंदी साहित्य, ग़ज़ल, छंद, हास्य-व्यंग्य और आधुनिक काव्य-विधाओं के अद्भुत संगम का अनुभव करेंगे। यदि आप साहित्य प्रेमी हैं या मंच पर अपनी रचना प्रस्तुत करना चाहते हैं, तो "Pass Book Karein" बटन पर क्लिक करके अपना Pass सुनिश्चित करें।</p>
-        
-</section>
+    <!-- 4. COUNTDOWN TIMER -->
+    <section class="countdown-section"> 
+        <div class="timer-container" id="countdownTimer">
+            <div class="timer-box"><span id="days">00</span><label>दिन</label></div>
+            <div class="timer-box"><span id="hours">00</span><label>घंटे</label></div>
+            <div class="timer-box"><span id="minutes">00</span><label>मिनट</label></div>
+            <div class="timer-box"><span id="seconds">00</span><label>सेकंड</label></div>
+        </div>
+    </section>
 
+    <!-- 6. ABOUT EVENT SECTION -->
+    <section class="section" id="about">
+        <h2 class="section-title">काव्योत्सव 2026 के बारे में</h2>
+        <div class="about-content">
+            <p>
+                <strong>काव्योत्सव 2026</strong> प्रयागराज की पावन धरा पर आयोजित होने वाला एक भव्य राष्ट्रीय साहित्यिक समागम है। 
+                इस आयोजन का मुख्य उद्देश्य नवोदित एवं स्थापित कवियों, विचारकों और साहित्य-प्रेमियों को एक गरिमामयी मंच प्रदान करना है।
+            </p>
+            <div class="event-details-grid">
+                <div class="detail-item"><i class="fas fa-clock"></i> <span>सायं 05:00 बजे से</span></div>
+                <div class="google map" class="detail-item"><i class="fas fa-map-pin" ><a href="https://goo.gl/maps/your-location" target="_blank"></i><span>इलाहाबाद विश्वविद्यालय</span></a></div>
+            </div>
+        </div>
+    </section>
 
-        <!-- ==========================================
-     CHIEF GUESTS & POETS SECTION
-     ========================================== -->
+    <!-- 7. GUESTS & PERFORMERS SECTION -->
     <section class="section" id="guestsSection">
-    <h2>विशिष्ट अतिथि एवं आमंत्रित कवि</h2>
-    <div class="gold-divider"></div>
-    <p style="text-align: center; color: #3a07f3; margin-bottom: 20px; font-size: 0.95rem;">
-        काव्योत्सव के मंच को सुशोभित करने वाली प्रख्यात हस्तियाँ
-    </p>
+        <h2 class="section-title">विशिष्ट अतिथि</h2>
+        <div class="gold-divider"></div>
+        <p class="section-desc">काव्योत्सव 2026 के मंच को सुशोभित करने वाली प्रख्यात हस्तियाँ</p>
 
-    <!-- यहाँ Google Sheet से डेटा लोड होगा -->
-    <div class="guest-grid" id="guestGrid">
-        <div style="text-align:center; width:100%; color:#0469f7;">⏳ विवरण लोड हो रहा है...</div>
-    </div>
+        <div class="guest-grid" id="guestGrid">
+            <div class="guest-loader">⏳ विवरण लोड हो रहा है...</div>
+        </div>
+    </section>
+
+    <!-- 5. SPONSORS SECTION -->
+    <section class="section" id="sponsorsSection">
+        <h2 class="section-title">हमारे प्रायोजक एवं सहयोगी</h2>
+        <div class="gold-divider"></div>
+        <p class="section-desc">काव्योत्सव 2026 को संबल प्रदान करने वाले मुख्य सहयोगी</p>
+
+        <div class="sponsors-grid">
+            <a href="https://www.instagram.com/prayagraj_insight?utm_source=ig_web_button_share_sheet&igsi=ZDNlZDc0MzIxNw==" target="_blank" class="sponsor-card">
+                <img src="image/sponsor1.png" alt="Sponsor 1"> 
+                <span>Media Partner</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- 8. ABOUT US (ORGANIZATION) -->
+    <section class="section" id="aboutUsSection">
+        <h2 class="section-title">हमारे बारे में (About Us)</h2>
+        <div class="gold-divider"></div>
+        <div class="about-us-box">
+            <p class="about-line"><i class="fas fa-feather-alt"></i> <strong>अभिव्यक्ति काव्यपीठ</strong> प्रयागराज की पावन धरा से संचालित एक प्रतिष्ठित साहित्यिक संस्था है।</p>
+            <p class="about-line"><i class="fas fa-bullhorn"></i> हमारा मुख्य उद्देश्य युवा साहित्यकारों और कवियों को राष्ट्रीय स्तर पर मंच और पहचान प्रदान करना है।</p>
+            <p class="about-line"><i class="fas fa-award"></i> यह संस्था (MSME Reg: UDYAM-UP-03-0155035) भारतीय साहित्य और कला के संवर्धन हेतु समर्पित है।</p>
+        </div>
+    </section>
+
+    <!-- 9. FAQ SECTION -->
+    <section class="section" id="faq">
+        <h2 class="section-title">सामान्य प्रश्न (FAQ)</h2>
+        <div class="gold-divider"></div>
+        <div class="faq-accordion">
+            <div class="faq-item">
+                <button class="faq-question">श्रोता (Audience) के लिए शुल्क क्या है? <i class="fas fa-chevron-down"></i></button>
+                <div class="faq-answer"><p>श्रोताओं और दर्शकों के लिए प्रवेश पूर्णतः निःशुल्क है। केवल ऑनलाइन पास बुक करना अनिवार्य है।</p></div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">कवि/प्रस्तुतकर्ता (Performer) हेतु क्या व्यवस्था है? <i class="fas fa-chevron-down"></i></button>
+                <div class="faq-answer"><p>मंच प्रस्तुति का स्लॉट शुल्क ₹299 है। प्रस्तुति के उपरांत डिजिटल ई-सर्टिफिकेट भी प्रदान किया जाएगा।</p></div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">सर्टिफिकेट कब और कैसे डाउनलोड होगा? <i class="fas fa-chevron-down"></i></button>
+                <div class="faq-answer"><p>इवेंट में क्यूआर स्कैनिंग द्वारा उपस्थिति दर्ज होने के बाद, कार्यक्रम समाप्ति पर पोर्टल से सर्टिफिकेट डाउनलोड होगा।</p></div>
+            </div>
+        </div>
     </section>
 
     <!-- ==========================================
-     RULES & GUIDELINES (3-CARD GRID)
-     ========================================== -->
-    <section class="section" id="rulesSection">
-    <h2>नियम एवं दिशा-निर्देश</h2>
-    <div class="gold-divider"></div>
-    <p style="text-align: center; color: #f31707; margin-bottom: 30px; font-size: 0.95rem;">
-        काव्योत्सव की गरिमा एवं सुचारु संचालन हेतु आवश्यक निर्देश
-    </p>
-
-    <div class="rules-grid">
-        <!-- Card 1 -->
-        <div class="rule-card">
-            <div class="rule-icon">⏱️</div>
-            <h3>समय सीमा</h3>
-            <p>प्रत्येक रचनाकार को मंच प्रस्तुति हेतु अधिकतम <strong>5 मिनट</strong> का समय दिया जाएगा। समय का अनुशासन अनिवार्य है।</p>
-        </div>
-
-        <!-- Card 2 -->
-        <div class="rule-card">
-            <div class="rule-icon">📜</div>
-            <h3>मौलिकता व मर्यादा</h3>
-            <p>रचना स्वरचित एवं मौलिक होनी चाहिए। किसी भी प्रकार की अभद्र, असामाजिक या विवादित भाषा का प्रयोग पूर्णतः वर्जित है।</p>
-        </div>
-
-        <!-- Card 3 -->
-        <div class="rule-card">
-            <div class="rule-icon">🎟️</div>
-            <h3>प्रवेश एवं सत्यापन</h3>
-            <p>कार्यक्रम स्थल पर ई-पास QR कोड का सत्यापन अनिवार्य है। कृपया कार्यक्रम प्रारंभ होने से <strong>30 मिनट पूर्व</strong> स्थान ग्रहण करें।</p>
-        </div>
-    </div>
-</section>
-
-    <!-- LIVE COUNTDOWN SECTION -->
-    <section class="section countdown-section">
-        <div class="countdown-container">
-            <h3>काव्योत्सव 2026 प्रारंभ होने में शेष</h3>
-            <div class="countdown-timer" id="countdownTimer">
-                <div class="time-box">
-                    <span id="days">00</span>
-                    <label>दिन</label>
-                </div>
-                <div class="time-box">
-                    <span id="hours">00</span>
-                    <label>घंटे</label>
-                </div>
-                <div class="time-box">
-                    <span id="minutes">00</span>
-                    <label>मिनट</label>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FAQS SECTION -->
-    <section class="section">
-        <h2>अक्सर पूछे जाने वाले सवाल (FAQ)</h2>
-        <div class="gold-divider"></div>
-        <div class="faq-container">
-            <div class="faq-item">
-                <button class="faq-question">क्या प्रवेश के लिए पास का प्रिंटआउट अनिवार्य है? <span>+</span></button>
-                <div class="faq-answer">
-                    <p>नहीं, आप अपने मोबाइल पर E-Ticket PDF या QR कोड दिखाकर सीधा प्रवेश पा सकते हैं।</p>
-                </div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question">क्या बिना पास के प्रवेश हो सकता है? <span>+</span></button>
-                <div class="faq-answer">
-                    <p>नहीं, प्रवेश के लिए एक वैध पास आवश्यक है।</p>
-                </div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question">क्या मुझे सहभागिता प्रमाण-पत्र (Certificate) मिलेगा? <span>+</span></button>
-                <div class="faq-answer">
-                    <p>हाँ, सभी पंजीकृत प्रतिभागियों को हार्ड कॉपी के साथ डिजिटल सत्यापन युक्त ई-सर्टिफिकेट प्रदान किया जाएगा।</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ABOUT US SECTION -->
-    <section id="about" class="section">
-        <h2>हमारे बारे में (About Us)</h2>
-        <p><strong>अभिव्यक्ति काव्यपीठ</strong> साहित्य, कला एवं सांस्कृतिक चेतना को समर्पित एक पंजीकृत एवं अग्रणी संस्था है (REG. NO: UDYAM-UP-03-0155035)।</p>
-        <p style="margin-top: 10px;">हमारा उद्देश्य देश के कोने-कोने से युवा प्रतिभाओं को खोजकर उन्हें राष्ट्रीय मंच प्रदान करना है। अभिव्यक्ति काव्यपीठ नियमित रूप से काव्य गोष्ठियों, open-mic प्रतियोगिताओं और साहित्यिक सम्मेलनों का सफल आयोजन करती आ रही है।</p>
-    </section>
-
-    <!-- REGISTRATION FORM MODAL -->
-    <div id="registerModal" class="modal-overlay" style="display: none;">
-        <div class="modal-card">
-            <button class="close-modal-btn" onclick="closeRegisterModal()">&times;</button>
-            <div class="section-header">
-                <h2>प्रवेश पंजीकरण (Registration)</h2>
-                <div class="gold-divider"></div>
-                <p>कृपया अपना सही विवरण दर्ज करें, E-Ticket PDF तुरंत प्राप्त होगा</p>
-            </div>
-            
-            <form id="ticketForm" class="pro-card form-card">
-                <div class="input-group">
-                    <label for="userRole">आप किस रूप में शामिल होना चाहते हैं?</label>
-                    <select id="userRole" class="pro-input" required onchange="updateTicketPrice()">
-                        <option value="Audience">श्रोता / दर्शक (Audience Pass - ₹00)</option>
-                        <option value="Performer">कवि / मंच प्रस्तुतकर्ता (Performer Pass - ₹299)</option>
-                    </select>
-                </div>
-
-                <div class="input-grid">
-                    <div class="input-group">
-                        <label for="name">पूरा नाम (Full Name)</label>
-                        <input type="text" id="name" class="pro-input" placeholder="जैसे: अनुज कुमार" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="phone">व्हाट्सऐप नंबर (WhatsApp No.)</label>
-                        <input type="tel" id="phone" class="pro-input" placeholder="10-digit number" required>
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label for="email">ईमेल आईडी (Email ID)</label>
-                    <input type="email" id="email" class="pro-input" placeholder="example@gmail.com" required>
-                </div>
-                
-                <!-- Dynamic Performer Fields -->
-                <div id="performerFields" class="performer-box" style="display: none;">
-                    <div class="input-group">
-                        <label for="vidha">प्रस्तुति की विधा (Category)</label>
-                        <select id="vidha" class="pro-input">
-                            <option value="Ghazal">ग़ज़ल (Ghazal)</option>
-                            <option value="Poetry">कविता (Poetry)</option>
-                            <option value="Song">गीत (Song)</option>
-                            <option value="Comedy">हास्य व्यंग्य (Satire / Comedy)</option>
-                            <option value="Other">अन्य (Other)</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label for="title">प्रस्तुति का शीर्षक (Title of Performance)</label>
-                        <input type="text" id="title" class="pro-input" placeholder="जैसे: मेरी कविता">
-                    </div>
-                </div>
-
-                <!-- Price Summary Box -->
-                <div class="summary-card">
-                    <span>कुल पंजीकरण शुल्क:</span>
-                    <strong id="priceDisplay" class="price-text">₹00</strong>
-                </div>
-
-                <button type="submit" class="btn-pay">Pay & Download Ticket PDF</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- HIDDEN ADMIN LOGIN MODAL -->
-    <div id="adminModal" class="modal-overlay" style="display: none;">
-        <div class="modal-card">
-            <button class="close-modal-btn" onclick="closeAdminModal()">&times;</button>
-            <h3>🔒 Admin Access Portal</h3>
-            <p class="modal-sub">केवल अधिकृत व्यवस्थापक / वालंटियर हेतु</p>
-            
-            <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
-                <div class="input-group">
-                    <input type="text" id="adminUser" class="pro-input" placeholder="User Phone / Email" required>
-                </div>
-                <div class="input-group">
-                    <input type="password" id="adminPass" class="pro-input" placeholder="Password" required>
-                </div>
-                <button type="submit" class="btn-primary" style="width:100%; margin-top:10px;">Verify & Access Scanner</button>
-            </form>
-            <div id="loginError" class="error-badge" style="display:none;"></div>
-        </div>
-    </div>
-
-    <!-- ADMIN SCANNER DASHBOARD MODAL -->
-    <div id="adminDashboard" class="modal-overlay" style="display: none;">
-        <div class="modal-card scanner-card">
-            <button class="close-modal-btn" onclick="closeAdminDashboard()">&times;</button>
-            <h3>📷 Gate Entry QR Scanner</h3>
-            <div class="stats-badge">Total Entry Scanned: <strong id="scannedCount">0</strong></div>
-            
-            <div id="reader" class="scanner-viewport"></div>
-            <p id="scannerStatus" class="scanner-status">Status: Standby</p>
-
-            <button id="camToggleBtn" class="btn-primary" onclick="toggleCamera()">Start Camera Scanner</button>
-            <div id="scanResultBox" class="scan-result-card" style="display:none;"></div>
-        </div>
-    </div>
-
-    <!-- DOWNLOAD PASS & CERTIFICATE MODAL -->
-    <div id="downloadModal" class="modal-overlay" style="display: none;">
-      <div class="modal-card">
-        <button type="button" class="close-modal-btn" onclick="closeDownloadModal()">&times;</button>
-        
-        <h3 style="color: var(--primary-navy); margin-bottom: 6px;">पास एवं प्रमाण-पत्र डाउनलोड</h3>
-        <p class="modal-sub">अपना पंजीकृत मोबाइल नंबर या ईमेल आईडी दर्ज करें</p>
-        
-        <form id="modalPortalForm" onsubmit="handlePortalSearch(event)">
-          <div class="input-group">
-            <label for="searchQuery">मोबाइल नंबर / ईमेल आईडी</label>
-            <input type="text" id="searchQuery" class="pro-input" placeholder="उदा. 9876543210 या name@gmail.com" required>
-          </div>
-          <button type="submit" id="portalSearchBtn" class="btn-primary btn-portal">खोजें एवं डाउनलोड करें</button>
-        </form>
-
-        <!-- Loader -->
-        <div id="portalLoader" class="portal-loader" style="display: none;">
-          <div class="spinner"></div>
-          <p style="font-size: 0.85rem; color: #64748B;">विवरण खोजा जा रहा है...</p>
-        </div>
-
-        <!-- Result -->
-        <div id="portalResult" class="portal-result" style="display: none;">
-          <div class="result-badge">पंजीकरण सत्यापित ✓</div>
-          <h3 id="resUserName" style="font-size: 1.15rem; margin-bottom: 4px;">प्रतिभागी का नाम</h3>
-          <p id="resUserType" class="user-role-tag" style="margin-bottom: 12px;">श्रोता पास</p>
-          <button class="btn btn-secondary" onclick="downloadPassAsImage()">
-          🖼️ इमेज डाउनलोड करें
-          </button>
-          <div class="portal-actions">
-            <a id="btnDownloadTicket" href="javascript:void(0)" class="btn-outline-gold" style="display: block; text-align: center;">
-              🎟️ E-Ticket PDF
-            </a>
-            <a id="btnDownloadCert" href="javascript:void(0)" class="btn-primary" style="display: block; text-align: center; margin-top: 8px;">
-              📜 ई-सर्टिफिकेट PDF
-            </a>
-          </div>
-        </div>
-        
-        <!-- Error Message -->
-        <div id="portalNotFound" class="portal-error" style="display: none;">
-          ⚠️ कोई रिकॉर्ड नहीं मिला! कृपया सही विवरण दर्ज करें।
-        </div>
-      </div>
-    </div>
-  
-
-<!-- ऊपर के सभी सेक्शंस और मेन टैग यहाँ बंद हो चुके हों -->
-    </main> 
-
-    <!-- फुटर सबसे बाहर body में अकेला होना चाहिए -->
-    <footer class="site-footer">
+         PROFESSIONAL 4-COLUMN FOOTER
+         ========================================== -->
+    <footer class="footer">
         <div class="footer-container">
-            <div class="footer-col">
-                <h3 class="footer-brand">अभिव्यक्ति काव्यपीठ</h3>
-                <p class="footer-desc">साहित्य, कला एवं सांस्कृतिक चेतना को समर्पित एक राष्ट्रीय मंच।</p>
-                <span class="reg-tag">REG: UDYAM-UP-03-0155035</span>
+            <!-- Column 1: Brand & Details -->
+            <div class="footer-col brand-col">
+                <div class="footer-brand">
+                    <div>
+                        <h3>अभिव्यक्ति काव्यपीठ</h3>
+                        <p class="brand-sub">साहित्यिक एवं सांस्कृतिक चेतना</p>
+                    </div>
+                </div>
+                <p class="footer-about">
+                    साहित्य, संस्कृति और युवा काव्य-प्रतिभाओं को राष्ट्रीय पहचान प्रदान करने हेतु समर्पित संस्था।
+                </p>
+                <div class="reg-badge">
+                    <i class="fas fa-award"></i> REG:UDYAM-UP-03-0155035
+                </div>
             </div>
 
+            <!-- Column 2: Quick Links -->
             <div class="footer-col">
-                <h4>उपयोगी लिंक (Useful Links)</h4>
+                <h4>महत्वपूर्ण लिंक</h4>
                 <ul class="footer-links">
-                    <li><a href="#home">मुख्य पृष्ठ (Home)</a></li>
-                    <li><a href="#about">हमारे बारे में (About Us)</a></li>
-                    <li><a href="javascript:void(0)" onclick="openRegisterModal()">पास बुकिंग (Pass Registration)</a></li>
-                    <li><a href="#event">दिशा-निर्देश (Venue & Map)</a></li>
+                    <li><a href="#about"><i class="fas fa-angle-right"></i>परिचय</a></li>
+                    <li><a href="#sponsorsSection"><i class="fas fa-angle-right"></i> हमारे प्रायोजक</a></li>
+                    <li><a href="#guestsSection"><i class="fas fa-angle-right"></i> विशिष्ट अतिथि</a></li>
+                    <li><a href="javascript:void(0)" onclick="openRegisterModal()"><i class="fas fa-angle-right"></i> पास बुकिंग</a></li>
+                    <li><a href="javascript:void(0)" onclick="openDownloadModal()"><i class="fas fa-angle-right"></i> ई-पास व सर्टिफिकेट</a></li>
                 </ul>
             </div>
 
+            <!-- Column 3: Contact & Venue -->
             <div class="footer-col">
-                <h4>नीति एवं नियम (Policies)</h4>
-                <ul class="footer-links">
-                    <li><a href="#" onclick="alert('नियम एवं शर्तें...')">Terms & Conditions</a></li>
-                    <li><a href="#" onclick="alert('गोपनीयता नीति...')">Privacy Policy</a></li>
-                    <li><a href="#" onclick="alert('रिफंड नीति...')">Refund Policy</a></li>
+                <h4>संपर्क</h4>
+                <ul class="footer-contact">
+                    <li>
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>प्रयागराज, उत्तर प्रदेश - 211002</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-phone-alt"></i>
+                        <a href="tel:+918528537076">+91 85285 37076</a>
+                    </li>
+                    <li>
+                        <i class="fas fa-envelope"></i>
+                        <a href="mailto:abhivyaktikavypith@gmail.com">abhivyaktikavypith@gmail.com</a>
+                    </li>
                 </ul>
             </div>
 
+            <!-- Column 4: Legal & Social -->
             <div class="footer-col">
-                <h4>संपर्क एवं सहायता (Support)</h4>
-                <p>📧 Email: <a href="mailto:abhivyaktikavypith@gmail.com">abhivyaktikavypith@gmail.com</a></p>
-                <p>📞 Helpline: +91 8933952683</p>
-                <p>📍 Prayagraj</p>
+                <h4>नीतियां एवं सोशल मीडिया</h4>
+                <ul class="footer-links">
+                    <li><a href="javascript:void(0)" onclick="openPolicyModal('privacy')"><i class="fas fa-shield-alt"></i> गोपनीयता नीति (Privacy Policy)</a></li>
+                    <li><a href="javascript:void(0)" onclick="openPolicyModal('terms')"><i class="fas fa-file-contract"></i> नियम एवं शर्तें (Terms & Conditions)</a></li>
+                    <li><a href="javascript:void(0)" onclick="openPolicyModal('refund')"><i class="fas fa-undo"></i> रिफंड नीति (Refund Policy)</a></li>
+                </ul>
+                <div class="footer-socials">
+                    <a href="https://wa.me/918528537076" target="_blank" class="social-btn whatsapp" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#" target="_blank" class="social-btn youtube" title="YouTube"><i class="fab fa-youtube"></i></a>
+                    <a href="#" target="_blank" class="social-btn instagram" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" target="_blank" class="social-btn facebook" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                </div>
             </div>
         </div>
 
+        <!-- Bottom Copyright Strip -->
         <div class="footer-bottom">
-            <p>&copy; 2026 अभिव्यक्ति काव्यपीठ | सर्वाधिकार सुरक्षित | Developed for Kavyotsav</p>
+            <div class="footer-bottom-container">
+                <p>© 2026 अभिव्यक्ति काव्यपीठ | सर्वाधिकार सुरक्षित</p>
+                <div class="footer-admin-link">
+                    <a href="javascript:void(0)" onclick="openAdminModal()"><i class="fas fa-lock"></i> व्यवस्थापक लॉगिन</a>
+                </div>
+            </div>
         </div>
     </footer>
 
-    <!-- Main JS -->
+    <!-- POLICY POPUP MODAL -->
+    <div class="modal-overlay" id="policyModal">
+        <div class="modal-box modal-lg">
+            <button class="modal-close" onclick="closePolicyModal()">&times;</button>
+            <h3 class="modal-title" id="policyTitle">नीति विवरण</h3>
+            <div class="gold-divider" style="margin: 8px 0 16px 0;"></div>
+            <div id="policyContent" style="color: #475569; font-size: 0.92rem; line-height: 1.7; max-height: 60vh; overflow-y: auto;"></div>
+        </div>
+    </div>
+
+    <!-- MODAL: REGISTRATION -->
+    <div class="modal-overlay" id="registerModal">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeRegisterModal()">&times;</button>
+            <h3 class="modal-title">काव्योत्सव 2026 पास बुकिंग</h3>
+            <p class="modal-sub">कृपया अपना सही विवरण दर्ज करें</p>
+
+            <form id="ticketForm">
+                <div class="form-group">
+                    <label>भागीदारी का प्रकार (Role)</label>
+                    <select id="userRole" onchange="updateTicketPrice()" required>
+                        <option value="Audience">श्रोता / दर्शक (₹00 - निःशुल्क)</option>
+                        <option value="Performer">कवि / मंच प्रस्तुतकर्ता (₹299)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>पूरा नाम (Full Name)</label>
+                    <input type="text" id="name" placeholder="अपना नाम दर्ज करें" required>
+                </div>
+
+                <div class="form-group">
+                    <label>ईमेल (Email Address)</label>
+                    <input type="email" id="email" placeholder="example@mail.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label>मोबाइल नंबर (WhatsApp Number)</label>
+                    <input type="tel" id="phone" placeholder="10 अंकों का नंबर" pattern="[0-9]{10}" required>
+                </div>
+
+                <div id="performerFields" style="display:none;">
+                    <div class="form-group">
+                        <label>काव्य विधा (Genre)</label>
+                        <select id="vidha">
+                            <option value="गीत/नवगीत">गीत</option>
+                            <option value="ग़ज़ल/शायरी">ग़ज़ल/शायरी</option>
+                            <option value="वीर रस">कविता</option>
+                            <option value="हास्य-व्यंग्य">हास्य-व्यंग्य</option>
+                            <option value="मुक्तक/अन्य">अन्य</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>रचना का शीर्षक (Sample Title)</label>
+                        <input type="text" id="title" placeholder="अपनी रचना का शीर्षक लिखें">
+                    </div>
+                </div>
+
+                <div class="price-summary">
+                    <span>कुल शुल्क:</span>
+                    <strong id="priceDisplay">₹00</strong>
+                </div>
+
+                <button type="submit" id="submitRegBtn" class="btn-primary w-100">पास प्राप्त करें</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: SEARCH & DOWNLOAD PORTAL -->
+    <div class="modal-overlay" id="downloadModal">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeDownloadModal()">&times;</button>
+            <h3 class="modal-title">ई-पास एवं सर्टिफिकेट पोर्टल</h3>
+            <p class="modal-sub">अपना पंजीकृत मोबाइल नंबर या ईमेल दर्ज करें</p>
+
+            <form onsubmit="handlePortalSearch(event)">
+                <div class="form-group">
+                    <input type="text" id="searchQuery" placeholder="मोबाइल नंबर / ईमेल / Ticket ID" required>
+                </div>
+                <button type="submit" id="portalSearchBtn" class="btn-primary w-100">सर्च करें</button>
+            </form>
+
+            <div id="portalLoader" class="loader-box" style="display:none;">⏳ डेटा खोजा जा रहा है...</div>
+            <div id="portalNotFound" class="error-box" style="display:none;"></div>
+
+            <div id="portalResult" class="portal-result-card" style="display:none;">
+                <h4 id="resUserName" style="font-size:1.2rem; color:var(--primary-navy);">नाम</h4>
+                <p id="resUserType" style="font-size:0.85rem; color:#64748B; margin-bottom:15px;">रोल</p>
+                <div class="portal-btn-group">
+                    <button id="btnDownloadTicket" class="btn-download-pass">🎟️ ई-पास PDF डाउनलोड करें</button>
+                    <a id="btnDownloadCert" href="#" target="_blank" class="btn-download-cert">📜 ई-सर्टिफिकेट डाउनलोड करें</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: ADMIN LOGIN -->
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeAdminModal()">&times;</button>
+            <h3 class="modal-title">व्यवस्थापक लॉगिन</h3>
+            <p class="modal-sub">प्रवेश द्वार सत्यापन हेतु लॉगिन</p>
+
+            <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
+                <div class="form-group">
+                    <label>यूज़रनेम / मोबाइल</label>
+                    <input type="text" id="adminUser" required>
+                </div>
+                <div class="form-group">
+                    <label>पासवर्ड</label>
+                    <input type="password" id="adminPass" required>
+                </div>
+                <div id="loginError" class="error-box" style="display:none;"></div>
+                <button type="submit" class="btn-primary w-100">लॉगिन करें</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: ADMIN SCANNER DASHBOARD -->
+    <div class="modal-overlay" id="adminDashboard">
+        <div class="modal-box modal-lg">
+            <button class="modal-close" onclick="closeAdminDashboard()">&times;</button>
+            <h3 class="modal-title">प्रवेश द्वार क्यूआर स्कैनर</h3>
+            <p class="modal-sub">सत्यापित कुल उपस्थिति: <strong id="scannedCount" style="color:var(--royal-gold);">0</strong></p>
+
+            <div class="scanner-wrapper">
+                <div id="reader" class="scanner-box"></div>
+                <div class="scanner-controls">
+                    <button class="btn-primary" id="camToggleBtn" onclick="toggleCamera()">📷 कैमरा चालू करें</button>
+                    <span id="scannerStatus">कैमरा बंद है</span>
+                </div>
+            </div>
+
+            <div id="scanResultBox" class="scan-result" style="display:none; margin-top:15px; padding:12px; border-radius:8px; background:#fff;"></div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
