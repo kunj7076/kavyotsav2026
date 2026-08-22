@@ -7,7 +7,7 @@ const ADMIN_CREDENTIALS = {
     pass: "kavypith@123"
 };
 
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzdfT03vf_CLORuq2wULroVn0mceiwgjED3VzaYYHw1efR4bOWlhrBxCW8NB5iQyVcO/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyWiS60UTLK6IeEFjrfnkBm7YUgeU7eiLjF651GaPjdileehBxFeiyc0j_TXQuGyn7R/exec";
 const SHEET_ID = "1ZT-rXXm9lU6s5kF3ohvB7NqOggOki73BBjOFRmisNmQ";
 
 let html5QrCode = null;
@@ -390,11 +390,6 @@ function generateAndDownloadTicketPDF() {
         doc.setFont("helvetica", "normal");
         doc.text("Senate Hall, Prayagraj", 36, 82);
 
-        doc.setFont("helvetica", "bold");
-        doc.text("Reg No:", 18, 91);
-        doc.setFont("helvetica", "normal");
-        doc.text("UDYAM-UP-03-0155035", 38, 91);
-
         doc.setFillColor(15, 35, 65);
         doc.roundedRect(12, 110, 124, 76, 3, 3, "F");
 
@@ -531,7 +526,7 @@ function onScanSuccess(decodedText) {
     
     scriptTag.onerror = function() {
         resultBox.style.borderTop = "6px solid #DC2626";
-        resultBox.innerHTML = `❌ <strong>कनेक्शन एरर:</strong> Apps Script Deployment एक्सेस "Anyone" पर सेट करें और नया URL script.js में डालें।`;
+        resultBox.innerHTML = `❌ <strong>कनेक्शन एरर</strong><br><small>सर्वर से संपर्क नहीं हो सका।</small>`;
     };
 
     document.body.appendChild(scriptTag);
