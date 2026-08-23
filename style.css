@@ -876,7 +876,7 @@ body {
   height: 100%;
   background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(5px);
-  z-index: 2000;
+  z-index: 999999 !important;
   align-items: center;
   justify-content: center;
   padding: 20px;
@@ -891,6 +891,7 @@ body {
   position: relative;
   max-height: 90vh;
   overflow-y: auto;
+  pointer-events: auto !important;
   border: 1px solid var(--royal-gold);
 }
 

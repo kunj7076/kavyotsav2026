@@ -2,64 +2,89 @@
 // 1. CONFIGURATION
 
 // ==========================================
-// SECURE SERVER-SIDE ADMIN LOGIN
+// BULLETPROOF DIRECT ADMIN LOGIN
 // ==========================================
-async function handleAdminLogin(event) {
-    if (event) event.preventDefault();
-
-    const userInput = document.getElementById('adminUser').value.trim();
-    const passInput = document.getElementById('adminPass').value.trim();
-    const loginError = document.getElementById('loginError');
-    const submitBtn = document.querySelector('#adminLoginForm button[type="submit"]');
-
-    if (!userInput || !passInput) return;
-
-    loginError.style.display = 'none';
-    submitBtn.innerText = "⏳ सत्यापन हो रहा है...";
-    submitBtn.disabled = true;
-
-    try {
-        const response = await fetch(`${WEB_APP_URL}?action=adminLogin&user=${encodeURIComponent(userInput)}&pass=${encodeURIComponent(passInput)}`);
-        const data = await response.json();
-
-        submitBtn.innerText = "लॉगिन करें";
-        submitBtn.disabled = false;
-
-        if (data && data.status === "success") {
-            sessionStorage.setItem("admin_auth_token", data.token); // सुरक्षित सेशन
-            document.getElementById('adminLoginForm').reset();
-            closeAdminModal(); 
-            document.getElementById('adminDashboard').style.display = 'flex'; 
-        } else {
-            loginError.innerText = "❌ अमान्य यूज़रनेम/मोबाइल या पासवर्ड!";
-            loginError.style.display = 'block';
-        }
-    } catch (err) {
-        // JSONP Fallback
-        const callbackName = 'loginCb_' + Math.round(100000 * Math.random());
-        window[callbackName] = function(data) {
-            delete window[callbackName];
-            if (sTag && sTag.parentNode) sTag.parentNode.removeChild(sTag);
-            submitBtn.innerText = "लॉगिन करें";
-            submitBtn.disabled = false;
-
-            if (data && data.status === "success") {
-                sessionStorage.setItem("admin_auth_token", data.token);
-                document.getElementById('adminLoginForm').reset();
-                closeAdminModal(); 
-                document.getElementById('adminDashboard').style.display = 'flex'; 
-            } else {
-                loginError.innerText = "❌ अमान्य यूज़रनेम/मोबाइल या पासवर्ड!";
-                loginError.style.display = 'block';
-            }
-        };
-
-        const sTag = document.createElement('script');
-        sTag.src = `${WEB_APP_URL}?action=adminLogin&user=${encodeURIComponent(userInput)}&pass=${encodeURIComponent(passInput)}&callback=${callbackName}&t=${Date.now()}`;
-        document.body.appendChild(sTag);
+function openAdminModal() {
+    const modal = document.getElementById('adminModal');
+    if (modal) {
+        modal.style.setProperty('display', 'flex', 'important');
     }
 }
 
+function closeAdminModal() {
+    const modal = document.getElementById('adminModal');
+    if (modal) {
+        modal.style.setProperty('display', 'none', 'important');
+    }
+}
+
+function performDirectLogin() {
+    const userInput = document.getElementById('adminUser') ? document.getElementById('adminUser').value.trim() : '';
+    const passInput = document.getElementById('adminPass') ? document.getElementById('adminPass').value.trim() : '';
+    const loginError = document.getElementById('loginError');
+    const submitBtn = document.getElementById('adminSubmitBtn');
+
+    if (!userInput || !passInput) {
+        if (loginError) {
+            loginError.innerText = "कृपया यूज़रनेम और पासवर्ड दोनों दर्ज करें।";
+            loginError.style.display = 'block';
+        }
+        return;
+    }
+
+    if (loginError) loginError.style.display = 'none';
+    if (submitBtn) {
+        submitBtn.innerText = "⏳ सत्यापन हो रहा है...";
+        submitBtn.disabled = true;
+    }
+
+    const callbackName = 'loginCb_' + Date.now();
+
+    window[callbackName] = function(data) {
+        delete window[callbackName];
+        const elem = document.getElementById('admin_login_script');
+        if (elem && elem.parentNode) elem.parentNode.removeChild(elem);
+
+        if (submitBtn) {
+            submitBtn.innerText = "लॉगिन करें";
+            submitBtn.disabled = false;
+        }
+
+        if (data && data.status === "success") {
+            sessionStorage.setItem("admin_auth_token", data.token);
+            document.getElementById('adminUser').value = '';
+            document.getElementById('adminPass').value = '';
+            closeAdminModal();
+            const dashboard = document.getElementById('adminDashboard');
+            if (dashboard) {
+                dashboard.style.display = 'flex';
+            }
+        } else {
+            if (loginError) {
+                loginError.innerText = "❌ अमान्य यूज़रनेम/मोबाइल या पासवर्ड!";
+                loginError.style.display = 'block';
+            }
+        }
+    };
+
+    const old = document.getElementById('admin_login_script');
+    if (old && old.parentNode) old.parentNode.removeChild(old);
+
+    const s = document.createElement('script');
+    s.id = 'admin_login_script';
+    s.src = `${WEB_APP_URL}?action=adminLogin&user=${encodeURIComponent(userInput)}&pass=${encodeURIComponent(passInput)}&callback=${callbackName}&t=${Date.now()}`;
+    s.onerror = function() {
+        if (submitBtn) {
+            submitBtn.innerText = "लॉगिन करें";
+            submitBtn.disabled = false;
+        }
+        if (loginError) {
+            loginError.innerText = "❌ नेटवर्क त्रुटि! Apps Script URL जाँचें।";
+            loginError.style.display = 'block';
+        }
+    };
+    document.body.appendChild(s);
+}
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyWiS60UTLK6IeEFjrfnkBm7YUgeU7eiLjF651GaPjdileehBxFeiyc0j_TXQuGyn7R/exec";
 const SHEET_ID = "1ZT-rXXm9lU6s5kF3ohvB7NqOggOki73BBjOFRmisNmQ";
 
