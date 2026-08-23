@@ -1,11 +1,64 @@
 // ==========================================
 // 1. CONFIGURATION
 
-const ADMIN_CREDENTIALS = {
-    user: "8528537076",
-    email: "abhivyaktikavypith@gmail.com",
-    pass: "kavypith@123"
-};
+// ==========================================
+// SECURE SERVER-SIDE ADMIN LOGIN
+// ==========================================
+async function handleAdminLogin(event) {
+    if (event) event.preventDefault();
+
+    const userInput = document.getElementById('adminUser').value.trim();
+    const passInput = document.getElementById('adminPass').value.trim();
+    const loginError = document.getElementById('loginError');
+    const submitBtn = document.querySelector('#adminLoginForm button[type="submit"]');
+
+    if (!userInput || !passInput) return;
+
+    loginError.style.display = 'none';
+    submitBtn.innerText = "⏳ सत्यापन हो रहा है...";
+    submitBtn.disabled = true;
+
+    try {
+        const response = await fetch(`${WEB_APP_URL}?action=adminLogin&user=${encodeURIComponent(userInput)}&pass=${encodeURIComponent(passInput)}`);
+        const data = await response.json();
+
+        submitBtn.innerText = "लॉगिन करें";
+        submitBtn.disabled = false;
+
+        if (data && data.status === "success") {
+            sessionStorage.setItem("admin_auth_token", data.token); // सुरक्षित सेशन
+            document.getElementById('adminLoginForm').reset();
+            closeAdminModal(); 
+            document.getElementById('adminDashboard').style.display = 'flex'; 
+        } else {
+            loginError.innerText = "❌ अमान्य यूज़रनेम/मोबाइल या पासवर्ड!";
+            loginError.style.display = 'block';
+        }
+    } catch (err) {
+        // JSONP Fallback
+        const callbackName = 'loginCb_' + Math.round(100000 * Math.random());
+        window[callbackName] = function(data) {
+            delete window[callbackName];
+            if (sTag && sTag.parentNode) sTag.parentNode.removeChild(sTag);
+            submitBtn.innerText = "लॉगिन करें";
+            submitBtn.disabled = false;
+
+            if (data && data.status === "success") {
+                sessionStorage.setItem("admin_auth_token", data.token);
+                document.getElementById('adminLoginForm').reset();
+                closeAdminModal(); 
+                document.getElementById('adminDashboard').style.display = 'flex'; 
+            } else {
+                loginError.innerText = "❌ अमान्य यूज़रनेम/मोबाइल या पासवर्ड!";
+                loginError.style.display = 'block';
+            }
+        };
+
+        const sTag = document.createElement('script');
+        sTag.src = `${WEB_APP_URL}?action=adminLogin&user=${encodeURIComponent(userInput)}&pass=${encodeURIComponent(passInput)}&callback=${callbackName}&t=${Date.now()}`;
+        document.body.appendChild(sTag);
+    }
+}
 
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyWiS60UTLK6IeEFjrfnkBm7YUgeU7eiLjF651GaPjdileehBxFeiyc0j_TXQuGyn7R/exec";
 const SHEET_ID = "1ZT-rXXm9lU6s5kF3ohvB7NqOggOki73BBjOFRmisNmQ";
@@ -624,4 +677,23 @@ function closePolicyModal() {
 window.addEventListener('click', function(event) {
     const polModal = document.getElementById('policyModal');
     if (polModal && event.target === polModal) polModal.style.display = 'none';
+});
+
+// ==========================================
+// FRONTEND DEVTOOLS & INSPECT PROTECTION
+// ==========================================
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault(); // Right Click बंद
+});
+
+document.addEventListener('keydown', function(e) {
+    // F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U को ब्लॉक करना
+    if (
+        e.key === 'F12' || 
+        (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || 
+        (e.ctrlKey && (e.key === 'u' || e.key === 'U'))
+    ) {
+        e.preventDefault();
+        return false;
+    }
 });
