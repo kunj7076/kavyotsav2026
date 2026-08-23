@@ -5,10 +5,10 @@
 // =================================================================
 const CONFIG = {
     // 1. रजिस्ट्रेशन चालू/बंद स्विच (true = चालू, false = बंद)
-    isRegistrationOpen: false, 
+    isRegistrationOpen: true, 
 
     // 2. इवेंट पूरा होने का स्विच (true = अगला इवेंट Coming Soon दिखेगा, false = काव्योत्सव 2026 लाइव दिखेगा)
-    isEventCompleted: true,
+    isEventCompleted: false,
 
     // अगले इवेंट का विवरण (जब isEventCompleted = true होगा तब यह दिखेगा)
     upcomingEvent: {
@@ -28,24 +28,46 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function applyEventStatus() {
-    // (A) हीरो सेक्शन अपडेट (Event Ended / Coming Soon Logic)
+    // (A) जब इवेंट समाप्त हो जाए और अगला इवेंट Coming Soon दिखाना हो
     if (CONFIG.isEventCompleted) {
-        const heroBadge = document.querySelector(".hero .badge");
-        const heroTitle = document.querySelector(".hero h1, .hero .hero-title");
-        const heroSubtitle = document.querySelector(".hero .hero-subtitle");
-        const heroDate = document.getElementById("eventDateDisplay");
-
+        // 1. बैज (Badge)
+        const heroBadge = document.querySelector(".badge, .hero-badge");
         if (heroBadge) heroBadge.innerText = CONFIG.upcomingEvent.badge;
+
+        // 2. मुख्य टाइटल (काव्य कट्टा / अभिव्यक्ति काव्योत्सव)
+        const heroTitle = document.querySelector(".hero h1, .hero-title");
         if (heroTitle) heroTitle.innerText = CONFIG.upcomingEvent.title;
+
+        // 3. सबटाइटल
+        const heroSubtitle = document.querySelector(".hero p, .hero-subtitle");
         if (heroSubtitle) heroSubtitle.innerText = CONFIG.upcomingEvent.subtitle;
-        if (heroDate) heroDate.innerHTML = `📅 ${CONFIG.upcomingEvent.date} &nbsp; | &nbsp; 📍 ${CONFIG.upcomingEvent.venue}`;
+
+        // 4. तीनों चिप्स (स्थान, तारीख, समय) को Coming Soon में बदलना
+        const infoChips = document.querySelectorAll(".hero-info-chips span, .hero-info-chips div, .hero-pills span, .hero-meta span");
         
-        // मुख्य पास बुक बटन का टेक्स्ट बदलना
+        // यदि अलग-अलग बॉक्सेस बने हैं:
+        if (infoChips.length >= 3) {
+            infoChips[0].innerHTML = `📍 ${CONFIG.upcomingEvent.venue || "शीघ्र घोषित"}`;
+            infoChips[1].innerHTML = `📅 ${CONFIG.upcomingEvent.date || "शीघ्र घोषित"}`;
+            infoChips[2].innerHTML = `⏳ Coming Soon`;
+        } else {
+            // अगर कोई अलग कंटेनर हो
+            const metaContainer = document.querySelector(".hero-info-chips, .hero-pills, .hero-meta");
+            if (metaContainer) {
+                metaContainer.innerHTML = `
+                    <span style="background: rgba(255,255,255,0.08); padding: 8px 16px; border-radius: 20px; border: 1px solid rgba(212,175,55,0.3); color: #FFF; font-size: 14px;">📍 स्थान: शीघ्र घोषित</span>
+                    <span style="background: rgba(255,255,255,0.08); padding: 8px 16px; border-radius: 20px; border: 1px solid rgba(212,175,55,0.3); color: #FFF; font-size: 14px;">📅 दिनांक: शीघ्र घोषित (Coming Soon)</span>
+                    <span style="background: rgba(255,255,255,0.08); padding: 8px 16px; border-radius: 20px; border: 1px solid rgba(212,175,55,0.3); color: #FFF; font-size: 14px;">⏳ पंजीकरण शीघ्र</span>
+                `;
+            }
+
+        // 5. मुख्य बटन का टेक्स्ट
         const heroBtn = document.querySelector(".hero .btn-primary");
         if (heroBtn) {
-            heroBtn.innerText = "🔔 आगामी इवेंट हेतु सूचना प्राप्त करें";
+            heroBtn.innerHTML = `🔔 आगामी इवेंट हेतु सूचना प्राप्त करें`;
         }
     }
+}
 
     // (B) रजिस्ट्रेशन बंद होने पर बैनर/बटन स्टेटस
     if (!CONFIG.isRegistrationOpen) {
