@@ -1,5 +1,110 @@
-// ==========================================
-// 1. CONFIGURATION
+
+
+// =================================================================
+// ⚙️ EVENT & REGISTRATION CONTROLLER (MASTER SWITCHES)
+// =================================================================
+const CONFIG = {
+    // 1. रजिस्ट्रेशन चालू/बंद स्विच (true = चालू, false = बंद)
+    isRegistrationOpen: false, 
+
+    // 2. इवेंट पूरा होने का स्विच (true = अगला इवेंट Coming Soon दिखेगा, false = काव्योत्सव 2026 लाइव दिखेगा)
+    isEventCompleted: true,
+
+    // अगले इवेंट का विवरण (जब isEventCompleted = true होगा तब यह दिखेगा)
+    upcomingEvent: {
+        badge: "✨ आगामी कार्यक्रम ✨",
+        title: "काव्य कट्टा ",
+        subtitle: "काव्य प्रेमियों के लिए एक अद्वितीय मंच",
+        date: "शीघ्र घोषित किया जाएगा (Coming Soon)",
+        venue: "शीघ्र घोषित किया जाएगा (Coming Soon)"
+    }
+};
+
+// =================================================================
+// DYNAMIC HERO & REGISTRATION HANDLER
+// =================================================================
+document.addEventListener("DOMContentLoaded", function() {
+    applyEventStatus();
+});
+
+function applyEventStatus() {
+    // (A) हीरो सेक्शन अपडेट (Event Ended / Coming Soon Logic)
+    if (CONFIG.isEventCompleted) {
+        const heroBadge = document.querySelector(".hero .badge");
+        const heroTitle = document.querySelector(".hero h1, .hero .hero-title");
+        const heroSubtitle = document.querySelector(".hero .hero-subtitle");
+        const heroDate = document.getElementById("eventDateDisplay");
+
+        if (heroBadge) heroBadge.innerText = CONFIG.upcomingEvent.badge;
+        if (heroTitle) heroTitle.innerText = CONFIG.upcomingEvent.title;
+        if (heroSubtitle) heroSubtitle.innerText = CONFIG.upcomingEvent.subtitle;
+        if (heroDate) heroDate.innerHTML = `📅 ${CONFIG.upcomingEvent.date} &nbsp; | &nbsp; 📍 ${CONFIG.upcomingEvent.venue}`;
+        
+        // मुख्य पास बुक बटन का टेक्स्ट बदलना
+        const heroBtn = document.querySelector(".hero .btn-primary");
+        if (heroBtn) {
+            heroBtn.innerText = "🔔 आगामी इवेंट हेतु सूचना प्राप्त करें";
+        }
+    }
+
+    // (B) रजिस्ट्रेशन बंद होने पर बैनर/बटन स्टेटस
+    if (!CONFIG.isRegistrationOpen) {
+        const regButtons = document.querySelectorAll(".btn-nav-gold, .btn-primary");
+        regButtons.forEach(btn => {
+            if (btn.innerText.includes("पास बुक") || btn.innerText.includes("पंजीकरण")) {
+                btn.style.opacity = "0.85";
+            }
+        });
+    }
+}
+
+// रजिस्ट्रेशन मोडल खोलने का मुख्य फ़ंक्शन
+function openRegisterModal() {
+    if (!CONFIG.isRegistrationOpen) {
+        openNoticeModal(
+            "पंजीकरण समाप्त", 
+            "काव्योत्सव 2026 के लिए सभी सीटों का पंजीकरण पूर्ण हो चुका है। आयोजन स्थल पर केवल पूर्व-पंजीकृत पास धारकों को ही प्रवेश दिया जाएगा। आगामी कार्यक्रमों की सूचना हेतु हमारे साथ जुड़े रहें।"
+        );
+        return;
+    }
+
+    // रजिस्ट्रेशन चालू होने पर फॉर्म मोडल खोलें
+    const regModal = document.getElementById("registerModal");
+    if (regModal) {
+        regModal.style.setProperty("display", "flex", "important");
+    }
+}
+
+// नोटिस पॉपअप खोलने का फ़ंक्शन
+function openNoticeModal(title, msg) {
+    let modal = document.getElementById("statusNoticeModal");
+    if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "statusNoticeModal";
+        modal.className = "modal-overlay";
+        modal.innerHTML = `
+            <div class="modal-box" style="text-align: center; max-width: 440px;">
+                <button type="button" class="modal-close" onclick="closeNoticeModal()">&times;</button>
+                <div style="font-size: 3rem; margin-bottom: 10px;">⏳</div>
+                <h2 id="noticeTitle" style="color: #D4AF37; margin-bottom: 12px; font-family: 'Yatra One', cursive;">${title}</h2>
+                <p id="noticeMessage" style="color: #475569; font-size: 14px; line-height: 1.6; margin-bottom: 24px;">${msg}</p>
+                <button type="button" class="btn-primary w-100" onclick="closeNoticeModal()">समझ गया</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    } else {
+        document.getElementById("noticeTitle").innerText = title;
+        document.getElementById("noticeMessage").innerText = msg;
+    }
+    modal.style.setProperty("display", "flex", "important");
+}
+
+function closeNoticeModal() {
+    const modal = document.getElementById("statusNoticeModal");
+    if (modal) {
+        modal.style.setProperty("display", "none", "important");
+    }
+}
 
 // ==========================================
 // BULLETPROOF DIRECT ADMIN LOGIN
@@ -722,3 +827,143 @@ document.addEventListener('keydown', function(e) {
         return false;
     }
 });
+
+// ==========================================
+// REGISTRATION CLOSURE ENFORCER (100% BLOCK)
+// ==========================================
+const IS_REGISTRATION_CLOSED = true; // बंद करने के लिए true, चालू करने के लिए false
+
+function enforceRegistrationStatus() {
+    if (!IS_REGISTRATION_CLOSED) return;
+
+    // 1. पुराने openRegisterModal फ़ंक्शन को ओवरराइड करना
+    window.openRegisterModal = function() {
+        showRegistrationClosedPopup();
+    };
+
+    // 2. पेज के सभी पास बुक बटन्स पर क्लिक को इंटरसेप्ट करना
+    document.querySelectorAll("button, a").forEach(el => {
+        const txt = el.innerText.trim();
+        const onclickAttr = el.getAttribute("onclick") || "";
+
+        if (
+            txt.includes("पास बुक") || 
+            txt.includes("पंजीकरण") || 
+            onclickAttr.includes("openRegisterModal")
+        ) {
+            el.removeAttribute("onclick");
+            el.onclick = function(e) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                showRegistrationClosedPopup();
+            };
+        }
+    });
+}
+
+function showRegistrationClosedPopup() {
+    let modal = document.getElementById("regClosedModal");
+    if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "regClosedModal";
+        modal.className = "modal-overlay";
+        modal.style.cssText = "display:flex !important; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); backdrop-filter:blur(6px); z-index:9999999; justify-content:center; align-items:center; padding:15px;";
+        
+        modal.innerHTML = `
+            <div class="modal-box" style="background:#0A1931; border:2px solid #D4AF37; border-radius:14px; max-width:420px; width:95%; padding:25px; text-align:center; color:#FFF; box-shadow:0 10px 30px rgba(0,0,0,0.8);">
+                <div style="font-size:3rem; margin-bottom:10px;">🚫</div>
+                <h2 style="color:#D4AF37; margin:0 0 10px 0; font-family:'Yatra One', cursive; font-size:1.5rem;">पंजीकरण बंद है</h2>
+                <p style="color:#CBD5E1; font-size:14px; line-height:1.6; margin-bottom:20px;">
+                    काव्योत्सव 2026 हेतु सभी सीटों का ऑनलाइन पंजीकरण पूर्ण हो चुका है। अब नए पास जारी नहीं किए जा रहे हैं।
+                </p>
+                <button type="button" class="btn-primary w-100" onclick="document.getElementById('regClosedModal').style.setProperty('display','none','important');" style="padding:10px; border-radius:8px; font-weight:bold; cursor:pointer;">
+                    समझ गया
+                </button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    } else {
+        modal.style.setProperty("display", "flex", "important");
+    }
+}
+
+// पेज लोड होते ही और 500ms बाद लागू करें
+document.addEventListener("DOMContentLoaded", enforceRegistrationStatus);
+setTimeout(enforceRegistrationStatus, 600);
+
+// ==========================================
+// NOTIFY ME LOGIC (आगामी इवेंट सूचना)
+// ==========================================
+function openNotifyModal() {
+    const modal = document.getElementById('notifyMeModal');
+    if (modal) {
+        modal.style.setProperty('display', 'flex', 'important');
+    }
+}
+
+function closeNotifyModal() {
+    const modal = document.getElementById('notifyMeModal');
+    if (modal) {
+        modal.style.setProperty('display', 'none', 'important');
+    }
+}
+
+// सूचना बटन पर सीधे openNotifyModal बाइंड करना
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll("button, a").forEach(el => {
+        if (el.innerText.includes("सूचना प्राप्त करें")) {
+            el.removeAttribute("onclick");
+            el.onclick = function(e) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                openNotifyModal();
+            };
+        }
+    });
+});
+
+// ==========================================
+// NOTIFY ME SUBMISSION TO GOOGLE SHEET
+// ==========================================
+function handleNotifySubmit(event) {
+    if (event) event.preventDefault();
+    
+    const name = document.getElementById('notifyName').value.trim();
+    const contact = document.getElementById('notifyContact').value.trim();
+    const btn = document.getElementById('notifySubmitBtn');
+
+    if (!name || !contact) return;
+
+    btn.innerText = "⏳ दर्ज किया जा रहा है...";
+    btn.disabled = true;
+
+    const callbackName = 'notifyCb_' + Date.now();
+
+    window[callbackName] = function(data) {
+        delete window[callbackName];
+        const elem = document.getElementById('notify_script_tag');
+        if (elem && elem.parentNode) elem.parentNode.removeChild(elem);
+
+        btn.innerText = "सूचना हेतु पंजीकृत करें";
+        btn.disabled = false;
+        document.getElementById('notifyForm').reset();
+        closeNotifyModal();
+
+        alert(`धन्यवाद ${name} जी! आगामी कार्यक्रम की सूचना हेतु आपका विवरण सुरक्षित कर लिया गया है।`);
+    };
+
+    const oldScript = document.getElementById('notify_script_tag');
+    if (oldScript && oldScript.parentNode) oldScript.parentNode.removeChild(oldScript);
+
+    const scriptTag = document.createElement('script');
+    scriptTag.id = 'notify_script_tag';
+    scriptTag.src = `${WEB_APP_URL}?action=saveNotification&name=${encodeURIComponent(name)}&contact=${encodeURIComponent(contact)}&callback=${callbackName}&t=${Date.now()}`;
+    
+    scriptTag.onerror = function() {
+        btn.innerText = "सूचना हेतु पंजीकृत करें";
+        btn.disabled = false;
+        alert("नेटवर्क त्रुटि: कृपया दोबारा प्रयास करें।");
+    };
+
+    document.body.appendChild(scriptTag);
+}
