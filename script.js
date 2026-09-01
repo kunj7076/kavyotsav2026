@@ -1,217 +1,32 @@
-
-
 // =================================================================
-// ⚙️ EVENT & REGISTRATION CONTROLLER (MASTER SWITCHES)
+// ⚙️ 1. CENTRAL EVENT MASTER CONFIGURATION
 // =================================================================
-const CONFIG = {
-    // 1. रजिस्ट्रेशन चालू/बंद स्विच (true = चालू, false = बंद)
-    isRegistrationOpen: true, 
-
-    // 2. इवेंट पूरा होने का स्विच (true = अगला इवेंट Coming Soon दिखेगा, false = काव्योत्सव 2026 लाइव दिखेगा)
-    isEventCompleted: false,
-
-    // अगले इवेंट का विवरण (जब isEventCompleted = true होगा तब यह दिखेगा)
-    upcomingEvent: {
-        badge: "✨ आगामी कार्यक्रम ✨",
-        title: "काव्य कट्टा ",
-        subtitle: "काव्य प्रेमियों के लिए एक अद्वितीय मंच",
-        date: "शीघ्र घोषित किया जाएगा (Coming Soon)",
-        venue: "शीघ्र घोषित किया जाएगा (Coming Soon)"
-    }
+const EVENT_CONFIG = {
+  currentEvent: {
+    name: "काव्योत्सव 2026",
+    tagline: "साहित्यिक चेतना एवं भव्य युवा काव्य सभा",
+    regNo: "REG. NO: UDYAM-UP-03-0155035",
+    date: "8 सितंबर 2026",
+    time: "सुबह 11:00 बजे",
+    timeSlotDetails: "सुबह 11:00 बजे से",
+    venue: "इलाहाबाद विश्वविद्यालय",
+    fullAddress: "सीनेट हॉल, प्रयागराज, उत्तर प्रदेश",
+    mapUrl: "https://goo.gl/maps/your-location",
+    performerFee: "₹299",
+    razorpayAmount: 29900
+  },
+  upcomingEvent: {
+    badge: "✨ आगामी कार्यक्रम (Coming Soon) ✨",
+    title: "काव्योत्सव (आगामी सत्र)",
+    tagline: "काव्य प्रेमियों के लिए एक अद्वितीय मंच • शीघ्र आ रहा है",
+    date: "शीघ्र घोषित (Coming Soon)",
+    time: "शीघ्र घोषित",
+    venue: "प्रयागराज, उत्तर प्रदेश",
+    fullAddress: "स्थान शीघ्र घोषित किया जाएगा",
+    mapUrl: "javascript:void(0)"
+  }
 };
 
-// =================================================================
-// DYNAMIC HERO & REGISTRATION HANDLER
-// =================================================================
-document.addEventListener("DOMContentLoaded", function() {
-    applyEventStatus();
-});
-
-function applyEventStatus() {
-    // (A) जब इवेंट समाप्त हो जाए और अगला इवेंट Coming Soon दिखाना हो
-    if (CONFIG.isEventCompleted) {
-        // 1. बैज (Badge)
-        const heroBadge = document.querySelector(".badge, .hero-badge");
-        if (heroBadge) heroBadge.innerText = CONFIG.upcomingEvent.badge;
-
-        // 2. मुख्य टाइटल (काव्य कट्टा / अभिव्यक्ति काव्योत्सव)
-        const heroTitle = document.querySelector(".hero h1, .hero-title");
-        if (heroTitle) heroTitle.innerText = CONFIG.upcomingEvent.title;
-
-        // 3. सबटाइटल
-        const heroSubtitle = document.querySelector(".hero p, .hero-subtitle");
-        if (heroSubtitle) heroSubtitle.innerText = CONFIG.upcomingEvent.subtitle;
-
-        // 4. तीनों चिप्स (स्थान, तारीख, समय) को Coming Soon में बदलना
-        const infoChips = document.querySelectorAll(".hero-info-chips span, .hero-info-chips div, .hero-pills span, .hero-meta span");
-        
-        // यदि अलग-अलग बॉक्सेस बने हैं:
-        if (infoChips.length >= 3) {
-            infoChips[0].innerHTML = `📍 ${CONFIG.upcomingEvent.venue || "शीघ्र घोषित"}`;
-            infoChips[1].innerHTML = `📅 ${CONFIG.upcomingEvent.date || "शीघ्र घोषित"}`;
-            infoChips[2].innerHTML = `⏳ Coming Soon`;
-        } else {
-            // अगर कोई अलग कंटेनर हो
-            const metaContainer = document.querySelector(".hero-info-chips, .hero-pills, .hero-meta");
-            if (metaContainer) {
-                metaContainer.innerHTML = `
-                    <span style="background: rgba(255,255,255,0.08); padding: 8px 16px; border-radius: 20px; border: 1px solid rgba(212,175,55,0.3); color: #FFF; font-size: 14px;">📍 स्थान: शीघ्र घोषित</span>
-                    <span style="background: rgba(255,255,255,0.08); padding: 8px 16px; border-radius: 20px; border: 1px solid rgba(212,175,55,0.3); color: #FFF; font-size: 14px;">📅 दिनांक: शीघ्र घोषित (Coming Soon)</span>
-                    <span style="background: rgba(255,255,255,0.08); padding: 8px 16px; border-radius: 20px; border: 1px solid rgba(212,175,55,0.3); color: #FFF; font-size: 14px;">⏳ पंजीकरण शीघ्र</span>
-                `;
-            }
-
-        // 5. मुख्य बटन का टेक्स्ट
-        const heroBtn = document.querySelector(".hero .btn-primary");
-        if (heroBtn) {
-            heroBtn.innerHTML = `🔔 आगामी इवेंट हेतु सूचना प्राप्त करें`;
-        }
-    }
-}
-
-    // (B) रजिस्ट्रेशन बंद होने पर बैनर/बटन स्टेटस
-    if (!CONFIG.isRegistrationOpen) {
-        const regButtons = document.querySelectorAll(".btn-nav-gold, .btn-primary");
-        regButtons.forEach(btn => {
-            if (btn.innerText.includes("पास बुक") || btn.innerText.includes("पंजीकरण")) {
-                btn.style.opacity = "0.85";
-            }
-        });
-    }
-}
-
-// रजिस्ट्रेशन मोडल खोलने का मुख्य फ़ंक्शन
-function openRegisterModal() {
-    if (!CONFIG.isRegistrationOpen) {
-        openNoticeModal(
-            "पंजीकरण समाप्त", 
-            "काव्योत्सव 2026 के लिए सभी सीटों का पंजीकरण पूर्ण हो चुका है। आयोजन स्थल पर केवल पूर्व-पंजीकृत पास धारकों को ही प्रवेश दिया जाएगा। आगामी कार्यक्रमों की सूचना हेतु हमारे साथ जुड़े रहें।"
-        );
-        return;
-    }
-
-    // रजिस्ट्रेशन चालू होने पर फॉर्म मोडल खोलें
-    const regModal = document.getElementById("registerModal");
-    if (regModal) {
-        regModal.style.setProperty("display", "flex", "important");
-    }
-}
-
-// नोटिस पॉपअप खोलने का फ़ंक्शन
-function openNoticeModal(title, msg) {
-    let modal = document.getElementById("statusNoticeModal");
-    if (!modal) {
-        modal = document.createElement("div");
-        modal.id = "statusNoticeModal";
-        modal.className = "modal-overlay";
-        modal.innerHTML = `
-            <div class="modal-box" style="text-align: center; max-width: 440px;">
-                <button type="button" class="modal-close" onclick="closeNoticeModal()">&times;</button>
-                <div style="font-size: 3rem; margin-bottom: 10px;">⏳</div>
-                <h2 id="noticeTitle" style="color: #D4AF37; margin-bottom: 12px; font-family: 'Yatra One', cursive;">${title}</h2>
-                <p id="noticeMessage" style="color: #475569; font-size: 14px; line-height: 1.6; margin-bottom: 24px;">${msg}</p>
-                <button type="button" class="btn-primary w-100" onclick="closeNoticeModal()">समझ गया</button>
-            </div>
-        `;
-        document.body.appendChild(modal);
-    } else {
-        document.getElementById("noticeTitle").innerText = title;
-        document.getElementById("noticeMessage").innerText = msg;
-    }
-    modal.style.setProperty("display", "flex", "important");
-}
-
-function closeNoticeModal() {
-    const modal = document.getElementById("statusNoticeModal");
-    if (modal) {
-        modal.style.setProperty("display", "none", "important");
-    }
-}
-
-// ==========================================
-// BULLETPROOF DIRECT ADMIN LOGIN
-// ==========================================
-function openAdminModal() {
-    const modal = document.getElementById('adminModal');
-    if (modal) {
-        modal.style.setProperty('display', 'flex', 'important');
-    }
-}
-
-function closeAdminModal() {
-    const modal = document.getElementById('adminModal');
-    if (modal) {
-        modal.style.setProperty('display', 'none', 'important');
-    }
-}
-
-function performDirectLogin() {
-    const userInput = document.getElementById('adminUser') ? document.getElementById('adminUser').value.trim() : '';
-    const passInput = document.getElementById('adminPass') ? document.getElementById('adminPass').value.trim() : '';
-    const loginError = document.getElementById('loginError');
-    const submitBtn = document.getElementById('adminSubmitBtn');
-
-    if (!userInput || !passInput) {
-        if (loginError) {
-            loginError.innerText = "कृपया यूज़रनेम और पासवर्ड दोनों दर्ज करें।";
-            loginError.style.display = 'block';
-        }
-        return;
-    }
-
-    if (loginError) loginError.style.display = 'none';
-    if (submitBtn) {
-        submitBtn.innerText = "⏳ सत्यापन हो रहा है...";
-        submitBtn.disabled = true;
-    }
-
-    const callbackName = 'loginCb_' + Date.now();
-
-    window[callbackName] = function(data) {
-        delete window[callbackName];
-        const elem = document.getElementById('admin_login_script');
-        if (elem && elem.parentNode) elem.parentNode.removeChild(elem);
-
-        if (submitBtn) {
-            submitBtn.innerText = "लॉगिन करें";
-            submitBtn.disabled = false;
-        }
-
-        if (data && data.status === "success") {
-            sessionStorage.setItem("admin_auth_token", data.token);
-            document.getElementById('adminUser').value = '';
-            document.getElementById('adminPass').value = '';
-            closeAdminModal();
-            const dashboard = document.getElementById('adminDashboard');
-            if (dashboard) {
-                dashboard.style.display = 'flex';
-            }
-        } else {
-            if (loginError) {
-                loginError.innerText = "❌ अमान्य यूज़रनेम/मोबाइल या पासवर्ड!";
-                loginError.style.display = 'block';
-            }
-        }
-    };
-
-    const old = document.getElementById('admin_login_script');
-    if (old && old.parentNode) old.parentNode.removeChild(old);
-
-    const s = document.createElement('script');
-    s.id = 'admin_login_script';
-    s.src = `${WEB_APP_URL}?action=adminLogin&user=${encodeURIComponent(userInput)}&pass=${encodeURIComponent(passInput)}&callback=${callbackName}&t=${Date.now()}`;
-    s.onerror = function() {
-        if (submitBtn) {
-            submitBtn.innerText = "लॉगिन करें";
-            submitBtn.disabled = false;
-        }
-        if (loginError) {
-            loginError.innerText = "❌ नेटवर्क त्रुटि! Apps Script URL जाँचें।";
-            loginError.style.display = 'block';
-        }
-    };
-    document.body.appendChild(s);
-}
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyWiS60UTLK6IeEFjrfnkBm7YUgeU7eiLjF651GaPjdileehBxFeiyc0j_TXQuGyn7R/exec";
 const SHEET_ID = "1ZT-rXXm9lU6s5kF3ohvB7NqOggOki73BBjOFRmisNmQ";
 
@@ -219,158 +34,585 @@ let html5QrCode = null;
 let isScanning = false;
 let scannedCount = 0;
 let currentMatchedUser = null;
+let currentRegStatus = "ON";
 
-// ==========================================
-// 2. SMOOTH INTRO ANIMATION TIMEOUT (2.5 Secs)
-// ==========================================
-function removeSplashScreen() {
-    const splash = document.getElementById("introSplash");
-    if (splash && !splash.classList.contains("hide-splash")) {
-        splash.classList.add("hide-splash");
-        setTimeout(() => {
-            splash.style.display = "none";
-        }, 800); // एनिमेशन स्मूद फेड-आउट होने के बाद पूरी तरह हटेगा
-    }
+var activeUserSession = null;
+try {
+  activeUserSession = JSON.parse(localStorage.getItem("akp_user_session")) || null;
+} catch(e) { 
+  activeUserSession = null; 
 }
 
-// 2.5 सेकंड तक सिनेमाटिक एनिमेशन दिखेगा
-setTimeout(removeSplashScreen, 2500);
+// =================================================================
+// 2. CENTRAL EVENT DATA INJECTOR
+// =================================================================
+function injectDynamicEventData() {
+  const ev = (currentRegStatus === "OFF") ? EVENT_CONFIG.upcomingEvent : EVENT_CONFIG.currentEvent;
 
-// क्लिक करने पर तुरंत स्किप करने की सुविधा
-document.addEventListener("DOMContentLoaded", () => {
-    const splash = document.getElementById("introSplash");
-    if (splash) splash.addEventListener("click", removeSplashScreen);
-});
+  const abtTime = document.getElementById("dynAboutTime");
+  const abtVenue = document.getElementById("dynAboutVenue");
+  const abtMap = document.getElementById("dynAboutMapLink");
+  
+  if (abtTime) abtTime.innerText = ev.timeSlotDetails || ev.time;
+  if (abtVenue) abtVenue.innerText = ev.venue || ev.fullAddress;
+  if (abtMap) {
+    abtMap.href = ev.mapUrl || "https://maps.google.com";
+    abtMap.target = (ev.mapUrl && ev.mapUrl.startsWith("http")) ? "_blank" : "_self";
+  }
 
-// ==========================================
-// 3. DIRECT GOOGLE SHEET GUEST LOADER
-// ==========================================
-async function loadGuestsDirectly() {
-    const grid = document.getElementById('guestGrid');
-    if (!grid) return;
-
-    try {
-        const csvUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Guest&t=${Date.now()}`;
-        const response = await fetch(csvUrl);
-        const text = await response.text();
-
-        const rows = text.split("\n").map(row => {
-            return row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(val => val.replace(/^"|"$/g, '').trim());
-        });
-
-        if (!rows || rows.length <= 1) {
-            grid.innerHTML = `<p style="text-align:center; grid-column:1/-1; color:#64748B;">अतिथियों की सूची शीघ्र ही प्रकाशित की जाएगी।</p>`;
-            return;
-        }
-
-        let html = "";
-        for (let i = 1; i < rows.length; i++) {
-            const cols = rows[i];
-            const name = cols[0] || "";
-            const role = cols[1] || "विशिष्ट अतिथि";
-            const tag  = cols[2] || "";
-            let photo  = cols[3] || "";
-
-            if (!name) continue;
-            if (!photo || !photo.startsWith("http")) {
-                photo = "https://i.postimg.cc/BvCpXsBY/file-000000004b2c82119a54e5fe960f91e8.png";
-            }
-
-            html += `
-                <div class="guest-card">
-                    <div class="guest-img-wrapper">
-                        <img src="${photo}" alt="${name}" class="guest-img" onerror="this.src='https://i.postimg.cc/BvCpXsBY/file-000000004b2c82119a54e5fe960f91e8.png'" />
-                    </div>
-                    <h3 class="guest-name">${name}</h3>
-                    <div class="guest-role">${role}</div>
-                    <p class="guest-tagline">${tag}</p>
-                </div>
-            `;
-        }
-
-        grid.innerHTML = html || `<p style="text-align:center; grid-column:1/-1; color:#64748B;">अतिथियों की सूची शीघ्र ही प्रकाशित की जाएगी।</p>`;
-
-    } catch (error) {
-        grid.innerHTML = `<p style="text-align:center; grid-column:1/-1; color:#64748B;">अतिथियों की सूची लोड करने में समस्या हुई।</p>`;
-    }
+  const formTitle = document.getElementById("dynFormEventTitle");
+  if (formTitle) formTitle.innerText = `${EVENT_CONFIG.currentEvent.name} पास बुकिंग`;
 }
 
-// ==========================================
-// 4. MODALS & PRICING
-// ==========================================
-function updateTicketPrice() {
-    const role = document.getElementById('userRole').value;
-    const priceDisplay = document.getElementById('priceDisplay');
-    const performerFields = document.getElementById('performerFields');
-    const submitBtn = document.getElementById('submitRegBtn');
+// =================================================================
+// 3. DYNAMIC REGISTRATION ON/OFF & EVENT SETTINGS
+// =================================================================
+function checkGlobalRegistrationStatus() {
+  const cb = 'cb_reg_stat_' + Date.now();
+  window[cb] = function(res) {
+    delete window[cb];
+    if (res && res.status === "success") {
+      currentRegStatus = res.regStatus || "ON";
 
-    if (role === 'Performer') {
-        priceDisplay.innerText = '₹299';
-        performerFields.style.display = 'block';
-        submitBtn.innerText = '₹299 भुगतान करें एवं पास प्राप्त करें';
+      if (res.activeEvent) {
+        EVENT_CONFIG.currentEvent = Object.assign(EVENT_CONFIG.currentEvent, res.activeEvent);
+      }
+
+      if (document.getElementById("admEvName")) document.getElementById("admEvName").value = EVENT_CONFIG.currentEvent.name;
+      if (document.getElementById("admEvDate")) document.getElementById("admEvDate").value = EVENT_CONFIG.currentEvent.date;
+      if (document.getElementById("admEvTime")) document.getElementById("admEvTime").value = EVENT_CONFIG.currentEvent.time;
+      if (document.getElementById("admEvVenue")) document.getElementById("admEvVenue").value = EVENT_CONFIG.currentEvent.fullAddress || EVENT_CONFIG.currentEvent.venue;
+      if (document.getElementById("admEvMapUrl")) document.getElementById("admEvMapUrl").value = EVENT_CONFIG.currentEvent.mapUrl || "";
+      if (document.getElementById("admEvFee")) document.getElementById("admEvFee").value = EVENT_CONFIG.currentEvent.performerFee;
+      if (document.getElementById("admEvRzp")) document.getElementById("admEvRzp").value = EVENT_CONFIG.currentEvent.razorpayAmount;
+
+      applyRegistrationUI(currentRegStatus);
+    }
+  };
+
+  const s = document.createElement("script");
+  s.src = `${WEB_APP_URL}?action=getRegistrationStatus&callback=${cb}&t=${Date.now()}`;
+  document.body.appendChild(s);
+}
+
+function applyRegistrationUI(status) {
+  const regBtns = document.querySelectorAll(".btn-nav-gold, #btnNavPassBook, #btnOpenRegisterModal, .btn-primary.btn-book");
+  const heroBadge = document.querySelector(".hero .badge");
+  const heroH1 = document.querySelector(".hero h1");
+  const heroTagline = document.querySelector(".hero .tagline");
+  const heroMeta = document.querySelector(".hero-meta");
+  const heroMainBtn = document.querySelector(".hero .btn-primary");
+  
+  const statusText = document.getElementById("adminRegStatusText");
+  const toggleBtn = document.getElementById("btnAdminToggleReg");
+
+  if (status === "OFF") {
+    const up = EVENT_CONFIG.upcomingEvent;
+    if (heroBadge) heroBadge.innerText = up.badge;
+    if (heroH1) heroH1.innerText = up.title;
+    if (heroTagline) heroTagline.innerText = up.tagline;
+    
+    if (heroMeta) {
+      heroMeta.innerHTML = `
+        <span><i class="fas fa-map-marker-alt"></i> ${up.venue}</span>
+        <span><i class="fas fa-calendar-alt"></i> ${up.date}</span>
+        <span><i class="fas fa-clock"></i> ${up.time}</span>
+      `;
+    }
+
+    if (heroMainBtn) {
+      heroMainBtn.innerHTML = `🔔 आगामी इवेंट सूचना प्राप्त करें`;
+      heroMainBtn.onclick = function(e) {
+        if (e) e.preventDefault();
+        openNotifyModal();
+      };
+    }
+
+    regBtns.forEach(btn => {
+      if (btn) {
+        btn.innerText = "🚫 पंजीकरण बंद है";
+        btn.style.opacity = "0.75";
+      }
+    });
+
+    if (statusText) statusText.innerText = "वर्तमान स्थिति: बंद (OFF) - पोस्टर सक्रिय";
+    if (toggleBtn) {
+      toggleBtn.innerText = "पंजीकरण चालू करें (Turn ON)";
+      toggleBtn.style.background = "#22C55E";
+      toggleBtn.style.color = "#FFF";
+    }
+  } else {
+    const cur = EVENT_CONFIG.currentEvent;
+    if (heroBadge) heroBadge.innerText = cur.regNo;
+    if (heroH1) heroH1.innerText = cur.name;
+    if (heroTagline) heroTagline.innerText = cur.tagline;
+
+    if (heroMeta) {
+      heroMeta.innerHTML = `
+        <span><i class="fas fa-map-marker-alt"></i> ${cur.venue}</span>
+        <span><i class="fas fa-calendar-alt"></i> ${cur.date}</span>
+        <span><i class="fas fa-clock"></i> ${cur.time}</span>
+      `;
+    }
+
+    if (heroMainBtn) {
+      heroMainBtn.innerText = "पास बुक करें";
+      heroMainBtn.onclick = function(e) {
+        openRegisterModal(e);
+      };
+    }
+
+    regBtns.forEach(btn => {
+      if (btn) {
+        btn.innerText = "पास बुक करें";
+        btn.style.opacity = "1";
+      }
+    });
+
+    if (statusText) statusText.innerText = "वर्तमान स्थिति: चालू (ON)";
+    if (toggleBtn) {
+      toggleBtn.innerText = "पंजीकरण बंद करें (Turn OFF)";
+      toggleBtn.style.background = "#EF4444";
+      toggleBtn.style.color = "#FFF";
+    }
+  }
+
+  injectDynamicEventData();
+}
+
+function toggleRegistrationState() {
+  const toggleBtn = document.getElementById("btnAdminToggleReg");
+  const targetStatus = (currentRegStatus === "ON") ? "OFF" : "ON";
+  
+  if (toggleBtn) {
+    toggleBtn.innerText = "⏳ अपडेट हो रहा है...";
+    toggleBtn.disabled = true;
+  }
+
+  const cb = 'cb_toggle_reg_' + Date.now();
+  window[cb] = function(res) {
+    delete window[cb];
+    if (toggleBtn) toggleBtn.disabled = false;
+
+    if (res && res.status === "success") {
+      currentRegStatus = res.regStatus;
+      applyRegistrationUI(res.regStatus);
+      alert(res.regStatus === "ON" ? "✅ पंजीकरण चालू हो गया है!" : "🛑 पंजीकरण बंद कर दिया गया है!");
     } else {
-        priceDisplay.innerText = '₹00';
-        performerFields.style.display = 'none';
-        submitBtn.innerText = 'निःशुल्क पास बुक करें';
+      alert("❌ स्थिति अपडेट करने में त्रुटि हुई!");
     }
+  };
+
+  const s = document.createElement("script");
+  s.src = `${WEB_APP_URL}?action=toggleRegistrationStatus&status=${targetStatus}&callback=${cb}&t=${Date.now()}`;
+  document.body.appendChild(s);
 }
 
+function saveAdminNewEvent() {
+  const name   = document.getElementById("admEvName").value.trim();
+  const date   = document.getElementById("admEvDate").value.trim();
+  const time   = document.getElementById("admEvTime").value.trim();
+  const venue  = document.getElementById("admEvVenue").value.trim();
+  const mapUrl = document.getElementById("admEvMapUrl") ? document.getElementById("admEvMapUrl").value.trim() : "https://goo.gl/maps/your-location";
+  const fee    = document.getElementById("admEvFee").value.trim() || "₹299";
+  const rzp    = parseInt(document.getElementById("admEvRzp").value) || 29900;
+
+  if (!name || !date || !venue) {
+    alert("कृपया इवेंट का नाम, तारीख और स्थान अवश्य दर्ज करें!");
+    return;
+  }
+
+  const newEventData = {
+    name: name,
+    date: date,
+    time: time,
+    venue: venue,
+    fullAddress: venue,
+    mapUrl: mapUrl,
+    performerFee: fee,
+    razorpayAmount: rzp
+  };
+
+  const cb = 'cb_save_ev_' + Date.now();
+  window[cb] = function(res) {
+    delete window[cb];
+    if (res && res.status === "success") {
+      EVENT_CONFIG.currentEvent = Object.assign(EVENT_CONFIG.currentEvent, newEventData);
+      currentRegStatus = "ON";
+      applyRegistrationUI("ON");
+      alert(`🎉 नया इवेंट "${name}" सफलतापूर्वक लागू हो गया है और नई शीट तैयार कर दी गई है!`);
+    } else {
+      alert("❌ इवेंट अपडेट करने में त्रुटि हुई!");
+    }
+  };
+
+  const s = document.createElement("script");
+  s.src = `${WEB_APP_URL}?action=toggleRegistrationStatus&status=ON&eventData=${encodeURIComponent(JSON.stringify(newEventData))}&callback=${cb}&t=${Date.now()}`;
+  document.body.appendChild(s);
+}
+
+// =================================================================
+// 4. DYNAMIC SPONSOR MANAGER (ADMIN TO GOOGLE SHEET)
+// =================================================================
+function saveAdminSponsor() {
+  const name  = document.getElementById("admSpName").value.trim();
+  const tag   = document.getElementById("admSpTag").value.trim() || "Associate Partner";
+  const photo = document.getElementById("admSpPhoto").value.trim();
+  const insta = document.getElementById("admSpInsta").value.trim() || "#";
+  const btn   = document.getElementById("btnAdminAddSp");
+
+  if (!name) {
+    alert("कृपया प्रायोजक (Sponsor) का नाम दर्ज करें!");
+    return;
+  }
+
+  if (btn) {
+    btn.innerText = "⏳ सुरक्षित हो रहा है...";
+    btn.disabled = true;
+  }
+
+  const cb = 'cb_sp_add_' + Date.now();
+  window[cb] = function(res) {
+    delete window[cb];
+    if (btn) {
+      btn.innerText = "➕ प्रायोजक जोड़ें व लाइव करें";
+      btn.disabled = false;
+    }
+
+    if (res && res.status === "success") {
+      alert("✅ नया प्रायोजक सफलतापूर्वक जोड़ दिया गया है!");
+      document.getElementById("admSpName").value = '';
+      document.getElementById("admSpPhoto").value = '';
+      document.getElementById("admSpInsta").value = '';
+      loadSponsorsDirectly();
+    } else {
+      alert("❌ प्रायोजक जोड़ने में त्रुटि: " + (res.message || ""));
+    }
+  };
+
+  const s = document.createElement("script");
+  s.src = `${WEB_APP_URL}?action=addSponsor&name=${encodeURIComponent(name)}&tag=${encodeURIComponent(tag)}&photo=${encodeURIComponent(photo)}&insta=${encodeURIComponent(insta)}&callback=${cb}&t=${Date.now()}`;
+  document.body.appendChild(s);
+}
+
+function loadSponsorsDirectly() {
+  const grid = document.getElementById("sponsorsGrid");
+  if (!grid) return;
+
+  const cb = 'cb_get_sp_' + Date.now();
+  window[cb] = function(res) {
+    delete window[cb];
+    if (res && res.status === "success" && res.sponsors && res.sponsors.length > 0) {
+      grid.innerHTML = res.sponsors.map(sp => `
+        <a href="${sp.insta || '#'}" target="_blank" class="sponsor-card">
+          <img src="${sp.photo || 'image/sponsor1.png'}" alt="${sp.name}" onerror="this.src='https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(sp.name)}'"> 
+          <span>${sp.name}</span>
+          <small style="font-size:10px; color:#B45309; font-weight:bold;">${sp.tag}</small>
+        </a>
+      `).join('');
+    }
+  };
+
+  const s = document.createElement("script");
+  s.src = `${WEB_APP_URL}?action=getSponsors&callback=${cb}&t=${Date.now()}`;
+  document.body.appendChild(s);
+}
+
+// =================================================================
+// 5. VOLUNTEER SCANNER CONTROLLER (SEPARATE ACCESS)
+// =================================================================
+function openVolunteerModal(e) {
+  if (e) {
+    if (e.preventDefault) e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
+  }
+
+  const modal = document.getElementById("volunteerScanModal");
+  if (modal) {
+    modal.style.setProperty("display", "flex", "important");
+    document.body.style.overflow = "hidden";
+
+    // यदि पहले से लॉगिन है
+    if (sessionStorage.getItem("vol_scanner_token")) {
+      document.getElementById("volLoginView").style.display = "none";
+      document.getElementById("volScannerView").style.display = "block";
+    } else {
+      document.getElementById("volLoginView").style.display = "block";
+      document.getElementById("volScannerView").style.display = "none";
+    }
+  }
+}
+
+function closeVolunteerModal() {
+  const modal = document.getElementById("volunteerScanModal");
+  if (modal) {
+    modal.style.setProperty("display", "none", "important");
+  }
+  document.body.style.overflow = "auto";
+  stopCamera();
+}
+
+function performVolunteerLogin() {
+  const pass = document.getElementById("volPassInput").value.trim();
+  const err  = document.getElementById("volLoginErr");
+  const btn  = document.getElementById("btnVolLogin");
+
+  if (!pass) {
+    if (err) { err.innerText = "कृपया पासवर्ड दर्ज करें!"; err.style.display = "block"; }
+    return;
+  }
+
+  btn.innerText = "⏳ सत्यापन हो रहा है...";
+  btn.disabled = true;
+
+  const cb = 'cb_vol_log_' + Date.now();
+  window[cb] = function(res) {
+    delete window[cb];
+    btn.innerText = "स्कैनर शुरू करें";
+    btn.disabled = false;
+
+    if (res && res.status === "success") {
+      sessionStorage.setItem("vol_scanner_token", res.token);
+      document.getElementById("volPassInput").value = '';
+      if (err) err.style.display = "none";
+
+      document.getElementById("volLoginView").style.display = "none";
+      document.getElementById("volScannerView").style.display = "block";
+    } else {
+      if (err) {
+        err.innerText = "❌ अमान्य वालंटियर पासवर्ड!";
+        err.style.display = "block";
+      }
+    }
+  };
+
+  const s = document.createElement("script");
+  s.src = `${WEB_APP_URL}?action=volunteerLogin&pass=${encodeURIComponent(pass)}&callback=${cb}&t=${Date.now()}`;
+  document.body.appendChild(s);
+}
+
+function toggleCamera() {
+  if (!isScanning) startCamera();
+  else stopCamera();
+}
+
+function startCamera() {
+  if (typeof Html5Qrcode === 'undefined') {
+    alert("QR स्कैनर लाइब्रेरी लोड नहीं हो सकी।");
+    return;
+  }
+  html5QrCode = new Html5Qrcode("reader");
+  const config = { fps: 20, qrbox: { width: 260, height: 260 } };
+
+  html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
+  .then(() => {
+    isScanning = true;
+    if (document.getElementById('camToggleBtn')) document.getElementById('camToggleBtn').innerText = "🛑 Stop Camera";
+    if (document.getElementById('scannerStatus')) document.getElementById('scannerStatus').innerText = "Scanning Active";
+  }).catch(err => alert("Camera Error: " + err));
+}
+
+function stopCamera() {
+  if (html5QrCode && isScanning) {
+    html5QrCode.stop().then(() => {
+      isScanning = false;
+      if (document.getElementById('camToggleBtn')) document.getElementById('camToggleBtn').innerText = "📷 Start Camera Scanner";
+      if (document.getElementById('scannerStatus')) document.getElementById('scannerStatus').innerText = "Stopped";
+    }).catch(err => console.error(err));
+  }
+}
+
+function onScanSuccess(decodedText) {
+  stopCamera();
+  if (navigator.vibrate) navigator.vibrate(200);
+
+  let scannedId = decodedText.trim();
+  if (scannedId.includes('id=')) {
+    scannedId = scannedId.split('id=')[1].split('&')[0];
+  }
+
+  const resultBox = document.getElementById('scanResultBox');
+  if (resultBox) {
+    resultBox.style.display = 'block';
+    resultBox.innerHTML = `⏳ <strong>सत्यापन जारी है...</strong><br><small>Ticket: ${scannedId}</small>`;
+  }
+
+  const cb = 'scanCallback_' + Math.round(100000 * Math.random());
+  window[cb] = function(data) {
+    delete window[cb];
+    if (resultBox) {
+      if (data && data.status === "approved") {
+        scannedCount++;
+        if (document.getElementById('scannedCount')) document.getElementById('scannedCount').innerText = scannedCount;
+        resultBox.style.borderTop = "5px solid #10B981";
+        resultBox.innerHTML = `
+          <div style="background:#DCFCE7; color:#166534; padding:4px 10px; border-radius:12px; display:inline-block; font-weight:bold; font-size:12px;">✓ ENTRY APPROVED</div>
+          <h4 style="color:#065F46; margin:5px 0;">प्रवेश मान्य</h4>
+          <p style="margin:2px 0;"><strong>प्रतिभागी:</strong> ${data.name}</p>
+          <p style="margin:0; font-size:11px; color:#64748B;">ID: ${data.ticketId} • समय: ${data.time}</p>
+        `;
+      } else if (data && data.status === "already_scanned") {
+        resultBox.style.borderTop = "5px solid #DC2626";
+        resultBox.innerHTML = `
+          <div style="background:#FEE2E2; color:#991B1B; padding:4px 10px; border-radius:12px; display:inline-block; font-weight:bold; font-size:12px;">❌ ALREADY SCANNED</div>
+          <h4 style="color:#991B1B; margin:5px 0;">पहले ही स्कैन हो चुका है</h4>
+          <p style="margin:2px 0;"><strong>प्रतिभागी:</strong> ${data.name}</p>
+          <p style="margin:0; font-size:11px; color:#64748B;">प्रथम स्कैन: ${data.time}</p>
+        `;
+      } else {
+        resultBox.style.borderTop = "5px solid #DC2626";
+        resultBox.innerHTML = `<h4 style="color:#DC2626; margin:0;">⚠️ अमान्य टिकट</h4><p style="margin:2px 0; font-size:12px;">डेटाबेस में टिकट आईडी नहीं मिली।</p>`;
+      }
+    }
+  };
+
+  const scriptTag = document.createElement('script');
+  scriptTag.src = `${WEB_APP_URL}?action=markAttendance&ticketId=${encodeURIComponent(scannedId)}&callback=${cb}&t=${Date.now()}`;
+  document.body.appendChild(scriptTag);
+}
+
+// =================================================================
+// 6. NAVBAR & MODALS HANDLERS
+// =================================================================
 function toggleNavMenu(e) {
-    if (e) e.stopPropagation();
-    document.getElementById('navMenu').classList.toggle('active');
+  if (e) e.stopPropagation();
+  const nav = document.getElementById('navMenu');
+  if (nav) nav.classList.toggle('active');
 }
 
 function closeNavMenu() {
-    document.getElementById('navMenu').classList.remove('active');
+  const nav = document.getElementById('navMenu');
+  if (nav) nav.classList.remove('active');
+}
+
+function handlePassBookClick(e) {
+  if (e) {
+    if (e.preventDefault) e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
+  }
+  openRegisterModal(e);
 }
 
 function openRegisterModal(e) {
-    if (e) e.stopPropagation();
-    document.getElementById('registerModal').style.display = 'flex';
+  if (e) {
+    if (e.preventDefault) e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
+  }
+
+  if (currentRegStatus === "OFF") {
+    alert("⚠️ वर्तमान में पंजीकरण बंद कर दिया गया है। आगामी कार्यक्रमों की सूचना हेतु हमारे साथ जुड़े रहें।");
+    return;
+  }
+
+  const regModal = document.getElementById('registerModal');
+  if (regModal) {
+    regModal.style.setProperty("display", "flex", "important");
+    regModal.style.setProperty("z-index", "999999999", "important");
+    document.body.style.overflow = "hidden";
     updateTicketPrice();
+  }
 }
 
 function closeRegisterModal() {
-    document.getElementById('registerModal').style.display = 'none';
+  const regModal = document.getElementById('registerModal');
+  if (regModal) regModal.style.setProperty("display", "none", "important");
+  document.body.style.overflow = "auto";
 }
 
-function openDownloadModal() {
-    document.getElementById('downloadModal').style.display = 'flex';
-    document.getElementById('portalResult').style.display = 'none';
-    document.getElementById('portalNotFound').style.display = 'none';
-    document.getElementById('searchQuery').value = '';
+function openDownloadModal(e) {
+  if (e) {
+    if (e.preventDefault) e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
+  }
+
+  const dlModal = document.getElementById('downloadModal');
+  if (dlModal) {
+    dlModal.style.setProperty("display", "flex", "important");
+    dlModal.style.setProperty("z-index", "999999999", "important");
+    const resBox = document.getElementById('portalResult');
+    const notFound = document.getElementById('portalNotFound');
+    const query = document.getElementById('searchQuery');
+    if (resBox) resBox.style.display = 'none';
+    if (notFound) notFound.style.display = 'none';
+    if (query) query.value = '';
+    document.body.style.overflow = "hidden";
+  }
 }
 
 function closeDownloadModal() {
-    document.getElementById('downloadModal').style.display = 'none';
+  const dlModal = document.getElementById('downloadModal');
+  if (dlModal) dlModal.style.setProperty("display", "none", "important");
+  document.body.style.overflow = "auto";
 }
 
 function openAdminModal(e) {
-    if (e) e.stopPropagation();
-    document.getElementById('adminModal').style.display = 'flex';
+  if (e) {
+    if (e.preventDefault) e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
+  }
+
+  const modal = document.getElementById('adminModal');
+  if (modal) {
+    modal.style.setProperty("display", "flex", "important");
+    modal.style.setProperty("z-index", "9999999999", "important");
+    document.body.style.overflow = "hidden";
+  }
 }
 
 function closeAdminModal() {
-    document.getElementById('adminModal').style.display = 'none';
+  const modal = document.getElementById('adminModal');
+  if (modal) modal.style.setProperty("display", "none", "important");
+  document.body.style.overflow = "auto";
 }
 
 function closeAdminDashboard() {
-    document.getElementById('adminDashboard').style.display = 'none';
-    stopCamera();
+  const dashboard = document.getElementById('adminDashboard');
+  if (dashboard) dashboard.style.setProperty("display", "none", "important");
 }
 
 window.addEventListener('click', function(event) {
-    ['registerModal', 'adminModal', 'downloadModal'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el && event.target === el) el.style.display = 'none';
-    });
+  ['registerModal', 'adminModal', 'adminDashboard', 'volunteerScanModal', 'downloadModal', 'policyModal'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el && event.target === el) {
+      el.style.setProperty("display", "none", "important");
+      document.body.style.overflow = "auto";
+      if (id === 'volunteerScanModal') stopCamera();
+    }
+  });
 });
 
-// ==========================================
-// 5. REGISTRATION & RAZORPAY PAYMENT
-// ==========================================
-document.getElementById('ticketForm').addEventListener('submit', function(e) {
+// =================================================================
+// 7. PRICING & REGISTRATION SUBMISSION
+// =================================================================
+function updateTicketPrice() {
+  const roleEl = document.getElementById('userRole');
+  if (!roleEl) return;
+  const role = roleEl.value;
+  const priceDisplay = document.getElementById('priceDisplay');
+  const performerFields = document.getElementById('performerFields');
+  const submitBtn = document.getElementById('submitRegBtn');
+  const fee = EVENT_CONFIG.currentEvent.performerFee;
+
+  if (role === 'Performer') {
+    if (priceDisplay) priceDisplay.innerText = fee;
+    if (performerFields) performerFields.style.display = 'block';
+    if (submitBtn) submitBtn.innerText = `${fee} भुगतान करें एवं पास प्राप्त करें`;
+  } else {
+    if (priceDisplay) priceDisplay.innerText = '₹00';
+    if (performerFields) performerFields.style.display = 'none';
+    if (submitBtn) submitBtn.innerText = 'निःशुल्क पास बुक करें';
+  }
+}
+
+const ticketForm = document.getElementById('ticketForm');
+if (ticketForm) {
+  ticketForm.addEventListener('submit', function(e) {
     e.preventDefault();
+
+    if (currentRegStatus === "OFF") {
+      alert("⚠️ पंजीकरण वर्तमान में बंद कर दिया गया है।");
+      return;
+    }
 
     const role = document.getElementById('userRole').value;
     const name = document.getElementById('name').value.trim();
@@ -380,612 +622,482 @@ document.getElementById('ticketForm').addEventListener('submit', function(e) {
     let vidha = "N/A";
     let title = "";
     if (role === 'Performer') {
-        vidha = document.getElementById('vidha').value;
-        title = document.getElementById('title').value;
+      vidha = document.getElementById('vidha') ? document.getElementById('vidha').value : "N/A";
+      title = document.getElementById('title') ? document.getElementById('title').value : "";
     }
 
-    // अगर श्रोता (Audience) है तो डायरेक्ट Free Registration
     if (role === 'Audience') {
-        const freeId = "AUD-" + Math.floor(100000 + Math.random() * 900000);
-        processSuccessfulRegistration(freeId, name, email, phone, role, vidha, title);
-        return;
+      const freeId = "AUD-" + Math.floor(100000 + Math.random() * 900000);
+      processSuccessfulRegistration(freeId, name, email, phone, role, vidha, title);
+      return;
     }
 
-    // Performer के लिए Razorpay Gateway
     if (typeof Razorpay === 'undefined') {
-        alert("Razorpay लोड नहीं हो सका। कृपया इंटरनेट चेक करें।");
-        return;
+      alert("Razorpay लोड नहीं हो सका। कृपया इंटरनेट चेक करें।");
+      return;
     }
 
-    var options = {
-        "key": "rzp_live_TSAArVlVekqxXd",
-        "amount": 29900, // ₹299.00
-        "currency": "INR",
-        "name": "अभिव्यक्ति काव्यपीठ",
-        "description": "Kavyotsav 2026 Performer Pass",
-        "image": "https://i.postimg.cc/BvCpXsBY/file-000000004b2c82119a54e5fe960f91e8.png",
-        "handler": function (response) {
-            processSuccessfulRegistration(response.razorpay_payment_id, name, email, phone, role, vidha, title);
-        },
-        "prefill": { "name": name, "email": email, "contact": phone },
-        "theme": { "color": "#78350f" }
+    const cur = EVENT_CONFIG.currentEvent;
+    const options = {
+      "key": "rzp_live_TSAArVlVekqxXd",
+      "amount": cur.razorpayAmount,
+      "currency": "INR",
+      "name": "अभिव्यक्ति काव्यपीठ",
+      "description": `${cur.name} Performer Pass`,
+      "image": "https://i.postimg.cc/BvCpXsBY/file-000000004b2c82119a54e5fe960f91e8.png",
+      "handler": function (response) {
+        processSuccessfulRegistration(response.razorpay_payment_id, name, email, phone, role, vidha, title);
+      },
+      "prefill": { "name": name, "email": email, "contact": phone },
+      "theme": { "color": "#78350f" }
     };
 
-    var rzp = new Razorpay(options);
+    const rzp = new Razorpay(options);
     rzp.open();
-});
+  });
+}
 
 function processSuccessfulRegistration(ticketId, name, email, phone, role, vidha, sample) {
-    // Sheet में डाटा भेजना
-    fetch(WEB_APP_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            action: "register",
-            paymentId: ticketId,
-            name: name,
-            email: email,
-            phone: phone,
-            role: role,
-            vidha: vidha,
-            sample: sample
-        })
-    });
+  fetch(WEB_APP_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      action: "register",
+      paymentId: ticketId,
+      name: name,
+      email: email,
+      phone: phone,
+      role: role,
+      vidha: vidha,
+      sample: sample,
+      eventName: EVENT_CONFIG.currentEvent.name
+    })
+  });
 
-    currentMatchedUser = {
-        ticketId: ticketId,
-        name: name,
-        type: role === 'Performer' ? 'कवि / मंच प्रस्तुतकर्ता' : 'श्रोता / दर्शक'
-    };
-    
-    generateAndDownloadTicketPDF();
+  currentMatchedUser = {
+    ticketId: ticketId,
+    name: name,
+    type: role === 'Performer' ? 'कवि / मंच प्रस्तुतकर्ता' : 'श्रोता / दर्शक'
+  };
+  
+  if (document.getElementById('ticketForm')) {
     document.getElementById('ticketForm').reset();
-    closeRegisterModal();
-    alert(`पंजीकरण सफल! आपका टिकट ID: ${ticketId} है। ई-पास डाउनलोड हो रहा है।`);
+  }
+  closeRegisterModal();
+
+  launchTicketDispenser({
+    paymentId: ticketId,
+    name: name,
+    role: role === 'Performer' ? 'Performer' : 'Audience',
+    vidha: vidha || "सामान्य",
+    eventName: EVENT_CONFIG.currentEvent.name
+  });
 }
 
-// ==========================================
-// 6. SEARCH PORTAL & PDF PASS GENERATOR
-// ==========================================
-function handlePortalSearch(event) {
-    event.preventDefault();
-
-    const query = document.getElementById('searchQuery').value.trim();
-    const loader = document.getElementById('portalLoader');
-    const resultBox = document.getElementById('portalResult');
-    const errorBox = document.getElementById('portalNotFound');
-    const searchBtn = document.getElementById('portalSearchBtn');
-
-    if (!query) return;
-
-    resultBox.style.display = 'none';
-    errorBox.style.display = 'none';
-    loader.style.display = 'block';
-    searchBtn.disabled = true;
-
-    const callbackName = 'portalCallback_' + Math.round(100000 * Math.random());
+// =================================================================
+// 8. 3D TICKET DISPENSER (DYNAMIC EVENT DATA SYNC)
+// =================================================================
+function playPrinterSound() {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const now = audioCtx.currentTime;
     
-    window[callbackName] = function(data) {
-        delete window[callbackName];
-        if (document.body.contains(scriptTag)) document.body.removeChild(scriptTag);
-        loader.style.display = 'none';
-        searchBtn.disabled = false;
-
-        if (data && data.status === 'success' && data.user) {
-            currentMatchedUser = data.user;
-            document.getElementById('resUserName').innerText = data.user.name;
-            document.getElementById('resUserType').innerText = `${data.user.type} • ID: ${data.user.ticketId}`;
-
-            const ticketBtn = document.getElementById('btnDownloadTicket');
-            ticketBtn.onclick = generateAndDownloadTicketPDF;
-            ticketBtn.style.display = "block";
-
-            const certBtn = document.getElementById('btnDownloadCert');
-            if (data.user.certificateUrl && data.user.certificateUrl.startsWith("http")) {
-                certBtn.href = data.user.certificateUrl;
-                certBtn.style.pointerEvents = 'auto';
-                certBtn.style.opacity = '1';
-                certBtn.innerText = '📜 ई-सर्टिफिकेट PDF डाउनलोड करें';
-            } else {
-                certBtn.href = 'javascript:void(0)';
-                certBtn.innerText = '📜 सर्टिफिकेट कार्यक्रम के बाद उपलब्ध होगा';
-                certBtn.style.opacity = '0.6';
-                certBtn.style.pointerEvents = 'none';
-            }
-
-            resultBox.style.display = 'block';
-        } else {
-            errorBox.innerText = '⚠️ कोई विवरण नहीं मिला! कृपया सही मोबाइल नंबर या ईमेल दर्ज करें।';
-            errorBox.style.display = 'block';
-        }
-    };
-
-    const scriptTag = document.createElement('script');
-    scriptTag.src = `${WEB_APP_URL}?action=searchUser&query=${encodeURIComponent(query)}&callback=${callbackName}`;
-    scriptTag.onerror = function() {
-        loader.style.display = 'none';
-        searchBtn.disabled = false;
-        errorBox.innerText = '⚠️ सर्वर से कनेक्ट करने में समस्या हुई।';
-        errorBox.style.display = 'block';
-    };
-    document.body.appendChild(scriptTag);
+    for (let i = 0; i < 24; i++) {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      
+      osc.type = (i % 2 === 0) ? 'sawtooth' : 'triangle';
+      osc.frequency.setValueAtTime(160 + (i * 12), now + (i * 0.11));
+      
+      gain.gain.setValueAtTime(0.08, now + (i * 0.11));
+      gain.gain.exponentialRampToValueAtTime(0.001, now + (i * 0.11) + 0.08);
+      
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      
+      osc.start(now + (i * 0.11));
+      osc.stop(now + (i * 0.11) + 0.08);
+    }
+  } catch(e) {}
 }
 
-function generateAndDownloadTicketPDF() {
-    if (!currentMatchedUser) return;
+function launchTicketDispenser(passData) {
+  const modal = document.getElementById("ticketDispenserModal");
+  const ticket = document.getElementById("printablePassCard");
+  const actions = document.getElementById("dispenserActions");
 
-    const u = currentMatchedUser;
-    const btn = document.getElementById('btnDownloadTicket');
-    const originalText = btn ? btn.innerText : "";
-    if (btn) {
-        btn.innerText = "⏳ टिकट तैयार हो रहा है...";
-        btn.style.pointerEvents = "none";
+  if (!modal || !ticket) return;
+
+  const cur = EVENT_CONFIG.currentEvent;
+  const evTitle = passData.eventName || cur.name;
+
+  if (document.getElementById("tDispEventTitle")) {
+    document.getElementById("tDispEventTitle").innerText = `${evTitle} | ${cur.regNo.replace('REG. NO: ', '')}`;
+  }
+  if (document.getElementById("tDispDateTime")) {
+    document.getElementById("tDispDateTime").innerText = `${cur.date}, ${cur.time}`;
+  }
+  if (document.getElementById("tDispVenue")) {
+    document.getElementById("tDispVenue").innerText = cur.fullAddress;
+  }
+
+  if (document.getElementById("tDispName")) document.getElementById("tDispName").innerText = passData.name || "प्रतिभागी";
+  if (document.getElementById("tDispId")) document.getElementById("tDispId").innerText = passData.paymentId || "AKP-PASS-" + Math.floor(1000 + Math.random() * 9000);
+  if (document.getElementById("tDispRole")) document.getElementById("tDispRole").innerText = passData.role || "Audience";
+  if (document.getElementById("tDispVidha")) document.getElementById("tDispVidha").innerText = "विधा: " + (passData.vidha || "सामान्य");
+
+  const qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" + encodeURIComponent(passData.paymentId);
+  if (document.getElementById("tDispQR")) document.getElementById("tDispQR").src = qrUrl;
+
+  ticket.classList.remove("printing-done");
+  if (actions) actions.style.opacity = "0";
+  modal.style.setProperty("display", "flex", "important");
+
+  playPrinterSound();
+
+  setTimeout(() => {
+    ticket.classList.add("printing-done");
+  }, 300);
+
+  setTimeout(() => {
+    if (actions) actions.style.opacity = "1";
+  }, 2900);
+}
+
+function closeDispenserModal() {
+  const modal = document.getElementById("ticketDispenserModal");
+  if (modal) modal.style.setProperty("display", "none", "important");
+}
+
+function downloadPassAs(format) {
+  const element = document.getElementById("printablePassCard");
+  const passId = document.getElementById("tDispId") ? document.getElementById("tDispId").innerText.trim() : "PASS";
+
+  if (!element || typeof html2canvas === 'undefined') {
+    alert("डाउनलोड इंजन लोड हो रहा है, कृपया पुनः प्रयास करें।");
+    return;
+  }
+
+  html2canvas(element, {
+    scale: 3,
+    useCORS: true,
+    backgroundColor: null
+  }).then(canvas => {
+    if (format === 'png') {
+      const link = document.createElement('a');
+      link.download = `E-Pass_${passId}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    } else if (format === 'pdf') {
+      const { jsPDF } = window.jspdf;
+      const imgData = canvas.toDataURL('image/png');
+      
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'px',
+        format: [canvas.width / 3, canvas.height / 3]
+      });
+
+      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width / 3, canvas.height / 3);
+      pdf.save(`E-Pass_${passId}.pdf`);
+    }
+  });
+}
+
+// =================================================================
+// 9. MULTI-EVENT SEARCH PORTAL HANDLER
+// =================================================================
+function handlePortalSearch(event) {
+  event.preventDefault();
+
+  const query = document.getElementById('searchQuery').value.trim();
+  const loader = document.getElementById('portalLoader');
+  const resultBox = document.getElementById('portalResult');
+  const errorBox = document.getElementById('portalNotFound');
+  const searchBtn = document.getElementById('portalSearchBtn');
+
+  if (!query) return;
+
+  if (resultBox) resultBox.style.display = 'none';
+  if (errorBox) errorBox.style.display = 'none';
+  if (loader) loader.style.display = 'block';
+  if (searchBtn) searchBtn.disabled = true;
+
+  const callbackName = 'portalCallback_' + Math.round(100000 * Math.random());
+  
+  window[callbackName] = function(data) {
+    delete window[callbackName];
+    if (loader) loader.style.display = 'none';
+    if (searchBtn) searchBtn.disabled = false;
+
+    if (data && data.status === 'success' && data.allPasses && data.allPasses.length > 0) {
+      resultBox.innerHTML = `
+        <h4 style="color:#D4AF37; margin:0 0 10px 0; font-size:14px; border-bottom:1px solid rgba(212,175,55,0.3); padding-bottom:6px;">
+          कुल ${data.allPasses.length} पास / रिकॉर्ड प्राप्त हुए:
+        </h4>
+      `;
+
+      data.allPasses.forEach((pass, index) => {
+        const isLatest = (index === 0);
+        const passCard = document.createElement("div");
+        passCard.style.cssText = "background:#0A1931; border:1px solid #D4AF37; border-radius:8px; padding:12px; margin-bottom:10px; text-align:left;";
+        
+        passCard.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <strong style="color:#FFF; font-size:14px;">${pass.eventName || 'इवेंट'}</strong>
+            <span style="font-size:10px; padding:2px 8px; border-radius:10px; background:${isLatest ? '#166534' : '#334155'}; color:#FFF;">
+              ${isLatest ? 'नवीनतम (Active)' : 'पूर्व इवेंट'}
+            </span>
+          </div>
+          <p style="margin:2px 0; font-size:12px; color:#CBD5E1;">प्रतिभागी: <strong>${pass.name}</strong> (${pass.type})</p>
+          <p style="margin:2px 0; font-size:11px; color:#94A3B8;">Pass ID: <strong style="color:#F59E0B;">${pass.ticketId}</strong></p>
+          
+          <div style="display:flex; gap:8px; margin-top:10px;">
+            <button type="button" class="btn-primary" style="flex:1; padding:6px; font-size:11px;" onclick="launchTicketDispenser({paymentId:'${pass.ticketId}', name:'${pass.name}', role:'${pass.type}', vidha:'${pass.vidha || 'सामान्य'}', eventName:'${pass.eventName}'})">
+              🎟️ ई-पास देखें / डाउनलोड
+            </button>
+            ${pass.certificateUrl && pass.certificateUrl.startsWith('http') ? `
+              <a href="${pass.certificateUrl}" target="_blank" class="btn-outline-gold" style="flex:1; padding:6px; font-size:11px; text-align:center; text-decoration:none;">
+                📜 सर्टिफिकेट
+              </a>
+            ` : ''}
+          </div>
+        `;
+        resultBox.appendChild(passCard);
+      });
+
+      resultBox.style.display = 'block';
+    } else {
+      if (errorBox) {
+        errorBox.innerText = '⚠️ कोई विवरण नहीं मिला! कृपया सही मोबाइल नंबर या ईमेल दर्ज करें।';
+        errorBox.style.display = 'block';
+      }
+    }
+  };
+
+  const scriptTag = document.createElement('script');
+  scriptTag.src = `${WEB_APP_URL}?action=searchUser&query=${encodeURIComponent(query)}&callback=${callbackName}`;
+  scriptTag.onerror = function() {
+    if (loader) loader.style.display = 'none';
+    if (searchBtn) searchBtn.disabled = false;
+    if (errorBox) {
+      errorBox.innerText = '⚠️ सर्वर से कनेक्ट करने में समस्या हुई।';
+      errorBox.style.display = 'block';
+    }
+  };
+  document.body.appendChild(scriptTag);
+}
+
+// =================================================================
+// 10. ADMIN LOGIN & DASHBOARD
+// =================================================================
+function performDirectLogin() {
+  const userInput = document.getElementById('adminUser') ? document.getElementById('adminUser').value.trim() : '';
+  const passInput = document.getElementById('adminPass') ? document.getElementById('adminPass').value.trim() : '';
+  const loginError = document.getElementById('loginError');
+  const submitBtn = document.getElementById('adminSubmitBtn');
+
+  if (!userInput || !passInput) {
+    if (loginError) {
+      loginError.innerText = "कृपया यूज़रनेम और पासवर्ड दोनों दर्ज करें।";
+      loginError.style.display = 'block';
+    }
+    return;
+  }
+
+  if (loginError) loginError.style.display = 'none';
+  if (submitBtn) {
+    submitBtn.innerText = "⏳ सत्यापन हो रहा है...";
+    submitBtn.disabled = true;
+  }
+
+  const callbackName = 'loginCb_' + Date.now();
+
+  window[callbackName] = function(data) {
+    delete window[callbackName];
+    if (submitBtn) {
+      submitBtn.innerText = "लॉगिन करें";
+      submitBtn.disabled = false;
     }
 
-    const tempDiv = document.createElement('div');
-    tempDiv.style.position = 'absolute';
-    tempDiv.style.left = '-9999px';
-    document.body.appendChild(tempDiv);
+    if (data && data.status === "success") {
+      sessionStorage.setItem("admin_auth_token", data.token);
+      if (document.getElementById('adminUser')) document.getElementById('adminUser').value = '';
+      if (document.getElementById('adminPass')) document.getElementById('adminPass').value = '';
+      
+      closeAdminModal();
+      
+      const dashboard = document.getElementById('adminDashboard');
+      if (dashboard) {
+        dashboard.style.setProperty('display', 'flex', 'important');
+      }
 
-    new QRCode(tempDiv, {
-        text: u.ticketId,
-        width: 240,
-        height: 240,
-        correctLevel: QRCode.CorrectLevel.H
+      checkGlobalRegistrationStatus();
+    } else {
+      if (loginError) {
+        loginError.innerText = "❌ अमान्य यूज़रनेम/मोबाइल या पासवर्ड!";
+        loginError.style.display = 'block';
+      }
+    }
+  };
+
+  const s = document.createElement('script');
+  s.src = `${WEB_APP_URL}?action=adminLogin&user=${encodeURIComponent(userInput)}&pass=${encodeURIComponent(passInput)}&callback=${callbackName}&t=${Date.now()}`;
+  document.body.appendChild(s);
+}
+
+// =================================================================
+// 11. GUEST LOADER, NOTIFICATION & INIT
+// =================================================================
+async function loadGuestsDirectly() {
+  const grid = document.getElementById('guestGrid');
+  if (!grid) return;
+
+  try {
+    const csvUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Guest&t=${Date.now()}`;
+    const response = await fetch(csvUrl);
+    const text = await response.text();
+
+    const rows = text.split("\n").map(row => {
+      return row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(val => val.replace(/^"|"$/g, '').trim());
     });
 
-    setTimeout(() => {
-        let qrDataUrl = "";
-        const qrCanvas = tempDiv.querySelector('canvas');
-        if (qrCanvas) qrDataUrl = qrCanvas.toDataURL('image/png');
-
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a5" });
-
-        doc.setFillColor(10, 25, 49);
-        doc.rect(0, 0, 148, 210, "F");
-        doc.setDrawColor(212, 175, 55);
-        doc.setLineWidth(1.2);
-        doc.roundedRect(6, 6, 136, 198, 4, 4, "D");
-
-        doc.setTextColor(212, 175, 55);
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(18);
-        doc.text("ABHIVYAKTI KAVYAPITH", 74, 20, { align: "center" });
-
-        doc.setTextColor(203, 213, 225);
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(9.5);
-        doc.text("KAVYOTSAV 2026 - OFFICIAL ENTRY PASS", 74, 26, { align: "center" });
-
-        doc.setDrawColor(212, 175, 55);
-        doc.setLineWidth(0.4);
-        doc.line(18, 30, 130, 30);
-
-        doc.setFillColor(255, 255, 255);
-        doc.roundedRect(12, 35, 124, 70, 3, 3, "F");
-
-        doc.setTextColor(15, 23, 42);
-        doc.setFontSize(11);
-        doc.setFont("helvetica", "bold");
-        doc.text("Name:", 18, 46);
-        doc.setFont("helvetica", "normal");
-        doc.text(`${u.name}`, 42, 46);
-
-        doc.setFont("helvetica", "bold");
-        doc.text("Pass Type:", 18, 55);
-        doc.setFont("helvetica", "normal");
-        doc.text(`${u.type}`, 42, 55);
-
-        doc.setFont("helvetica", "bold");
-        doc.text("Ticket ID:", 18, 64);
-        doc.setTextColor(180, 83, 9);
-        doc.setFont("helvetica", "bold");
-        doc.text(`${u.ticketId}`, 42, 64);
-
-        doc.setTextColor(15, 23, 42);
-        doc.setFont("helvetica", "bold");
-        doc.text("Date & Time:", 18, 73);
-        doc.setFont("helvetica", "normal");
-        doc.text("23 August 2026 (05:00 PM)", 46, 73);
-
-        doc.setFont("helvetica", "bold");
-        doc.text("Venue:", 18, 82);
-        doc.setFont("helvetica", "normal");
-        doc.text("Senate Hall, Prayagraj", 36, 82);
-
-        doc.setFillColor(15, 35, 65);
-        doc.roundedRect(12, 110, 124, 76, 3, 3, "F");
-
-        if (qrDataUrl) {
-            doc.setFillColor(255, 255, 255);
-            doc.roundedRect(48, 115, 52, 52, 2, 2, "F");
-            doc.addImage(qrDataUrl, "PNG", 50, 117, 48, 48);
-        }
-
-        doc.setTextColor(212, 175, 55);
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(9.5);
-        doc.text("GATE ENTRY QR PASS", 74, 173, { align: "center" });
-
-        doc.setTextColor(203, 213, 225);
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(7.5);
-        doc.text("Scan this QR code at the entrance gate using Admin Scanner.", 74, 179, { align: "center" });
-
-        doc.save(`Kavyotsav_Pass_${u.ticketId}.pdf`);
-
-        if (document.body.contains(tempDiv)) document.body.removeChild(tempDiv);
-        if (btn) {
-            btn.innerText = originalText;
-            btn.style.pointerEvents = "auto";
-        }
-    }, 300);
-}
-
-// ==========================================
-// 7. ADMIN SCANNER & ATTENDANCE VERIFICATION
-// ==========================================
-function handleAdminLogin(event) {
-    if (event) event.preventDefault();
-
-    const userInput = document.getElementById('adminUser').value.trim();
-    const passInput = document.getElementById('adminPass').value.trim();
-    const loginError = document.getElementById('loginError');
-
-    if ((userInput === ADMIN_CREDENTIALS.user || userInput === ADMIN_CREDENTIALS.email) && passInput === ADMIN_CREDENTIALS.pass) {
-        loginError.style.display = 'none';
-        document.getElementById('adminLoginForm').reset();
-        closeAdminModal(); 
-        document.getElementById('adminDashboard').style.display = 'flex'; 
-    } else {
-        loginError.innerText = "❌ अमान्य Email/Phone या Password!";
-        loginError.style.display = 'block';
-    }
-}
-
-function toggleCamera() {
-    if (!isScanning) startCamera();
-    else stopCamera();
-}
-
-function startCamera() {
-    html5QrCode = new Html5Qrcode("reader");
-    const config = { fps: 20, qrbox: { width: 260, height: 260 } };
-
-    html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
-    .then(() => {
-        isScanning = true;
-        document.getElementById('camToggleBtn').innerText = "🛑 Stop Camera";
-        document.getElementById('scannerStatus').innerText = "Scanning Active";
-    }).catch(err => alert("Camera Error: " + err));
-}
-
-function stopCamera() {
-    if (html5QrCode && isScanning) {
-        html5QrCode.stop().then(() => {
-            isScanning = false;
-            document.getElementById('camToggleBtn').innerText = "📷 Start Camera Scanner";
-            document.getElementById('scannerStatus').innerText = "Stopped";
-        }).catch(err => console.error(err));
-    }
-}
-
-window.handleScanResult = function(data) {
-    const resultBox = document.getElementById('scanResultBox');
-    if (!resultBox) return;
-
-    if (data && data.status === "approved") {
-        scannedCount++;
-        document.getElementById('scannedCount').innerText = scannedCount;
-        resultBox.style.borderTop = "6px solid #10B981";
-        resultBox.innerHTML = `
-            <div style="background:#DCFCE7; color:#166534; padding:5px 12px; border-radius:15px; display:inline-block; font-weight:bold; font-size:13px; margin-bottom:8px;">✓ ENTRY APPROVED</div>
-            <h3 style="color:#065F46; margin:0 0 5px 0;">प्रवेश मान्य</h3>
-            <p style="margin:4px 0;"><strong>प्रतिभागी:</strong> ${data.name}</p>
-            <p style="margin:0; font-size:12px; color:#64748B;">ID: ${data.ticketId} • समय: ${data.time}</p>
-        `;
-    } else if (data && data.status === "already_scanned") {
-        resultBox.style.borderTop = "6px solid #DC2626";
-        resultBox.innerHTML = `
-            <div style="background:#FEE2E2; color:#991B1B; padding:5px 12px; border-radius:15px; display:inline-block; font-weight:bold; font-size:13px; margin-bottom:8px;">❌ ALREADY SCANNED</div>
-            <h3 style="color:#991B1B; margin:0 0 5px 0;">प्रवेश अस्वीकृत</h3>
-            <p style="margin:4px 0; color:#DC2626; font-weight:bold;">यह टिकट पहले ही इस्तेमाल हो चुका है!</p>
-            <p style="margin:4px 0;"><strong>प्रतिभागी:</strong> ${data.name}</p>
-            <p style="margin:0; font-size:12px; color:#64748B;">प्रथम स्कैन समय: ${data.time}</p>
-        `;
-    } else {
-        resultBox.style.borderTop = "6px solid #DC2626";
-        resultBox.innerHTML = `
-            <h3 style="color:#DC2626; margin:0;">⚠️ अमान्य टिकट</h3>
-            <p style="margin:4px 0;">डेटाबेस में टिकट आईडी नहीं मिली।</p>
-        `;
-    }
-};
-
-function onScanSuccess(decodedText) {
-    stopCamera();
-    if (navigator.vibrate) navigator.vibrate(200);
-
-    let scannedId = decodedText.trim();
-    if (scannedId.includes('id=')) {
-        scannedId = scannedId.split('id=')[1].split('&')[0];
+    if (!rows || rows.length <= 1) {
+      grid.innerHTML = `<p style="text-align:center; grid-column:1/-1; color:#64748B;">अतिथियों की सूची शीघ्र ही प्रकाशित की जाएगी।</p>`;
+      return;
     }
 
-    const resultBox = document.getElementById('scanResultBox');
-    resultBox.style.display = 'block';
-    resultBox.innerHTML = `⏳ <strong>सत्यापन जारी है...</strong><br><small>Ticket: ${scannedId}</small>`;
+    let html = "";
+    for (let i = 1; i < rows.length; i++) {
+      const cols = rows[i];
+      const name = cols[0] || "";
+      const role = cols[1] || "विशिष्ट अतिथि";
+      const tag  = cols[2] || "";
+      let photo  = cols[3] || "";
 
-    const callbackName = 'scanCallback_' + Math.round(100000 * Math.random());
+      if (!name) continue;
+      if (!photo || !photo.startsWith("http")) {
+        photo = "https://i.postimg.cc/BvCpXsBY/file-000000004b2c82119a54e5fe960f91e8.png";
+      }
 
-    // कॉलबैक फ़ंक्शन
-    window[callbackName] = function(data) {
-        delete window[callbackName];
-        if (scriptTag && scriptTag.parentNode) scriptTag.parentNode.removeChild(scriptTag);
-        window.handleScanResult(data);
-    };
+      html += `
+        <div class="guest-card">
+          <div class="guest-img-wrapper">
+            <img src="${photo}" alt="${name}" class="guest-img" onerror="this.src='https://i.postimg.cc/BvCpXsBY/file-000000004b2c82119a54e5fe960f91e8.png'" />
+          </div>
+          <h3 class="guest-name">${name}</h3>
+          <div class="guest-role">${role}</div>
+          <p class="guest-tagline">${tag}</p>
+        </div>
+      `;
+    }
 
-    const scriptTag = document.createElement('script');
-    scriptTag.src = `${WEB_APP_URL}?action=markAttendance&ticketId=${encodeURIComponent(scannedId)}&callback=${callbackName}&t=${Date.now()}`;
-    
-    scriptTag.onerror = function() {
-        resultBox.style.borderTop = "6px solid #DC2626";
-        resultBox.innerHTML = `❌ <strong>कनेक्शन एरर</strong><br><small>सर्वर से संपर्क नहीं हो सका।</small>`;
-    };
+    grid.innerHTML = html || `<p style="text-align:center; grid-column:1/-1; color:#64748B;">अतिथियों की सूची शीघ्र ही प्रकाशित की जाएगी।</p>`;
 
-    document.body.appendChild(scriptTag);
-}
-// ==========================================
-// 8. COUNTDOWN & FAQ INITIALIZATION
-// ==========================================
-function initCountdown() {
-    const eventDate = new Date("August 23, 2026 17:00:00").getTime();
-
-    setInterval(() => {
-        const now = new Date().getTime();
-        const difference = eventDate - now;
-
-        if (difference < 0) {
-            const timerBox = document.getElementById("countdownTimer");
-            if (timerBox) timerBox.innerHTML = "<p style='color:#fff;'>कार्यक्रम प्रारंभ हो चुका है!</p>";
-            return;
-        }
-
-        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-        if (document.getElementById("days")) document.getElementById("days").innerText = days < 10 ? "0" + days : days;
-        if (document.getElementById("hours")) document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
-        if (document.getElementById("minutes")) document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
-        if (document.getElementById("seconds")) document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
-    }, 1000);
+  } catch (error) {
+    grid.innerHTML = `<p style="text-align:center; grid-column:1/-1; color:#64748B;">अतिथियों की सूची लोड करने में समस्या हुई।</p>`;
+  }
 }
 
 function initFaq() {
-    const faqButtons = document.querySelectorAll(".faq-question");
-    faqButtons.forEach(btn => {
-        btn.addEventListener("click", () => {
-            btn.parentElement.classList.toggle("active");
-        });
+  const faqButtons = document.querySelectorAll(".faq-question");
+  faqButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      btn.parentElement.classList.toggle("active");
     });
+  });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    updateTicketPrice();
-    loadGuestsDirectly();
-    initCountdown();
-    initFaq();
-});
+function removeSplashScreen() {
+  const splash = document.getElementById("introSplash");
+  if (splash && !splash.classList.contains("hide-splash")) {
+    splash.classList.add("hide-splash");
+    setTimeout(() => {
+      splash.style.display = "none";
+    }, 800);
+  }
+}
 
-// ==========================================
-// LEGAL POLICIES POPUP HANDLER
-// ==========================================
 const POLICIES_DATA = {
-    privacy: {
-        title: "गोपनीयता नीति (Privacy Policy)",
-        content: `
-            <p><strong>1. सूचना संग्रहण:</strong> 'अभिव्यक्ति काव्यपीठ' पंजीकरण के दौरान केवल आवश्यक विवरण (नाम, संपर्क नंबर, ईमेल आईडी एवं रचना विवरण) एकत्रित करता है।</p>
-            <p><strong>2. डेटा सुरक्षा:</strong> आपका डेटा केवल प्रवेश सत्यापन एवं प्रमाणपत्र वितरण हेतु सुरक्षित सर्वर पर रखा जाता है। इसे किसी तीसरे पक्ष को साझा या बेचा नहीं जाता।</p>
-            <p><strong>3. भुगतान सुरक्षा:</strong> सभी ऑनलाइन लेन-देन 100% सुरक्षित एवं प्रमाणित Razorpay पेमेंट गेटवे के माध्यम से प्रोसेस किए जाते हैं।</p>
-        `
-    },
-    terms: {
-        title: "नियम एवं शर्तें (Terms & Conditions)",
-        content: `
-            <p><strong>1. ई-पास एवं प्रवेश:</strong> प्रवेश द्वार पर वैध ई-पास एवं क्यूआर कोड सत्यापन अनिवार्य है। एक पास पर केवल एक व्यक्ति को प्रवेश दिया जाएगा।</p>
-            <p><strong>2. अनुशासन एवं समय:</strong> कार्यक्रम 23 अगस्त 2026 को सायं 05:00 बजे से प्रारंभ होगा। सभी प्रतिभागियों से समयबद्धता की अपेक्षा है।</p>
-            <p><strong>3. काव्य विधा:</strong> मंच पर प्रस्तुत की जाने वाली रचना मौलिक एवं साहित्यिक मर्यादा के अनुरूप होनी चाहिए।</p>
-        `
-    },
-    refund: {
-        title: "रिफंड एवं निरस्तीकरण नीति (Refund Policy)",
-        content: `
-            <p><strong>1. श्रोता पंजीकरण:</strong> दर्शकों एवं श्रोताओं हेतु पंजीकरण पूर्णतः निःशुल्क (₹00) है।</p>
-            <p><strong>2. प्रस्तुतकर्ता स्लॉट (₹299):</strong> कवि स्लॉट बुकिंग के पश्चात स्लॉट सुरक्षित हो जाता है। यदि अपरिहार्य कारणों से कार्यक्रम संस्था द्वारा रद्द किया जाता है, तो पूर्ण शुल्क 7 कार्यदिवसों के भीतर वापस कर दिया जाएगा।</p>
-        `
-    }
+  privacy: {
+    title: "गोपनीयता नीति (Privacy Policy)",
+    content: `<p><strong>1. सूचना संग्रहण:</strong> अभिव्यक्ति काव्यपीठ पंजीकरण के दौरान आवश्यक विवरण ही संकलित करता है।</p><p><strong>2. डेटा सुरक्षा:</strong> डेटा पूर्णतः सुरक्षित रखा जाता है।</p>`
+  },
+  terms: {
+    title: "नियम एवं शर्तें (Terms & Conditions)",
+    content: `<p><strong>1. प्रवेश:</strong> कार्यक्रम स्थल पर डिजिटल ई-पास क्यूआर सत्यापन अनिवार्य है।</p>`
+  },
+  refund: {
+    title: "रिफंड एवं निरस्तीकरण नीति (Refund Policy)",
+    content: `<p><strong>1. श्रोता पास:</strong> निःशुल्क है।</p><p><strong>2. प्रस्तुतकर्ता स्लॉट:</strong> कार्यक्रम रद्द होने की स्थिति में शुल्क वापस किया जाएगा।</p>`
+  }
 };
 
 function openPolicyModal(type) {
-    const modal = document.getElementById('policyModal');
-    const title = document.getElementById('policyTitle');
-    const content = document.getElementById('policyContent');
+  const modal = document.getElementById('policyModal');
+  const title = document.getElementById('policyTitle');
+  const content = document.getElementById('policyContent');
 
-    if (POLICIES_DATA[type]) {
-        title.innerText = POLICIES_DATA[type].title;
-        content.innerHTML = POLICIES_DATA[type].content;
-        modal.style.display = 'flex';
-    }
+  if (POLICIES_DATA[type] && modal) {
+    if (title) title.innerText = POLICIES_DATA[type].title;
+    if (content) content.innerHTML = POLICIES_DATA[type].content;
+    modal.style.setProperty("display", "flex", "important");
+  }
 }
 
 function closePolicyModal() {
-    const modal = document.getElementById('policyModal');
-    if (modal) modal.style.display = 'none';
+  const modal = document.getElementById('policyModal');
+  if (modal) modal.style.setProperty("display", "none", "important");
 }
 
-window.addEventListener('click', function(event) {
-    const polModal = document.getElementById('policyModal');
-    if (polModal && event.target === polModal) polModal.style.display = 'none';
-});
-
-// ==========================================
-// FRONTEND DEVTOOLS & INSPECT PROTECTION
-// ==========================================
-document.addEventListener('contextmenu', function(e) {
-    e.preventDefault(); // Right Click बंद
-});
-
-document.addEventListener('keydown', function(e) {
-    // F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U को ब्लॉक करना
-    if (
-        e.key === 'F12' || 
-        (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || 
-        (e.ctrlKey && (e.key === 'u' || e.key === 'U'))
-    ) {
-        e.preventDefault();
-        return false;
-    }
-});
-
-// ==========================================
-// REGISTRATION CLOSURE ENFORCER (100% BLOCK)
-// ==========================================
-const IS_REGISTRATION_CLOSED = true; // बंद करने के लिए true, चालू करने के लिए false
-
-function enforceRegistrationStatus() {
-    if (!IS_REGISTRATION_CLOSED) return;
-
-    // 1. पुराने openRegisterModal फ़ंक्शन को ओवरराइड करना
-    window.openRegisterModal = function() {
-        showRegistrationClosedPopup();
-    };
-
-    // 2. पेज के सभी पास बुक बटन्स पर क्लिक को इंटरसेप्ट करना
-    document.querySelectorAll("button, a").forEach(el => {
-        const txt = el.innerText.trim();
-        const onclickAttr = el.getAttribute("onclick") || "";
-
-        if (
-            txt.includes("पास बुक") || 
-            txt.includes("पंजीकरण") || 
-            onclickAttr.includes("openRegisterModal")
-        ) {
-            el.removeAttribute("onclick");
-            el.onclick = function(e) {
-                e.preventDefault();
-                e.stopImmediatePropagation();
-                showRegistrationClosedPopup();
-            };
-        }
-    });
-}
-
-function showRegistrationClosedPopup() {
-    let modal = document.getElementById("regClosedModal");
-    if (!modal) {
-        modal = document.createElement("div");
-        modal.id = "regClosedModal";
-        modal.className = "modal-overlay";
-        modal.style.cssText = "display:flex !important; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); backdrop-filter:blur(6px); z-index:9999999; justify-content:center; align-items:center; padding:15px;";
-        
-        modal.innerHTML = `
-            <div class="modal-box" style="background:#0A1931; border:2px solid #D4AF37; border-radius:14px; max-width:420px; width:95%; padding:25px; text-align:center; color:#FFF; box-shadow:0 10px 30px rgba(0,0,0,0.8);">
-                <div style="font-size:3rem; margin-bottom:10px;">🚫</div>
-                <h2 style="color:#D4AF37; margin:0 0 10px 0; font-family:'Yatra One', cursive; font-size:1.5rem;">पंजीकरण बंद है</h2>
-                <p style="color:#CBD5E1; font-size:14px; line-height:1.6; margin-bottom:20px;">
-                    काव्योत्सव 2026 हेतु सभी सीटों का ऑनलाइन पंजीकरण पूर्ण हो चुका है। अब नए पास जारी नहीं किए जा रहे हैं।
-                </p>
-                <button type="button" class="btn-primary w-100" onclick="document.getElementById('regClosedModal').style.setProperty('display','none','important');" style="padding:10px; border-radius:8px; font-weight:bold; cursor:pointer;">
-                    समझ गया
-                </button>
-            </div>
-        `;
-        document.body.appendChild(modal);
-    } else {
-        modal.style.setProperty("display", "flex", "important");
-    }
-}
-
-// पेज लोड होते ही और 500ms बाद लागू करें
-document.addEventListener("DOMContentLoaded", enforceRegistrationStatus);
-setTimeout(enforceRegistrationStatus, 600);
-
-// ==========================================
-// NOTIFY ME LOGIC (आगामी इवेंट सूचना)
-// ==========================================
 function openNotifyModal() {
-    const modal = document.getElementById('notifyMeModal');
-    if (modal) {
-        modal.style.setProperty('display', 'flex', 'important');
-    }
+  const modal = document.getElementById('notifyMeModal');
+  if (modal) modal.style.setProperty('display', 'flex', 'important');
 }
 
 function closeNotifyModal() {
-    const modal = document.getElementById('notifyMeModal');
-    if (modal) {
-        modal.style.setProperty('display', 'none', 'important');
-    }
+  const modal = document.getElementById('notifyMeModal');
+  if (modal) modal.style.setProperty('display', 'none', 'important');
 }
 
-// सूचना बटन पर सीधे openNotifyModal बाइंड करना
-document.addEventListener("DOMContentLoaded", function() {
-    document.querySelectorAll("button, a").forEach(el => {
-        if (el.innerText.includes("सूचना प्राप्त करें")) {
-            el.removeAttribute("onclick");
-            el.onclick = function(e) {
-                e.preventDefault();
-                e.stopImmediatePropagation();
-                openNotifyModal();
-            };
-        }
-    });
-});
-
-// ==========================================
-// NOTIFY ME SUBMISSION TO GOOGLE SHEET
-// ==========================================
 function handleNotifySubmit(event) {
-    if (event) event.preventDefault();
-    
-    const name = document.getElementById('notifyName').value.trim();
-    const contact = document.getElementById('notifyContact').value.trim();
-    const btn = document.getElementById('notifySubmitBtn');
+  if (event) event.preventDefault();
+  
+  const name = document.getElementById('notifyName').value.trim();
+  const contact = document.getElementById('notifyContact').value.trim();
+  const btn = document.getElementById('notifySubmitBtn');
 
-    if (!name || !contact) return;
+  if (!name || !contact) return;
 
-    btn.innerText = "⏳ दर्ज किया जा रहा है...";
-    btn.disabled = true;
+  btn.innerText = "⏳ दर्ज किया जा रहा है...";
+  btn.disabled = true;
 
-    const callbackName = 'notifyCb_' + Date.now();
+  const callbackName = 'notifyCb_' + Date.now();
 
-    window[callbackName] = function(data) {
-        delete window[callbackName];
-        const elem = document.getElementById('notify_script_tag');
-        if (elem && elem.parentNode) elem.parentNode.removeChild(elem);
+  window[callbackName] = function(data) {
+    delete window[callbackName];
+    btn.innerText = "सूचना हेतु पंजीकृत करें";
+    btn.disabled = false;
+    document.getElementById('notifyForm').reset();
+    closeNotifyModal();
+    alert(`धन्यवाद ${name} जी! विवरण सुरक्षित कर लिया गया है।`);
+  };
 
-        btn.innerText = "सूचना हेतु पंजीकृत करें";
-        btn.disabled = false;
-        document.getElementById('notifyForm').reset();
-        closeNotifyModal();
-
-        alert(`धन्यवाद ${name} जी! आगामी कार्यक्रम की सूचना हेतु आपका विवरण सुरक्षित कर लिया गया है।`);
-    };
-
-    const oldScript = document.getElementById('notify_script_tag');
-    if (oldScript && oldScript.parentNode) oldScript.parentNode.removeChild(oldScript);
-
-    const scriptTag = document.createElement('script');
-    scriptTag.id = 'notify_script_tag';
-    scriptTag.src = `${WEB_APP_URL}?action=saveNotification&name=${encodeURIComponent(name)}&contact=${encodeURIComponent(contact)}&callback=${callbackName}&t=${Date.now()}`;
-    
-    scriptTag.onerror = function() {
-        btn.innerText = "सूचना हेतु पंजीकृत करें";
-        btn.disabled = false;
-        alert("नेटवर्क त्रुटि: कृपया दोबारा प्रयास करें।");
-    };
-
-    document.body.appendChild(scriptTag);
+  const scriptTag = document.createElement('script');
+  scriptTag.src = `${WEB_APP_URL}?action=saveNotification&name=${encodeURIComponent(name)}&contact=${encodeURIComponent(contact)}&callback=${callbackName}&t=${Date.now()}`;
+  document.body.appendChild(scriptTag);
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  injectDynamicEventData();
+  updateTicketPrice();
+  loadGuestsDirectly();
+  loadSponsorsDirectly();
+  initFaq();
+  checkGlobalRegistrationStatus();
+
+  const splash = document.getElementById("introSplash");
+  if (splash) splash.addEventListener("click", removeSplashScreen);
+  setTimeout(removeSplashScreen, 2500);
+});

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>अभिव्यक्ति काव्यपीठ | काव्योत्सव 2026</title>
+    <title>अभिव्यक्ति काव्यपीठ | आधिकारिक पोर्टल</title>
     
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,20 +14,20 @@
     <!-- External Libraries -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <link rel="stylesheet" href="style.css">
 </head>
-
-
+<body>
 
     <!-- 1. INTRO SPLASH SCREEN -->
     <div id="introSplash" class="intro-splash">
         <div class="splash-content">
             <h1 class="splash-title">अभिव्यक्ति काव्यपीठ</h1>
             <div class="splash-line"></div>
-            <p class="splash-subtitle">ऋषयो मन्त्रद्रष्टारः कवय क्रान्तदर्शिन:</p>
+            <p class="splash-subtitle">ऋषयो मन्त्रद्रष्टारः कवयः क्रान्तदर्शिनः</p>
         </div>
     </div>
 
@@ -47,14 +47,20 @@
             </button>
 
             <nav class="nav-menu" id="navMenu">
+                <a href="javascript:void(0)" class="nav-link profile-nav-link" onclick="openUserAuthModal(event); return false;">
+                    <span style="font-size: 16px;">👤</span> <span id="navUserName">खाता / प्रोफ़ाइल</span>
+                </a>
                 <a href="#about" onclick="closeNavMenu()">परिचय</a>
                 <a href="#sponsorsSection" onclick="closeNavMenu()">प्रायोजक</a>
                 <a href="#guestsSection" onclick="closeNavMenu()">अतिथि</a>
                 <a href="#aboutUsSection" onclick="closeNavMenu()">हमारे बारे में</a>
                 <a href="#faq" onclick="closeNavMenu()">FAQ</a>
-                <button class="btn-nav-gold" onclick="closeNavMenu(); openRegisterModal(event);">पास बुक करें</button>
-                <button class="btn-nav-outline" onclick="closeNavMenu(); openDownloadModal();">पास / सर्टिफिकेट</button>
-                <button class="btn-nav-admin" onclick="closeNavMenu(); openAdminModal();"><i class="fas fa-shield-alt"></i> एडमिन</button>
+                
+                <button type="button" id="btnNavPassBook" class="btn-nav-gold" onclick="handlePassBookClick(event);">पास बुक करें</button>
+                <button type="button" class="btn-nav-outline" onclick="openDownloadModal(event);">पास / सर्टिफिकेट</button>
+                <button type="button" class="btn-nav-admin" onclick="openAdminModal(event); closeNavMenu();">
+                    <i class="fas fa-shield-alt"></i> एडमिन
+                </button>
             </nav>
         </div>
     </header>
@@ -68,68 +74,62 @@
             
             <div class="hero-meta">
                 <span><i class="fas fa-map-marker-alt"></i> प्रयागराज, उ.प्र.</span>
-                <span><i class="fas fa-calendar-alt"></i> 23 अगस्त 2026</span>
-                <span><i class="fas fa-clock"></i> सायं 05:00 बजे</span>
+                <span><i class="fas fa-calendar-alt"></i> 8 सितंबर 2026</span>
+                <span><i class="fas fa-clock"></i> सुबह 11:00 बजे</span>
             </div>
 
             <div class="hero-actions">
-                <button class="btn-primary" onclick="openRegisterModal(event)">पास बुक करें</button>
-                <button class="btn-outline-gold" onclick="openDownloadModal()">पहले से पंजीकृत हैं?</button>
+                <button type="button" class="btn-primary" onclick="openRegisterModal(event)">पास बुक करें</button>
+                <button type="button" class="btn-outline-gold" onclick="openDownloadModal(event)">पहले से पंजीकृत हैं?</button>
             </div>
         </div>
     </section>
 
-    <!-- 4. COUNTDOWN TIMER -->
-    <section class="countdown-section"> 
-        <div class="timer-container" id="countdownTimer">
-            <div class="timer-box"><span id="days">00</span><label>दिन</label></div>
-            <div class="timer-box"><span id="hours">00</span><label>घंटे</label></div>
-            <div class="timer-box"><span id="minutes">00</span><label>मिनट</label></div>
-            <div class="timer-box"><span id="seconds">00</span><label>सेकंड</label></div>
-        </div>
-    </section>
-
-    <!-- 6. ABOUT EVENT SECTION -->
+    <!-- 4. ABOUT EVENT SECTION -->
     <section class="section" id="about">
         <h2 class="section-title">कार्यक्रम बारे में</h2>
         <div class="about-content">
             <p>
-                <strong>काव्योत्सव 2026</strong> प्रयागराज की पावन धरा पर आयोजित होने वाला एक भव्य राष्ट्रीय साहित्यिक समागम है। 
-                इस आयोजन का मुख्य उद्देश्य नवोदित एवं स्थापित कवियों, विचारकों और साहित्य-प्रेमियों को एक गरिमामयी मंच प्रदान करना है।
+                <strong>अभिव्यक्ति काव्यपीठ</strong> द्वारा आयोजित यह भव्य राष्ट्रीय साहित्यिक समागम नवोदित एवं स्थापित कवियों, विचारकों और साहित्य-प्रेमियों को एक गरिमामयी मंच प्रदान करने हेतु संकल्पित है।
             </p>
             <div class="event-details-grid">
-                <div class="detail-item"><i class="fas fa-clock"></i> <span>सायं 05:00 बजे से</span></div>
-                <div class="google map" class="detail-item"><i class="fas fa-map-pin" ><a href="https://goo.gl/maps/your-location" target="_blank"></i><span>इलाहाबाद विश्वविद्यालय</span></a></div>
+                <div class="detail-item"><i class="fas fa-clock"></i> <span id="dynAboutTime">सुबह 11:00 बजे से</span></div>
+                <div class="detail-item"><i class="fas fa-map-pin"></i> <a id="dynAboutMapLink" href="https://goo.gl/maps/your-location" target="_blank" style="color: inherit; text-decoration: none;"><span id="dynAboutVenue">इलाहाबाद विश्वविद्यालय</span></a></div>
             </div>
         </div>
     </section>
 
-    <!-- 7. GUESTS & PERFORMERS SECTION -->
+    <!-- 5. GUESTS & PERFORMERS SECTION (UNIFIED BOX) -->
     <section class="section" id="guestsSection">
         <h2 class="section-title">विशिष्ट अतिथि</h2>
         <div class="gold-divider"></div>
         <p class="section-desc">कार्यक्रम की शोभा बढ़ाने वाली प्रख्यात हस्तियाँ</p>
 
-        <div class="guest-grid" id="guestGrid">
-            <div class="guest-loader">⏳ विवरण लोड हो रहा है...</div>
+        <div class="unified-card-wrapper">
+            <div class="guest-grid" id="guestGrid">
+                <div class="guest-loader">⏳ विवरण लोड हो रहा है...</div>
+            </div>
         </div>
     </section>
 
-    <!-- 5. SPONSORS SECTION -->
+    <!-- 6. SPONSORS SECTION (UNIFIED BOX) -->
     <section class="section" id="sponsorsSection">
         <h2 class="section-title">हमारे प्रायोजक एवं सहयोगी</h2>
         <div class="gold-divider"></div>
         <p class="section-desc">कार्यक्रम को संबल प्रदान करने वाले मुख्य सहयोगी</p>
 
-        <div class="sponsors-grid">
-            <a href="https://www.instagram.com/prayagraj_insight?utm_source=ig_web_button_share_sheet&igsi=ZDNlZDc0MzIxNw==" target="_blank" class="sponsor-card">
-                <img src="image/sponsor1.png" alt="Sponsor 1"> 
-                <span>Media Partner</span>
-            </a>
+        <div class="unified-card-wrapper">
+            <div class="sponsors-grid" id="sponsorsGrid">
+                <a href="https://www.instagram.com/prayagraj_insight" target="_blank" class="sponsor-card">
+                    <img src="image/sponsor1.png" alt="Sponsor 1" onerror="this.src='https://api.dicebear.com/7.x/initials/svg?seed=Media'"> 
+                    <span>Media Partner</span>
+                    <small>Official Partner</small>
+                </a>
+            </div>
         </div>
     </section>
 
-    <!-- 8. ABOUT US (ORGANIZATION) -->
+    <!-- 7. ABOUT US SECTION -->
     <section class="section" id="aboutUsSection">
         <h2 class="section-title">हमारे बारे में (About Us)</h2>
         <div class="gold-divider"></div>
@@ -140,32 +140,31 @@
         </div>
     </section>
 
-    <!-- 9. FAQ SECTION -->
+    <!-- 8. FAQ SECTION -->
     <section class="section" id="faq">
         <h2 class="section-title">सामान्य प्रश्न (FAQ)</h2>
         <div class="gold-divider"></div>
         <div class="faq-accordion">
             <div class="faq-item">
-                <button class="faq-question">श्रोता (Audience) के लिए शुल्क क्या है? <i class="fas fa-chevron-down"></i></button>
+                <button type="button" class="faq-question">श्रोता (Audience) के लिए शुल्क क्या है? <i class="fas fa-chevron-down"></i></button>
                 <div class="faq-answer"><p>श्रोताओं और दर्शकों के लिए प्रवेश पूर्णतः निःशुल्क है। केवल ऑनलाइन पास बुक करना अनिवार्य है।</p></div>
             </div>
             <div class="faq-item">
-                <button class="faq-question">कवि/प्रस्तुतकर्ता (Performer) हेतु क्या व्यवस्था है? <i class="fas fa-chevron-down"></i></button>
+                <button type="button" class="faq-question">कवि/प्रस्तुतकर्ता (Performer) हेतु क्या व्यवस्था है? <i class="fas fa-chevron-down"></i></button>
                 <div class="faq-answer"><p>मंच प्रस्तुति का स्लॉट शुल्क ₹299 है। प्रस्तुति के उपरांत डिजिटल ई-सर्टिफिकेट भी प्रदान किया जाएगा।</p></div>
             </div>
             <div class="faq-item">
-                <button class="faq-question">सर्टिफिकेट कब और कैसे डाउनलोड होगा? <i class="fas fa-chevron-down"></i></button>
+                <button type="button" class="faq-question">सर्टिफिकेट कब और कैसे डाउनलोड होगा? <i class="fas fa-chevron-down"></i></button>
                 <div class="faq-answer"><p>इवेंट में क्यूआर स्कैनिंग द्वारा उपस्थिति दर्ज होने के बाद, कार्यक्रम समाप्ति पर पोर्टल से सर्टिफिकेट डाउनलोड होगा।</p></div>
             </div>
         </div>
     </section>
 
     <!-- ==========================================
-         PROFESSIONAL 4-COLUMN FOOTER
+         FOOTER
          ========================================== -->
     <footer class="footer">
         <div class="footer-container">
-            <!-- Column 1: Brand & Details -->
             <div class="footer-col brand-col">
                 <div class="footer-brand">
                     <div>
@@ -177,23 +176,21 @@
                     साहित्य, संस्कृति और युवा काव्य-प्रतिभाओं को राष्ट्रीय पहचान प्रदान करने हेतु समर्पित संस्था।
                 </p>
                 <div class="reg-badge">
-                    <i class="fas fa-award"></i> REG:UDYAM-UP-03-0155035
+                    <i class="fas fa-award"></i> REG: UDYAM-UP-03-0155035
                 </div>
             </div>
 
-            <!-- Column 2: Quick Links -->
             <div class="footer-col">
                 <h4>महत्वपूर्ण लिंक</h4>
                 <ul class="footer-links">
                     <li><a href="#about"><i class="fas fa-angle-right"></i>परिचय</a></li>
                     <li><a href="#sponsorsSection"><i class="fas fa-angle-right"></i> हमारे प्रायोजक</a></li>
                     <li><a href="#guestsSection"><i class="fas fa-angle-right"></i> विशिष्ट अतिथि</a></li>
-                    <li><a href="javascript:void(0)" onclick="openRegisterModal()"><i class="fas fa-angle-right"></i> पास बुकिंग</a></li>
-                    <li><a href="javascript:void(0)" onclick="openDownloadModal()"><i class="fas fa-angle-right"></i> ई-पास व सर्टिफिकेट</a></li>
+                    <li><a href="javascript:void(0)" onclick="openRegisterModal(event)"><i class="fas fa-angle-right"></i> पास बुकिंग</a></li>
+                    <li><a href="javascript:void(0)" onclick="openDownloadModal(event)"><i class="fas fa-angle-right"></i> ई-पास व सर्टिफिकेट</a></li>
                 </ul>
             </div>
 
-            <!-- Column 3: Contact & Venue -->
             <div class="footer-col">
                 <h4>संपर्क</h4>
                 <ul class="footer-contact">
@@ -212,7 +209,6 @@
                 </ul>
             </div>
 
-            <!-- Column 4: Legal & Social -->
             <div class="footer-col">
                 <h4>नीतियां एवं सोशल मीडिया</h4>
                 <ul class="footer-links">
@@ -223,67 +219,75 @@
                 <div class="footer-socials">
                     <a href="https://wa.me/918933952683" target="_blank" class="social-btn whatsapp" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
                     <a href="#" target="_blank" class="social-btn youtube" title="YouTube"><i class="fab fa-youtube"></i></a>
-                    <a href="https://www.instagram.com/kavypithofficial?utm_source=ig_web_button_share_sheet&igsi=ZDNlZDc0MzIxNw==" target="_blank" class="social-btn instagram" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.instagram.com/kavypithofficial" target="_blank" class="social-btn instagram" title="Instagram"><i class="fab fa-instagram"></i></a>
                     <a href="#" target="_blank" class="social-btn facebook" title="Facebook"><i class="fab fa-facebook-f"></i></a>
                 </div>
             </div>
         </div>
 
-        <!-- Bottom Copyright Strip -->
         <div class="footer-bottom">
             <div class="footer-bottom-container">
                 <p>© 2026 अभिव्यक्ति काव्यपीठ | सर्वाधिकार सुरक्षित</p>
-                <div class="footer-admin-link">
-                    <a href="javascript:void(0)" onclick="openAdminModal()"><i class="fas fa-lock"></i> व्यवस्थापक लॉगिन</a>
+                <div style="display: flex; gap: 15px;">
+                    <a href="javascript:void(0)" onclick="openVolunteerModal(event)" style="color: #22C55E; font-size: 0.8rem; text-decoration: none; font-weight: bold;">
+                        📷 वालंटियर स्कैनर
+                    </a>
+                    <a href="javascript:void(0)" onclick="openAdminModal(event)" style="color: #94A3B8; font-size: 0.8rem; text-decoration: none;">
+                        <i class="fas fa-lock"></i> व्यवस्थापक लॉगिन
+                    </a>
                 </div>
             </div>
         </div>
     </footer>
 
+    <!-- ==========================================
+         POPUPS & MODALS
+         ========================================== -->
+
     <!-- POLICY POPUP MODAL -->
     <div class="modal-overlay" id="policyModal">
         <div class="modal-box modal-lg">
-            <button class="modal-close" onclick="closePolicyModal()">&times;</button>
-            <h3 class="modal-title" id="policyTitle">नीति विवरण</h3>
+            <button type="button" class="modal-close" onclick="closePolicyModal()">&times;</button>
+            <h3 class="modal-title" id="policyTitle" style="color: #D4AF37; margin-top:0;">नीति विवरण</h3>
             <div class="gold-divider" style="margin: 8px 0 16px 0;"></div>
-            <div id="policyContent" style="color: #475569; font-size: 0.92rem; line-height: 1.7; max-height: 60vh; overflow-y: auto;"></div>
+            <div id="policyContent" style="color: #CBD5E1; font-size: 0.92rem; line-height: 1.7; max-height: 60vh; overflow-y: auto;"></div>
         </div>
     </div>
 
     <!-- MODAL: REGISTRATION -->
     <div class="modal-overlay" id="registerModal">
         <div class="modal-box">
-            <button class="modal-close" onclick="closeRegisterModal()">&times;</button>
-            <h3 class="modal-title">काव्योत्सव 2026 पास बुकिंग</h3>
-            <p class="modal-sub">कृपया अपना सही विवरण दर्ज करें</p>
+            <button type="button" class="modal-close" onclick="closeRegisterModal()">&times;</button>
+            <h3 class="modal-title" id="dynFormEventTitle" style="color: #D4AF37; margin-top:0;">पास बुकिंग</h3>
+            <p class="modal-sub" style="font-size:12px; color:#94A3B8; margin-bottom:15px;">कृपया अपना सही विवरण दर्ज करें</p>
 
             <form id="ticketForm">
                 <div class="form-group">
-                    <label>भागीदारी का प्रकार (Role)</label>
+                    <label style="font-size:12px; color:#CBD5E1;">भागीदारी का प्रकार (Role)</label>
                     <select id="userRole" onchange="updateTicketPrice()" required>
                         <option value="Audience">श्रोता/दर्शक (निःशुल्क)</option>
-                        <option value="Performer">कवि/मंच प्रस्तुतकर्ता (₹299)</option>
+                        <option value="Performer">कवि/मंच प्रस्तुतकर्ता</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label>पूरा नाम (Full Name)</label>
+                    <label style="font-size:12px; color:#CBD5E1;">पूरा नाम (Full Name)</label>
                     <input type="text" id="name" placeholder="अपना नाम दर्ज करें" required>
                 </div>
 
                 <div class="form-group">
-                    <label>ईमेल (Email Address)</label>
+                    <label style="font-size:12px; color:#CBD5E1;">ईमेल (Email Address)</label>
                     <input type="email" id="email" placeholder="example@mail.com" required>
                 </div>
 
                 <div class="form-group">
-                    <label>मोबाइल नंबर (WhatsApp Number)</label>
+                    <label style="font-size:12px; color:#CBD5E1;">मोबाइल नंबर (WhatsApp Number)</label>
                     <input type="tel" id="phone" placeholder="10 अंकों का नंबर" pattern="[0-9]{10}" required>
                 </div>
 
                 <div id="performerFields" style="display:none;">
                     <div class="form-group">
-                        <label>काव्य विधा (Genre)</label>
+                        <label style="font-size:12px; color:#CBD5E1;">काव्य विधा (Genre)</label>
                         <select id="vidha">
                             <option value="गीत/नवगीत">गीत</option>
                             <option value="ग़ज़ल/शायरी">ग़ज़ल/शायरी</option>
@@ -293,14 +297,14 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>रचना का शीर्षक (Sample Title)</label>
+                        <label style="font-size:12px; color:#CBD5E1;">रचना का शीर्षक (Sample Title)</label>
                         <input type="text" id="title" placeholder="अपनी रचना का शीर्षक लिखें">
                     </div>
                 </div>
 
-                <div class="price-summary">
-                    <span>कुल शुल्क:</span>
-                    <strong id="priceDisplay">₹00</strong>
+                <div class="price-summary" style="display:flex; justify-content:space-between; align-items:center; margin:10px 0 15px; font-weight:bold;">
+                    <span style="color:#CBD5E1;">कुल शुल्क:</span>
+                    <strong id="priceDisplay" style="color:#D4AF37; font-size:18px;">₹00</strong>
                 </div>
 
                 <button type="submit" id="submitRegBtn" class="btn-primary w-100">पास प्राप्त करें</button>
@@ -311,9 +315,9 @@
     <!-- MODAL: SEARCH & DOWNLOAD PORTAL -->
     <div class="modal-overlay" id="downloadModal">
         <div class="modal-box">
-            <button class="modal-close" onclick="closeDownloadModal()">&times;</button>
-            <h3 class="modal-title">ई-पास एवं सर्टिफिकेट पोर्टल</h3>
-            <p class="modal-sub">अपना पंजीकृत मोबाइल नंबर या ईमेल दर्ज करें</p>
+            <button type="button" class="modal-close" onclick="closeDownloadModal()">&times;</button>
+            <h3 class="modal-title" style="color: #D4AF37; margin-top:0;">ई-पास एवं सर्टिफिकेट पोर्टल</h3>
+            <p class="modal-sub" style="font-size:12px; color:#94A3B8; margin-bottom:15px;">अपना पंजीकृत मोबाइल नंबर या ईमेल दर्ज करें</p>
 
             <form onsubmit="handlePortalSearch(event)">
                 <div class="form-group">
@@ -322,90 +326,822 @@
                 <button type="submit" id="portalSearchBtn" class="btn-primary w-100">सर्च करें</button>
             </form>
 
-            <div id="portalLoader" class="loader-box" style="display:none;">⏳ डेटा खोजा जा रहा है...</div>
-            <div id="portalNotFound" class="error-box" style="display:none;"></div>
+            <div id="portalLoader" class="loader-box" style="display:none; text-align:center; padding:15px; color:#D4AF37;">⏳ डेटा खोजा जा रहा है...</div>
+            <div id="portalNotFound" class="error-box" style="display:none; color:#EF4444; margin-top:10px; text-align:center;"></div>
 
-            <div id="portalResult" class="portal-result-card" style="display:none;">
-                <h4 id="resUserName" style="font-size:1.2rem; color:var(--primary-navy);">नाम</h4>
-                <p id="resUserType" style="font-size:0.85rem; color:#64748B; margin-bottom:15px;">रोल</p>
-                <div class="portal-btn-group">
-                    <button id="btnDownloadTicket" class="btn-download-pass">🎟️ ई-पास PDF डाउनलोड करें</button>
-                    <a id="btnDownloadCert" href="#" target="_blank" class="btn-download-cert">📜 ई-सर्टिफिकेट डाउनलोड करें</a>
-                </div>
-            </div>
+            <div id="portalResult" class="portal-result-card" style="display:none; margin-top:15px; padding:10px; background:#112240; border-radius:8px; border:1px solid #D4AF37;"></div>
         </div>
     </div>
 
- <!-- ADMIN LOGIN MODAL -->
-<div class="modal-overlay" id="adminModal" style="display: none;">
-    <div class="modal-box" style="position: relative; z-index: 1000000;">
-        <button type="button" class="modal-close" onclick="closeAdminModal()">&times;</button>
-        <h2 style="color: var(--royal-gold); margin-bottom: 5px;">व्यवस्थापक लॉगिन</h2>
-        <p style="color: #64748B; font-size: 13px; margin-bottom: 20px;">प्रवेश द्वार सत्यापन हेतु लॉगिन</p>
-        
-        <div>
-            <div style="margin-bottom: 15px; text-align: left;">
-                <label style="display: block; font-size: 13px; margin-bottom: 5px; color: #1E293B; font-weight: 600;">यूज़रनेम / मोबाइल</label>
-                <input type="text" id="adminUser" placeholder="मोबाइल या ईमेल दर्ज करें" style="width: 100%; padding: 10px; border: 1px solid #CBD5E1; border-radius: 8px; box-sizing: border-box;">
+    <!-- MODAL: ADMIN LOGIN -->
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal-box" style="max-width: 380px;">
+            <button type="button" class="modal-close" onclick="closeAdminModal()">&times;</button>
+            <h3 style="color: var(--royal-gold); margin-top:0; text-align:center;">🔒 मुख्य एडमिन लॉगिन</h3>
+            <p style="color: #94A3B8; font-size: 12px; text-align:center; margin-bottom: 20px;">केवल मुख्य व्यवस्थापक नियंत्रण हेतु</p>
+            
+            <div style="margin-bottom: 12px; text-align: left;">
+                <label style="display: block; font-size: 12px; margin-bottom: 5px; color: #CBD5E1;">यूज़रनेम / मोबाइल</label>
+                <input type="text" id="adminUser" placeholder="मोबाइल या ईमेल दर्ज करें">
             </div>
             <div style="margin-bottom: 15px; text-align: left;">
-                <label style="display: block; font-size: 13px; margin-bottom: 5px; color: #1E293B; font-weight: 600;">पासवर्ड</label>
-                <input type="password" id="adminPass" placeholder="पासवर्ड दर्ज करें" style="width: 100%; padding: 10px; border: 1px solid #CBD5E1; border-radius: 8px; box-sizing: border-box;">
+                <label style="display: block; font-size: 12px; margin-bottom: 5px; color: #CBD5E1;">पासवर्ड</label>
+                <input type="password" id="adminPass" placeholder="पासवर्ड दर्ज करें">
             </div>
             
-            <p id="loginError" style="color: #DC2626; font-size: 13px; display: none; margin-bottom: 12px;"></p>
+            <p id="loginError" style="color: #EF4444; font-size: 12px; display: none; margin-bottom: 12px; text-align:center;"></p>
             
-            <button type="button" id="adminSubmitBtn" class="btn-primary w-100" onclick="performDirectLogin()" style="padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; pointer-events: auto;">
+            <button type="button" id="adminSubmitBtn" class="btn-primary w-100" onclick="performDirectLogin()">
                 लॉगिन करें
             </button>
         </div>
     </div>
-</div>
-    <!-- MODAL: ADMIN SCANNER DASHBOARD -->
-    <div class="modal-overlay" id="adminDashboard">
-        <div class="modal-box modal-lg">
-            <button class="modal-close" onclick="closeAdminDashboard()">&times;</button>
-            <h3 class="modal-title">प्रवेश द्वार क्यूआर स्कैनर</h3>
-            <p class="modal-sub">सत्यापित कुल उपस्थिति: <strong id="scannedCount" style="color:var(--royal-gold);">0</strong></p>
 
-            <div class="scanner-wrapper">
-                <div id="reader" class="scanner-box"></div>
-                <div class="scanner-controls">
-                    <button class="btn-primary" id="camToggleBtn" onclick="toggleCamera()">📷 कैमरा चालू करें</button>
-                    <span id="scannerStatus">कैमरा बंद है</span>
+    <!-- MODAL: ADMIN DASHBOARD (EVENT MANAGER + COLLAPSIBLE SPONSOR MANAGER) -->
+    <div class="modal-overlay" id="adminDashboard">
+        <div class="modal-box" style="max-width: 520px; max-height: 90vh; overflow-y: auto;">
+            <button type="button" class="modal-close" onclick="closeAdminDashboard()">&times;</button>
+            <h3 class="modal-title" style="color:#D4AF37; margin-top:0;">व्यवस्थापक डैशबोर्ड</h3>
+
+            <!-- 1. REGISTRATION & DYNAMIC EVENT MANAGER -->
+            <div style="background: #112240; border: 1.5px solid #D4AF37; border-radius: 8px; padding: 14px; margin-bottom: 16px; text-align: left;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h4 style="margin: 0; color: #D4AF37; font-size: 14px;">⚙️ इवेंट नियंत्रण एवं प्रबंधन</h4>
+                    <button type="button" id="btnAdminToggleReg" onclick="toggleRegistrationState()" style="padding: 5px 12px; font-weight: bold; font-size: 11px; border-radius: 6px; border: none; cursor: pointer; background: #EF4444; color: #FFF;">
+                        पंजीकरण बंद करें
+                    </button>
                 </div>
+                <p style="margin: 0 0 10px 0; font-size: 11px; color: #94A3B8;" id="adminRegStatusText">वर्तमान स्थिति: चालू (ON)</p>
+
+                <details style="border-top: 1px dashed rgba(212,175,55,0.3); padding-top: 8px;">
+                    <summary style="font-size: 12px; color: #D4AF37; cursor: pointer; font-weight: bold;">
+                        ✏️ नया इवेंट विवरण बदलें / अपडेट करें
+                    </summary>
+                    
+                    <div style="margin-top: 10px;">
+                        <label style="font-size: 11px; color: #CBD5E1;">इवेंट का नाम</label>
+                        <input type="text" id="admEvName" placeholder="जैसे: काव्योत्सव 2027" style="padding: 6px; font-size: 12px; margin: 3px 0 8px;">
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                            <div>
+                                <label style="font-size: 11px; color: #CBD5E1;">दिनांक</label>
+                                <input type="text" id="admEvDate" placeholder="जैसे: 15 अक्टूबर 2026" style="padding: 6px; font-size: 12px; margin: 3px 0 8px;">
+                            </div>
+                            <div>
+                                <label style="font-size: 11px; color: #CBD5E1;">समय</label>
+                                <input type="text" id="admEvTime" placeholder="जैसे: सायं 05:00 बजे" style="padding: 6px; font-size: 12px; margin: 3px 0 8px;">
+                            </div>
+                        </div>
+
+                        <label style="font-size: 11px; color: #CBD5E1;">स्थान (Venue Name)</label>
+                        <input type="text" id="admEvVenue" placeholder="जैसे: सीनेट हॉल, प्रयागराज" style="padding: 6px; font-size: 12px; margin: 3px 0 8px;">
+
+                        <label style="font-size: 11px; color: #CBD5E1;">स्थान का Google Maps लिंक</label>
+                        <input type="url" id="admEvMapUrl" placeholder="https://maps.app.goo.gl/..." style="padding: 6px; font-size: 12px; margin: 3px 0 8px;">
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                            <div>
+                                <label style="font-size: 11px; color: #CBD5E1;">कवि शुल्क</label>
+                                <input type="text" id="admEvFee" placeholder="₹299" style="padding: 6px; font-size: 12px; margin: 3px 0 8px;">
+                            </div>
+                            <div>
+                                <label style="font-size: 11px; color: #CBD5E1;">Razorpay (पैसे में)</label>
+                                <input type="number" id="admEvRzp" placeholder="29900" style="padding: 6px; font-size: 12px; margin: 3px 0 8px;">
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn-primary w-100" onclick="saveAdminNewEvent()" style="padding: 8px; font-size: 12px; margin-top: 5px;">
+                            💾 नया इवेंट लागू करें एवं चालू करें
+                        </button>
+                    </div>
+                </details>
             </div>
 
-            <div id="scanResultBox" class="scan-result" style="display:none; margin-top:15px; padding:12px; border-radius:8px; background:#fff;"></div>
+            <!-- 2. SPONSOR ADD MANAGER (COLLAPSIBLE DROPDOWN) -->
+            <div style="background: #112240; border: 1.5px solid #D4AF37; border-radius: 8px; padding: 14px; text-align: left;">
+                <details>
+                    <summary style="font-size: 13px; color: #D4AF37; cursor: pointer; font-weight: bold; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        <span>🤝 नया प्रायोजक (Sponsor) जोड़ें</span>
+                        <span style="font-size: 11px; color: #94A3B8;">▼ क्लिक करें</span>
+                    </summary>
+                    
+                    <div style="margin-top: 12px; border-top: 1px dashed rgba(212,175,55,0.3); padding-top: 10px;">
+                        <p style="margin: 0 0 10px 0; font-size: 11px; color: #94A3B8;">वेबसाइट पर लाइव प्रायोजक व सोशल लिंक जोड़ें</p>
+
+                        <label style="font-size: 11px; color: #CBD5E1;">प्रायोजक का नाम / ब्रांड</label>
+                        <input type="text" id="admSpName" placeholder="जैसे: Prayagraj Insight" style="padding: 6px; font-size: 12px; margin: 3px 0 8px;">
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                            <div>
+                                <label style="font-size: 11px; color: #CBD5E1;">प्रायोजक का रोल / टैग</label>
+                                <input type="text" id="admSpTag" placeholder="Media Partner / Sponsor" style="padding: 6px; font-size: 12px; margin: 3px 0 8px;">
+                            </div>
+                            <div>
+                                <label style="font-size: 11px; color: #CBD5E1;">लोगो / फ़ोटो का URL Link</label>
+                                <input type="url" id="admSpPhoto" placeholder="https://i.postimg.cc/..." style="padding: 6px; font-size: 12px; margin: 3px 0 8px;">
+                            </div>
+                        </div>
+
+                        <label style="font-size: 11px; color: #CBD5E1;">इंस्टाग्राम प्रोफाइल लिंक (Instagram URL)</label>
+                        <input type="url" id="admSpInsta" placeholder="https://instagram.com/profile" style="padding: 6px; font-size: 12px; margin: 3px 0 8px;">
+
+                        <button type="button" class="btn-primary w-100" id="btnAdminAddSp" onclick="saveAdminSponsor()" style="padding: 8px; font-size: 12px; margin-top: 5px;">
+                            ➕ प्रायोजक जोड़ें व लाइव करें
+                        </button>
+                    </div>
+                </details>
+            </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
-    <!-- UPCOMING EVENT NOTIFICATION MODAL -->
-<div class="modal-overlay" id="notifyMeModal" style="display: none;">
-    <div class="modal-box" style="text-align: center; max-width: 420px; background: #0A1931; border: 2px solid #D4AF37; border-radius: 16px; padding: 24px;">
-        <button type="button" class="modal-close" onclick="closeNotifyModal()">&times;</button>
-        <div style="font-size: 2.8rem; margin-bottom: 8px;">🔔</div>
-        <h2 style="color: var(--royal-gold); font-family: 'Yatra One', cursive; margin-bottom: 6px;">आगामी कार्यक्रम सूचना</h2>
-        <p style="color: #CBD5E1; font-size: 13px; margin-bottom: 20px; line-height: 1.5;">
-            अभिव्यक्ति काव्यपीठ के आगामी राष्ट्रीय आयोजनों व मंच की अग्रिम जानकारी सबसे पहले WhatsApp/Email पर प्राप्त करें।
-        </p>
-
-        <form id="notifyForm" onsubmit="handleNotifySubmit(event)">
-            <div style="margin-bottom: 14px; text-align: left;">
-                <label style="display: block; font-size: 12px; color: #CBD5E1; margin-bottom: 5px;">आपका नाम</label>
-                <input type="text" id="notifyName" placeholder="पूरा नाम दर्ज करें" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(212, 175, 55, 0.4); background: #150E28; color: #FFF; box-sizing: border-box;">
+    <!-- ====================================================
+         SEPARATE VOLUNTEER SCANNER MODAL (NO ADMIN ACCESS)
+         ==================================================== -->
+    <div class="modal-overlay" id="volunteerScanModal">
+        <div class="modal-box" style="max-width: 440px;">
+            <button type="button" class="modal-close" onclick="closeVolunteerModal()">&times;</button>
+            
+            <!-- 1. VOLUNTEER LOGIN VIEW -->
+            <div id="volLoginView" style="text-align: left;">
+                <h3 style="color: #22C55E; margin: 0 0 5px 0; text-align: center;">📷 वालंटियर स्कैनर लॉगिन</h3>
+                <p style="color: #94A3B8; font-size: 12px; text-align: center; margin-bottom: 18px;">प्रवेश द्वार टिकट सत्यापन हेतु</p>
+                
+                <label style="font-size: 12px; color: #CBD5E1;">स्कैनर पिन / पासवर्ड</label>
+                <input type="password" id="volPassInput" placeholder="स्कैनर पासवर्ड दर्ज करें" style="padding: 9px; margin-top: 4px;">
+                
+                <p id="volLoginErr" style="color: #EF4444; font-size: 12px; display: none; margin: 6px 0;"></p>
+                <button type="button" class="btn-primary w-100" id="btnVolLogin" onclick="performVolunteerLogin()" style="padding: 10px; margin-top: 8px;">
+                    स्कैनर शुरू करें
+                </button>
             </div>
-            <div style="margin-bottom: 18px; text-align: left;">
-                <label style="display: block; font-size: 12px; color: #CBD5E1; margin-bottom: 5px;">व्हाट्सएप नंबर / ईमेल</label>
-                <input type="text" id="notifyContact" placeholder="मोबाइल नंबर या ईमेल" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(212, 175, 55, 0.4); background: #150E28; color: #FFF; box-sizing: border-box;">
-            </div>
 
-            <button type="submit" id="notifySubmitBtn" class="btn-primary w-100" style="padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer;">
-                सूचना हेतु पंजीकृत करें
-            </button>
-        </form>
+            <!-- 2. VOLUNTEER SCANNER VIEW -->
+            <div id="volScannerView" style="display: none; text-align: center;">
+                <h3 style="color: #D4AF37; margin: 0 0 4px 0; font-size: 16px;">प्रवेश द्वार क्यूआर स्कैनर</h3>
+                <p style="font-size: 12px; color: #CBD5E1; margin: 0 0 10px 0;">सत्यापित कुल उपस्थिति: <strong id="scannedCount" style="color: #22C55E;">0</strong></p>
+
+                <div id="reader" style="width: 100%; max-width: 300px; margin: 0 auto 10px; background: #000; border-radius: 8px; overflow: hidden;"></div>
+                
+                <button type="button" class="btn-primary w-100" id="camToggleBtn" onclick="toggleCamera()">
+                    📷 कैमरा चालू करें
+                </button>
+                <span id="scannerStatus" style="display: block; font-size: 11px; color: #94A3B8; margin-top: 6px;">कैमरा बंद है</span>
+
+                <div id="scanResultBox" class="scan-result" style="display: none; margin-top: 12px; padding: 10px; border-radius: 6px; background: #112240;"></div>
+            </div>
+        </div>
     </div>
-</div>
+
+    <!-- UPCOMING EVENT NOTIFICATION MODAL -->
+    <div class="modal-overlay" id="notifyMeModal">
+        <div class="modal-box" style="text-align: center; max-width: 420px;">
+            <button type="button" class="modal-close" onclick="closeNotifyModal()">&times;</button>
+            <div style="font-size: 2.5rem; margin-bottom: 8px;">🔔</div>
+            <h3 style="color: var(--royal-gold); margin-top:0;">आगामी कार्यक्रम सूचना</h3>
+            <p style="color: #CBD5E1; font-size: 13px; margin-bottom: 20px; line-height: 1.5;">
+                अभिव्यक्ति काव्यपीठ के आगामी राष्ट्रीय आयोजनों व मंच की अग्रिम जानकारी सबसे पहले प्राप्त करें।
+            </p>
+
+            <form id="notifyForm" onsubmit="handleNotifySubmit(event)">
+                <div style="margin-bottom: 12px; text-align: left;">
+                    <label style="display: block; font-size: 12px; color: #CBD5E1; margin-bottom: 4px;">आपका नाम</label>
+                    <input type="text" id="notifyName" placeholder="पूरा नाम दर्ज करें" required>
+                </div>
+                <div style="margin-bottom: 16px; text-align: left;">
+                    <label style="display: block; font-size: 12px; color: #CBD5E1; margin-bottom: 4px;">व्हाट्सएप नंबर / ईमेल</label>
+                    <input type="text" id="notifyContact" placeholder="मोबाइल नंबर या ईमेल" required>
+                </div>
+
+                <button type="submit" id="notifySubmitBtn" class="btn-primary w-100">
+                    सूचना हेतु पंजीकृत करें
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- USER PORTAL & AUTH -->
+    <div id="userPortalContainer" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:#060D1A; z-index:9999999999; overflow-y:auto; color:#FFF; font-family:sans-serif; box-sizing:border-box;">
+      
+      <!-- Header Bar -->
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:15px 25px; background:#0A1931; border-bottom:1px solid #D4AF37;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <h3 style="color:#D4AF37; margin:0; font-size:18px;">अभिव्यक्ति काव्यपीठ</h3>
+          <span style="background:rgba(212,175,55,0.2); color:#D4AF37; font-size:11px; padding:2px 8px; border-radius:10px; border:1px solid #D4AF37;">सदस्य पोर्टल</span>
+        </div>
+        <button type="button" onclick="closeUserPortalDirect()" style="background:#EF4444; color:#FFF; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:bold;">✕ बंद करें</button>
+      </div>
+
+      <!-- (A) AUTHENTICATION FORMS -->
+      <div id="portalAuthBox" style="display:flex; align-items:center; justify-content:center; min-height:80vh; padding:20px;">
+        
+        <!-- 1. LOGIN -->
+        <div id="portalLoginView" style="background:#0A1931; border:1.5px solid #D4AF37; border-radius:12px; padding:25px; width:100%; max-width:400px; text-align:left;">
+          <h3 style="color:#D4AF37; margin-top:0; text-align:center;">सदस्य लॉगिन</h3>
+          <p style="font-size:12px; color:#94A3B8; text-align:center; margin-bottom:15px;">प्रोफ़ाइल, पास एवं सर्टिफिकेट्स देखने हेतु</p>
+          
+          <label style="font-size:12px; color:#CBD5E1;">ईमेल या मोबाइल</label>
+          <input type="text" id="pLoginId" placeholder="ईमेल / 10 अंकों का मोबाइल" style="width:100%; padding:10px; margin:5px 0 12px; background:#112240; border:1px solid #D4AF37; color:#FFF; border-radius:6px; box-sizing:border-box;">
+          
+          <label style="font-size:12px; color:#CBD5E1;">पासवर्ड</label>
+          <input type="password" id="pLoginPass" placeholder="पासवर्ड दर्ज करें" style="width:100%; padding:10px; margin:5px 0 15px; background:#112240; border:1px solid #D4AF37; color:#FFF; border-radius:6px; box-sizing:border-box;">
+          
+          <p id="pLoginErr" style="color:#EF4444; font-size:12px; display:none;"></p>
+          <button type="button" id="pBtnLogin" onclick="doDirectLogin()" style="width:100%; padding:11px; background:#D4AF37; color:#0A1931; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">लॉगिन करें</button>
+
+          <div style="text-align:center; margin-top:15px; font-size:12px;">
+            <a href="javascript:void(0)" onclick="setPortalView('signup')" style="color:#D4AF37; text-decoration:none;">नया खाता बनाएँ (Sign Up)</a> | 
+            <a href="javascript:void(0)" onclick="setPortalView('forgot')" style="color:#94A3B8; text-decoration:none;">पासवर्ड भूल गए?</a>
+          </div>
+        </div>
+
+        <!-- 2. SIGNUP -->
+        <div id="portalSignupView" style="display:none; background:#0A1931; border:1.5px solid #D4AF37; border-radius:12px; padding:25px; width:100%; max-width:400px; text-align:left;">
+          <h3 style="color:#D4AF37; margin-top:0; text-align:center;">नया सदस्य पंजीकरण</h3>
+          
+          <div id="pSignStep1">
+            <label style="font-size:12px; color:#CBD5E1;">पूरा नाम</label>
+            <input type="text" id="pSignName" placeholder="आपका पूरा नाम" style="width:100%; padding:9px; margin:4px 0 10px; background:#112240; border:1px solid #D4AF37; color:#FFF; border-radius:6px; box-sizing:border-box;">
+            
+            <label style="font-size:12px; color:#CBD5E1;">ईमेल आईडी</label>
+            <input type="email" id="pSignEmail" placeholder="name@example.com" style="width:100%; padding:9px; margin:4px 0 10px; background:#112240; border:1px solid #D4AF37; color:#FFF; border-radius:6px; box-sizing:border-box;">
+            
+            <label style="font-size:12px; color:#CBD5E1;">मोबाइल नंबर (WhatsApp)</label>
+            <input type="tel" id="pSignPhone" placeholder="10 अंकों का मोबाइल नंबर" style="width:100%; padding:9px; margin:4px 0 15px; background:#112240; border:1px solid #D4AF37; color:#FFF; border-radius:6px; box-sizing:border-box;">
+            
+            <button type="button" id="pBtnSignOtp" onclick="sendDirectOTP('signup')" style="width:100%; padding:10px; background:#D4AF37; color:#0A1931; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">OTP प्राप्त करें</button>
+          </div>
+
+          <div id="pSignStep2" style="display:none;">
+            <label style="font-size:12px; color:#CBD5E1;">ईमेल पर प्राप्त 6 अंकों का OTP</label>
+            <input type="number" id="pSignOtpVal" placeholder="OTP दर्ज करें" style="width:100%; padding:9px; margin:4px 0 10px; background:#112240; border:1px solid #D4AF37; color:#FFF; border-radius:6px; box-sizing:border-box;">
+            
+            <label style="font-size:12px; color:#CBD5E1;">नया पासवर्ड बनाएँ</label>
+            <input type="password" id="pSignPassVal" placeholder="पासवर्ड बनाएँ" style="width:100%; padding:9px; margin:4px 0 15px; background:#112240; border:1px solid #D4AF37; color:#FFF; border-radius:6px; box-sizing:border-box;">
+            
+            <button type="button" id="pBtnSignVerify" onclick="verifyDirectOTP('signup')" style="width:100%; padding:10px; background:#D4AF37; color:#0A1931; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">खाता सुरक्षित करें</button>
+          </div>
+
+          <div style="text-align:center; margin-top:15px; font-size:12px;">
+            <a href="javascript:void(0)" onclick="setPortalView('login')" style="color:#D4AF37; text-decoration:none;">लॉगिन पर जाएँ</a>
+          </div>
+        </div>
+
+        <!-- 3. FORGOT -->
+        <div id="portalForgotView" style="display:none; background:#0A1931; border:1.5px solid #D4AF37; border-radius:12px; padding:25px; width:100%; max-width:400px; text-align:left;">
+          <h3 style="color:#D4AF37; margin-top:0; text-align:center;">पासवर्ड पुनर्प्राप्ति</h3>
+          
+          <div id="pForgStep1">
+            <label style="font-size:12px; color:#CBD5E1;">पंजीकृत ईमेल आईडी</label>
+            <input type="email" id="pForgEmail" placeholder="पंजीकृत ईमेल दर्ज करें" style="width:100%; padding:9px; margin:4px 0 15px; background:#112240; border:1px solid #D4AF37; color:#FFF; border-radius:6px; box-sizing:border-box;">
+            <button type="button" id="pBtnForgOtp" onclick="sendDirectOTP('forgot')" style="width:100%; padding:10px; background:#D4AF37; color:#0A1931; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">OTP भेजें</button>
+          </div>
+
+          <div id="pForgStep2" style="display:none;">
+            <label style="font-size:12px; color:#CBD5E1;">OTP कोड</label>
+            <input type="number" id="pForgOtpVal" placeholder="6 अंकों का OTP" style="width:100%; padding:9px; margin:4px 0 10px; background:#112240; border:1px solid #D4AF37; color:#FFF; border-radius:6px; box-sizing:border-box;">
+            
+            <label style="font-size:12px; color:#CBD5E1;">नया पासवर्ड</label>
+            <input type="password" id="pForgPassVal" placeholder="नया पासवर्ड" style="width:100%; padding:9px; margin:4px 0 15px; background:#112240; border:1px solid #D4AF37; color:#FFF; border-radius:6px; box-sizing:border-box;">
+            
+            <button type="button" id="pBtnForgVerify" onclick="verifyDirectOTP('forgot')" style="width:100%; padding:10px; background:#D4AF37; color:#0A1931; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">पासवर्ड अपडेट करें</button>
+          </div>
+
+          <div style="text-align:center; margin-top:15px; font-size:12px;">
+            <a href="javascript:void(0)" onclick="setPortalView('login')" style="color:#D4AF37; text-decoration:none;">लॉगिन पर वापस जाएँ</a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- (B) PROFILE DASHBOARD -->
+      <div id="portalProfileBox" style="display:none; padding:25px; max-width:1200px; margin:0 auto; box-sizing:border-box;">
+        <div style="display:flex; flex-wrap:wrap; gap:20px;">
+          
+          <!-- Left Details Box -->
+          <div style="flex:1; min-width:290px; background:#0A1931; border:1px solid #D4AF37; border-radius:12px; padding:20px; text-align:left;">
+            <div style="text-align:center; margin-bottom:15px;">
+              <div style="position:relative; width:90px; height:90px; margin:0 auto;">
+                <img id="pAvatarImg" src="https://api.dicebear.com/7.x/initials/svg?seed=User" style="width:90px; height:90px; border-radius:50%; border:2px solid #D4AF37; object-fit:cover;">
+                <label for="pPhotoFileInput" style="position:absolute; bottom:0; right:0; background:#D4AF37; color:#0A1931; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:14px; border:2px solid #0A1931;" title="फ़ोटो बदलें">📷</label>
+              </div>
+              <input type="file" id="pPhotoFileInput" accept="image/*" style="display:none;" onchange="uploadDirectPhoto(this)">
+              
+              <button type="button" onclick="document.getElementById('pPhotoFileInput').click()" style="background:rgba(212,175,55,0.15); border:1px solid #D4AF37; color:#D4AF37; font-size:11px; padding:4px 10px; border-radius:12px; margin-top:8px; cursor:pointer;">📸 फ़ोटो अपलोड करें</button>
+              
+              <h3 id="pDispName" style="color:#FFF; margin:10px 0 2px; font-size:18px;">--</h3>
+              <span id="pDispId" style="color:#D4AF37; font-size:12px; font-weight:bold;">ID: --</span>
+            </div>
+
+            <label style="font-size:11px; color:#94A3B8;">पूरा नाम</label>
+            <input type="text" id="pEditName" style="width:100%; padding:8px; margin:3px 0 8px; background:#112240; border:1px solid rgba(212,175,55,0.4); color:#FFF; border-radius:6px; box-sizing:border-box;">
+
+            <label style="font-size:11px; color:#94A3B8;">ईमेल (स्थिर)</label>
+            <input type="email" id="pEditEmail" disabled style="width:100%; padding:8px; margin:3px 0 8px; background:#07101E; border:1px solid #334155; color:#64748B; border-radius:6px; box-sizing:border-box;">
+
+            <label style="font-size:11px; color:#94A3B8;">मोबाइल नंबर</label>
+            <input type="tel" id="pEditPhone" style="width:100%; padding:8px; margin:3px 0 8px; background:#112240; border:1px solid rgba(212,175,55,0.4); color:#FFF; border-radius:6px; box-sizing:border-box;">
+
+            <label style="font-size:11px; color:#94A3B8;">जन्मतिथि (DOB)</label>
+            <input type="date" id="pEditDOB" style="width:100%; padding:8px; margin:3px 0 8px; background:#112240; border:1px solid rgba(212,175,55,0.4); color:#FFF; border-radius:6px; box-sizing:border-box;">
+
+            <label style="font-size:11px; color:#94A3B8;">शहर / जिला</label>
+            <input type="text" id="pEditCity" placeholder="जैसे: प्रयागराज" style="width:100%; padding:8px; margin:3px 0 8px; background:#112240; border:1px solid rgba(212,175,55,0.4); color:#FFF; border-radius:6px; box-sizing:border-box;">
+
+            <label style="font-size:11px; color:#94A3B8;">विधा / रुचि</label>
+            <input type="text" id="pEditVidha" placeholder="कविता, गज़ल, गीत..." style="width:100%; padding:8px; margin:3px 0 12px; background:#112240; border:1px solid rgba(212,175,55,0.4); color:#FFF; border-radius:6px; box-sizing:border-box;">
+
+            <button type="button" id="pBtnSaveProf" onclick="saveDirectProfile()" style="width:100%; padding:10px; background:#D4AF37; color:#0A1931; border:none; border-radius:6px; font-weight:bold; cursor:pointer; margin-bottom:8px;">💾 विवरण सुरक्षित करें</button>
+            <button type="button" onclick="doDirectLogout()" style="width:100%; padding:8px; background:transparent; border:1px solid #EF4444; color:#EF4444; border-radius:6px; cursor:pointer;">लॉगआउट करें</button>
+          </div>
+
+          <!-- Right Passes & Certs Box -->
+          <div style="flex:2; min-width:300px; background:#0A1931; border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:20px; text-align:left;">
+            <div style="display:flex; gap:10px; margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">
+              <button type="button" id="pTabPassesBtn" onclick="setPortalTab('passes')" style="padding:8px 16px; background:#D4AF37; color:#0A1931; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">🎟️ मेरे इवेंट ई-पास</button>
+              <button type="button" id="pTabCertsBtn" onclick="setPortalTab('certs')" style="padding:8px 16px; background:#112240; color:#FFF; border:1px solid rgba(255,255,255,0.2); border-radius:6px; cursor:pointer;">📜 सर्टिफिकेट्स</button>
+            </div>
+
+            <div id="pPassesContent">
+              <div id="pPassesList" style="display:flex; flex-direction:column; gap:10px;">
+                <p style="color:#94A3B8; font-size:13px;">डेटा लोड हो रहा है...</p>
+              </div>
+            </div>
+
+            <div id="pCertsContent" style="display:none;">
+              <div id="pCertsList" style="display:flex; flex-direction:column; gap:10px;">
+                <p style="color:#94A3B8; font-size:13px;">डेटा लोड हो रहा है...</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 3D TICKET DISPENSER KIOSK POPUP -->
+    <div id="ticketDispenserModal" class="dispenser-overlay" style="display: none;">
+      <div class="dispenser-container">
+        
+        <div class="kiosk-machine">
+          <div class="kiosk-brand">
+            <span class="kiosk-dot"></span>
+            <span>अभिव्यक्ति काव्यपीठ • ई-पास डिस्पेंसर</span>
+            <span class="kiosk-dot"></span>
+          </div>
+          <div class="kiosk-screen-light">ई-पास प्रिंटिंग जारी...</div>
+          
+          <div class="dispenser-slot">
+            <div class="slot-light"></div>
+          </div>
+        </div>
+
+        <div class="ticket-eject-area">
+          <div id="printablePassCard" class="kiosk-ticket">
+            
+            <div class="t-head">
+              <div class="t-logo-block">
+                <h3>अभिव्यक्ति काव्यपीठ</h3>
+                <p id="tDispEventTitle">काव्योत्सव 2026 | UDYAM-UP-03-0155035</p>
+              </div>
+              <div class="t-type-badge" id="tDispRole">Audience</div>
+            </div>
+
+            <div class="t-body">
+              <div class="t-details">
+                <div class="t-row">
+                  <span class="t-lbl">प्रतिभागी / दर्शक</span>
+                  <strong class="t-val" id="tDispName">--</strong>
+                </div>
+                <div class="t-row">
+                  <span class="t-lbl">पास संख्या (ID)</span>
+                  <strong class="t-val gold" id="tDispId">AKP-2026-XXXX</strong>
+                </div>
+                <div class="t-row">
+                  <span class="t-lbl">दिनांक एवं समय</span>
+                  <strong class="t-val" id="tDispDateTime">8 सितंबर 2026, सुबह 11:00 बजे</strong>
+                </div>
+                <div class="t-row">
+                  <span class="t-lbl">स्थान</span>
+                  <strong class="t-val" id="tDispVenue">सीनेट हॉल, प्रयागराज, उत्तर प्रदेश</strong>
+                </div>
+              </div>
+
+              <div class="t-qr-box">
+                <img id="tDispQR" src="" alt="Verification QR">
+                <span>प्रवेश सत्यापन हेतु</span>
+              </div>
+            </div>
+
+            <div class="t-perforation">
+              <span class="t-notch-left"></span>
+              <span class="t-dots-line"></span>
+              <span class="t-notch-right"></span>
+            </div>
+
+            <div class="t-foot">
+              <span>* कृपया प्रवेश द्वार पर यह ई-पास प्रस्तुत करें।</span>
+              <strong id="tDispVidha">विधा: सामान्य</strong>
+            </div>
+
+          </div>
+        </div>
+
+        <div id="dispenserActions" class="dispenser-actions" style="opacity: 0;">
+          <button type="button" class="btn-download btn-pdf" onclick="downloadPassAs('pdf')">
+            📄 Download PDF
+          </button>
+          <button type="button" class="btn-download btn-png" onclick="downloadPassAs('png')">
+            🖼️ Download PNG
+          </button>
+          <button type="button" class="btn-close-kiosk" onclick="closeDispenserModal()">
+            ✕ डैशबोर्ड पर जाएँ
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC (PORTAL SCRIPT) -->
+    <script>
+    var BACKEND_URL = "https://script.google.com/macros/s/AKfycbyWiS60UTLK6IeEFjrfnkBm7YUgeU7eiLjF651GaPjdileehBxFeiyc0j_TXQuGyn7R/exec";
+
+    var currentSession = null;
+    try {
+      currentSession = JSON.parse(localStorage.getItem("akp_user_session")) || null;
+    } catch(e) { currentSession = null; }
+
+    function openUserAuthModal(e) {
+      if (e) {
+        if (e.preventDefault) e.preventDefault();
+        if (e.stopPropagation) e.stopPropagation();
+      }
+      
+      var el = document.getElementById("userPortalContainer");
+      if (!el) {
+        alert("User portal modal not found in HTML!");
+        return;
+      }
+      el.style.display = "block";
+      document.body.style.overflow = "hidden";
+
+      try {
+        currentSession = JSON.parse(localStorage.getItem("akp_user_session")) || null;
+      } catch(err) {}
+
+      if (currentSession) {
+        document.getElementById("portalAuthBox").style.display = "none";
+        document.getElementById("portalProfileBox").style.display = "block";
+        renderDirectProfile();
+      } else {
+        document.getElementById("portalAuthBox").style.display = "flex";
+        document.getElementById("portalProfileBox").style.display = "none";
+        setPortalView('login');
+      }
+    }
+
+    function closeUserPortalDirect() {
+      var el = document.getElementById("userPortalContainer");
+      if (el) el.style.display = "none";
+      document.body.style.overflow = "auto";
+    }
+
+    function setPortalView(v) {
+      document.getElementById("portalLoginView").style.display = (v === 'login' ? 'block' : 'none');
+      document.getElementById("portalSignupView").style.display = (v === 'signup' ? 'block' : 'none');
+      document.getElementById("portalForgotView").style.display = (v === 'forgot' ? 'block' : 'none');
+    }
+
+    function setPortalTab(t) {
+      document.getElementById("pPassesContent").style.display = (t === 'passes' ? 'block' : 'none');
+      document.getElementById("pCertsContent").style.display = (t === 'certs' ? 'block' : 'none');
+      
+      var bp = document.getElementById("pTabPassesBtn");
+      var bc = document.getElementById("pTabCertsBtn");
+      if (t === 'passes') {
+        bp.style.background = "#D4AF37"; bp.style.color = "#0A1931";
+        bc.style.background = "#112240"; bc.style.color = "#FFF";
+      } else {
+        bc.style.background = "#D4AF37"; bc.style.color = "#0A1931";
+        bp.style.background = "#112240"; bp.style.color = "#FFF";
+      }
+    }
+
+    function sendDirectOTP(type) {
+      var isSignup = (type === 'signup');
+      var idVal = isSignup ? document.getElementById("pSignEmail").value.trim() : document.getElementById("pForgEmail").value.trim();
+      var phVal = isSignup ? document.getElementById("pSignPhone").value.trim() : "";
+
+      if (!idVal) { alert("कृपया ईमेल आईडी दर्ज करें!"); return; }
+      if (isSignup && !phVal) { alert("कृपया 10 अंकों का मोबाइल नंबर दर्ज करें!"); return; }
+
+      var btn = isSignup ? document.getElementById("pBtnSignOtp") : document.getElementById("pBtnForgOtp");
+      btn.innerText = "⏳ भेजा जा रहा है...";
+      btn.disabled = true;
+
+      var cb = "cb_otp_" + Date.now();
+      window[cb] = function(res) {
+        delete window[cb];
+        btn.innerText = (isSignup ? "OTP प्राप्त करें" : "OTP भेजें");
+        btn.disabled = false;
+
+        if (res.status === "success") {
+          if (isSignup) {
+            document.getElementById("pSignStep1").style.display = "none";
+            document.getElementById("pSignStep2").style.display = "block";
+          } else {
+            document.getElementById("pForgStep1").style.display = "none";
+            document.getElementById("pForgStep2").style.display = "block";
+          }
+
+          var phone = res.phone || phVal;
+          if (phone) {
+            var cleanPh = phone.replace(/[^0-9]/g, '');
+            if (cleanPh.length === 10) cleanPh = '91' + cleanPh;
+            var msg = encodeURIComponent("*अभिव्यक्ति काव्यपीठ*\nआपका OTP कोड है: *" + res.otp + "*\n(वैधता: 10 मिनट)");
+            window.open("https://api.whatsapp.com/send?phone=" + cleanPh + "&text=" + msg, "_blank");
+          }
+          alert("✅ OTP कोड आपके ईमेल पर भेज दिया गया है!");
+        } else {
+          alert("❌ " + res.message);
+        }
+      };
+
+      var script = document.createElement("script");
+      script.src = BACKEND_URL + "?action=sendUserOTP&identifier=" + encodeURIComponent(idVal) + "&phone=" + encodeURIComponent(phVal) + "&callback=" + cb + "&t=" + Date.now();
+      document.body.appendChild(script);
+    }
+
+    function verifyDirectOTP(type) {
+      var isSignup = (type === 'signup');
+      var idVal = isSignup ? document.getElementById("pSignEmail").value.trim() : document.getElementById("pForgEmail").value.trim();
+      var otpVal = isSignup ? document.getElementById("pSignOtpVal").value.trim() : document.getElementById("pForgOtpVal").value.trim();
+      var passVal = isSignup ? document.getElementById("pSignPassVal").value.trim() : document.getElementById("pForgPassVal").value.trim();
+      var nameVal = isSignup ? document.getElementById("pSignName").value.trim() : "";
+      var phVal = isSignup ? document.getElementById("pSignPhone").value.trim() : "";
+
+      if (!otpVal || !passVal) { alert("कृपया OTP और नया पासवर्ड दर्ज करें!"); return; }
+
+      var btn = isSignup ? document.getElementById("pBtnSignVerify") : document.getElementById("pBtnForgVerify");
+      btn.innerText = "⏳ सत्यापन हो रहा है...";
+      btn.disabled = true;
+
+      var cb = "cb_auth_" + Date.now();
+      window[cb] = function(res) {
+        delete window[cb];
+        btn.innerText = (isSignup ? "खाता सुरक्षित करें" : "पासवर्ड अपडेट करें");
+        btn.disabled = false;
+
+        if (res.status === "success") {
+          alert(isSignup ? "✅ आपका खाता सफलतापूर्वक बन गया है! अब लॉगिन करें।" : "✅ नया पासवर्ड सुरक्षित हो गया है! अब लॉगिन करें।");
+          setPortalView('login');
+        } else {
+          alert("❌ " + res.message);
+        }
+      };
+
+      var script = document.createElement("script");
+      script.src = BACKEND_URL + "?action=verifyAndSaveUser&identifier=" + encodeURIComponent(idVal) + "&otp=" + encodeURIComponent(otpVal) + "&password=" + encodeURIComponent(passVal) + "&fullName=" + encodeURIComponent(nameVal) + "&phone=" + encodeURIComponent(phVal) + "&email=" + encodeURIComponent(idVal) + "&callback=" + cb + "&t=" + Date.now();
+      document.body.appendChild(script);
+    }
+
+    function doDirectLogin() {
+      var idVal = document.getElementById("pLoginId").value.trim();
+      var passVal = document.getElementById("pLoginPass").value.trim();
+      var err = document.getElementById("pLoginErr");
+      var btn = document.getElementById("pBtnLogin");
+
+      if (!idVal || !passVal) {
+        err.innerText = "कृपया ईमेल/मोबाइल और पासवर्ड दर्ज करें।";
+        err.style.display = "block";
+        return;
+      }
+
+      btn.innerText = "⏳ सत्यापन हो रहा है...";
+      btn.disabled = true;
+
+      var cb = "cb_log_" + Date.now();
+      window[cb] = function(res) {
+        delete window[cb];
+        btn.innerText = "लॉगिन करें";
+        btn.disabled = false;
+
+        if (res.status === "success") {
+          currentSession = res.user;
+          localStorage.setItem("akp_user_session", JSON.stringify(res.user));
+          document.getElementById("portalAuthBox").style.display = "none";
+          document.getElementById("portalProfileBox").style.display = "block";
+          renderDirectProfile();
+        } else {
+          err.innerText = "❌ " + res.message;
+          err.style.display = "block";
+        }
+      };
+
+      var script = document.createElement("script");
+      script.src = BACKEND_URL + "?action=userLogin&identifier=" + encodeURIComponent(idVal) + "&password=" + encodeURIComponent(passVal) + "&callback=" + cb + "&t=" + Date.now();
+      document.body.appendChild(script);
+    }
+
+    function renderDirectProfile() {
+      if (!currentSession) return;
+      document.getElementById("pDispName").innerText = currentSession.fullName || "सदस्य";
+      document.getElementById("pDispId").innerText = "ID: " + (currentSession.userId || "AKP-USER");
+
+      var img = document.getElementById("pAvatarImg");
+      if (img) {
+        if (currentSession.photo) {
+          img.src = currentSession.photo;
+        } else {
+          img.src = "https://api.dicebear.com/7.x/initials/svg?seed=" + encodeURIComponent(currentSession.fullName || "User");
+        }
+      }
+
+      document.getElementById("pEditName").value = currentSession.fullName || "";
+      document.getElementById("pEditEmail").value = currentSession.email || "";
+      document.getElementById("pEditPhone").value = currentSession.phone || "";
+      document.getElementById("pEditDOB").value = currentSession.dob || "";
+      document.getElementById("pEditCity").value = currentSession.city || "";
+      document.getElementById("pEditVidha").value = currentSession.bio || "";
+
+      fetchDirectHistory();
+    }
+
+    function uploadDirectPhoto(input) {
+      if (input.files && input.files[0]) {
+        var file = input.files[0];
+        if (file.size > 5 * 1024 * 1024) { alert("फ़ोटो 5MB से छोटी होनी चाहिए!"); return; }
+
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var image = new Image();
+          image.src = e.target.result;
+          image.onload = function() {
+            var canvas = document.createElement("canvas");
+            var ctx = canvas.getContext("2d");
+            canvas.width = 200; canvas.height = 200;
+            ctx.drawImage(image, 0, 0, 200, 200);
+            var base64 = canvas.toDataURL("image/jpeg", 0.8);
+
+            document.getElementById("pAvatarImg").src = base64;
+            if (currentSession) {
+              currentSession.photo = base64;
+              localStorage.setItem("akp_user_session", JSON.stringify(currentSession));
+              alert("✅ प्रोफ़ाइल फ़ोटो अपडेट हो गई!");
+            }
+          };
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function saveDirectProfile() {
+      if (!currentSession) {
+        alert("सत्र समाप्त हो गया है, कृपया दोबारा लॉगिन करें!");
+        return;
+      }
+
+      var btn = document.getElementById("pBtnSaveProf");
+      if (btn) {
+        btn.innerText = "⏳ सुरक्षित हो रहा है...";
+        btn.disabled = true;
+      }
+
+      currentSession.fullName = document.getElementById("pEditName") ? document.getElementById("pEditName").value.trim() : (currentSession.fullName || "");
+      currentSession.phone    = document.getElementById("pEditPhone") ? document.getElementById("pEditPhone").value.trim() : (currentSession.phone || "");
+      currentSession.dob      = document.getElementById("pEditDOB") ? document.getElementById("pEditDOB").value : (currentSession.dob || "");
+      currentSession.city     = document.getElementById("pEditCity") ? document.getElementById("pEditCity").value.trim() : (currentSession.city || "");
+      currentSession.bio      = document.getElementById("pEditVidha") ? document.getElementById("pEditVidha").value.trim() : (currentSession.bio || "");
+
+      localStorage.setItem("akp_user_session", JSON.stringify(currentSession));
+
+      var cb = "cb_upd_" + Date.now();
+      var isCompleted = false;
+
+      var fallbackTimer = setTimeout(function() {
+        if (!isCompleted) {
+          delete window[cb];
+          if (btn) {
+            btn.innerText = "💾 विवरण सुरक्षित करें";
+            btn.disabled = false;
+          }
+          alert("✅ आपका विवरण सुरक्षित कर दिया गया है!");
+          renderDirectProfile();
+        }
+      }, 6000);
+
+      window[cb] = function(res) {
+        isCompleted = true;
+        clearTimeout(fallbackTimer);
+        delete window[cb];
+
+        if (btn) {
+          btn.innerText = "💾 विवरण सुरक्षित करें";
+          btn.disabled = false;
+        }
+        alert("✅ आपकी प्रोफ़ाइल सुरक्षित हो चुकी है!");
+        renderDirectProfile();
+      };
+
+      var targetId = currentSession.userId || currentSession.email || "";
+      var script = document.createElement("script");
+      script.src = BACKEND_URL + "?action=updateUserProfile&userId=" + encodeURIComponent(targetId) + "&email=" + encodeURIComponent(currentSession.email || "") + "&fullName=" + encodeURIComponent(currentSession.fullName) + "&phone=" + encodeURIComponent(currentSession.phone) + "&city=" + encodeURIComponent(currentSession.city) + "&bio=" + encodeURIComponent(currentSession.bio) + "&dob=" + encodeURIComponent(currentSession.dob) + "&callback=" + cb + "&t=" + Date.now();
+      document.body.appendChild(script);
+    }
+
+    function fetchDirectHistory() {
+      var pList = document.getElementById("pPassesList");
+      var cList = document.getElementById("pCertsList");
+
+      var cb = "cb_hist_" + Date.now();
+      window[cb] = function(res) {
+        delete window[cb];
+        if (res.status === "success" && res.history && res.history.length > 0) {
+          pList.innerHTML = res.history.map(function(item) {
+            var evName = item.eventName || (typeof EVENT_CONFIG !== "undefined" ? EVENT_CONFIG.currentEvent.name : "काव्योत्सव 2026");
+            var evRole = item.role || (item.passId.startsWith("AUD") ? "Audience" : "Performer");
+            var evVidha = item.vidha || "सामान्य";
+            
+            return `
+              <div onclick="viewUserTicket('${item.passId}', '${currentSession.fullName}', '${evRole}', '${evVidha}', '${evName}')" 
+                   style="background:#112240; border:1.5px solid #D4AF37; padding:15px; border-radius:10px; cursor:pointer; transition:transform 0.2s, box-shadow 0.2s; position:relative;" 
+                   onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 6px 15px rgba(212,175,55,0.25)';" 
+                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                  <div>
+                    <h4 style="margin:0 0 4px; color:#D4AF37; font-size:16px;">${evName}</h4>
+                    <p style="margin:2px 0; font-size:13px; color:#FFF; font-weight:600;">प्रतिभागी: ${currentSession.fullName}</p>
+                    <p style="margin:2px 0; font-size:12px; color:#94A3B8;">पास आईडी: <strong style="color:#F59E0B;">${item.passId}</strong></p>
+                    <p style="margin:2px 0; font-size:11px; color:#64748B;">प्रकार: ${evRole === 'Performer' ? 'कवि / प्रस्तुतकर्ता' : 'श्रोता / दर्शक'}</p>
+                  </div>
+                  <span style="font-size:11px; padding:3px 10px; border-radius:12px; background:${item.status.includes('उपस्थित') ? '#166534' : '#854D0E'}; color:#FFF; font-weight:bold;">
+                    ${item.status}
+                  </span>
+                </div>
+
+                <div style="margin-top:10px; padding-top:8px; border-top:1px dashed rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:11px; color:#D4AF37;">👉 टिकट देखने व डाउनलोड करने हेतु क्लिक करें</span>
+                  <button type="button" style="background:#D4AF37; color:#0A1931; border:none; padding:4px 10px; border-radius:4px; font-size:11px; font-weight:bold; cursor:pointer;">
+                    🎟️ टिकट खोलें
+                  </button>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          var certs = res.history.filter(function(i) { return i.certUrl && i.certUrl !== "#"; });
+          if (certs.length > 0) {
+            cList.innerHTML = certs.map(function(item) {
+              return `
+                <div style="background:#112240; border:1px solid #D4AF37; padding:12px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
+                  <div>
+                    <h4 style="margin:0 0 4px; color:#D4AF37;">${item.eventName || "काव्योत्सव 2026"}</h4>
+                    <p style="margin:0; font-size:11px; color:#94A3B8;">सत्यापित ई-सर्टिफिकेट</p>
+                  </div>
+                  <a href="${item.certUrl}" target="_blank" style="padding:6px 14px; background:#D4AF37; color:#0A1931; text-decoration:none; font-weight:bold; font-size:12px; border-radius:4px;">
+                    📜 डाउनलोड करें
+                  </a>
+                </div>
+              `;
+            }).join('');
+          } else {
+            cList.innerHTML = "<p style='color:#94A3B8; font-size:13px;'>सत्यापन के बाद सर्टिफिकेट यहाँ उपलब्ध होंगे।</p>";
+          }
+        } else {
+          pList.innerHTML = "<p style='color:#94A3B8; font-size:13px;'>कोई सक्रिय ई-पास नहीं मिला।</p>";
+          cList.innerHTML = "<p style='color:#94A3B8; font-size:13px;'>कोई सर्टिफिकेट उपलब्ध नहीं है।</p>";
+        }
+      };
+
+      var script = document.createElement("script");
+      script.src = BACKEND_URL + "?action=getUserEventHistory&identifier=" + encodeURIComponent(currentSession.email) + "&callback=" + cb + "&t=" + Date.now();
+      document.body.appendChild(script);
+    }
+
+    function viewUserTicket(passId, name, role, vidha, eventName) {
+      if (typeof launchTicketDispenser === "function") {
+        launchTicketDispenser({
+          paymentId: passId,
+          name: name,
+          role: role,
+          vidha: vidha,
+          eventName: eventName
+        });
+      } else {
+        alert("पास आईडी: " + passId + "\nनाम: " + name + "\nइवेंट: " + eventName);
+      }
+    }
+
+    function doDirectLogout() {
+      localStorage.removeItem("akp_user_session");
+      currentSession = null;
+      closeUserPortalDirect();
+      alert("आप सफलतापूर्वक लॉगआउट हो चुके हैं।");
+    }
+    </script>
+
+    <!-- MAIN JAVASCRIPT FILE -->
+    <script src="script.js"></script>
 </body>
 </html>
