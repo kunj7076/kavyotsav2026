@@ -1342,3 +1342,9 @@ body {
   cursor: pointer;
   margin-top: 6px;
 }
+/* =========================================================
+   3D TICKET DISPENSER POPUP HIGH Z-INDEX FIX
+   ========================================================= */
+#ticketDispenserModal {
+  z-index: 99999999999 !important;
+}

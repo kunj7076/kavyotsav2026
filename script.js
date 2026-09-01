@@ -806,10 +806,10 @@ function downloadPassAs(format) {
 }
 
 // =================================================================
-// 9. MULTI-EVENT SEARCH PORTAL HANDLER
+// 9. MULTI-EVENT SEARCH PORTAL HANDLER (FIXED CLICK & DISPENSER OPEN)
 // =================================================================
 function handlePortalSearch(event) {
-  event.preventDefault();
+  if (event && event.preventDefault) event.preventDefault();
 
   const query = document.getElementById('searchQuery').value.trim();
   const loader = document.getElementById('portalLoader');
@@ -843,9 +843,13 @@ function handlePortalSearch(event) {
         const passCard = document.createElement("div");
         passCard.style.cssText = "background:#0A1931; border:1px solid #D4AF37; border-radius:8px; padding:12px; margin-bottom:10px; text-align:left;";
         
+        const displayEventName = (pass.eventName && pass.eventName !== "Participant's details") 
+          ? pass.eventName 
+          : EVENT_CONFIG.currentEvent.name;
+
         passCard.innerHTML = `
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <strong style="color:#FFF; font-size:14px;">${pass.eventName || 'इवेंट'}</strong>
+            <strong style="color:#FFF; font-size:14px;">${displayEventName}</strong>
             <span style="font-size:10px; padding:2px 8px; border-radius:10px; background:${isLatest ? '#166534' : '#334155'}; color:#FFF;">
               ${isLatest ? 'नवीनतम (Active)' : 'पूर्व इवेंट'}
             </span>
@@ -853,18 +857,46 @@ function handlePortalSearch(event) {
           <p style="margin:2px 0; font-size:12px; color:#CBD5E1;">प्रतिभागी: <strong>${pass.name}</strong> (${pass.type})</p>
           <p style="margin:2px 0; font-size:11px; color:#94A3B8;">Pass ID: <strong style="color:#F59E0B;">${pass.ticketId}</strong></p>
           
-          <div style="display:flex; gap:8px; margin-top:10px;">
-            <button type="button" class="btn-primary" style="flex:1; padding:6px; font-size:11px;" onclick="launchTicketDispenser({paymentId:'${pass.ticketId}', name:'${pass.name}', role:'${pass.type}', vidha:'${pass.vidha || 'सामान्य'}', eventName:'${pass.eventName}'})">
-              🎟️ ई-पास देखें / डाउनलोड
-            </button>
-            ${pass.certificateUrl && pass.certificateUrl.startsWith('http') ? `
-              <a href="${pass.certificateUrl}" target="_blank" class="btn-outline-gold" style="flex:1; padding:6px; font-size:11px; text-align:center; text-decoration:none;">
-                📜 सर्टिफिकेट
-              </a>
-            ` : ''}
-          </div>
+          <div style="display:flex; gap:8px; margin-top:10px;" id="actionBox_${index}"></div>
         `;
+
         resultBox.appendChild(passCard);
+
+        // 🔹 सुरक्षित डायरेक्ट इवेंट लिस्नर (बिना कोट्स टूटे)
+        const actionBox = passCard.querySelector(`#actionBox_${index}`);
+        
+        const ticketBtn = document.createElement("button");
+        ticketBtn.type = "button";
+        ticketBtn.className = "btn-primary";
+        ticketBtn.style.cssText = "flex:1; padding:8px 6px; font-size:12px; font-weight:bold; cursor:pointer;";
+        ticketBtn.innerHTML = "🎟️ ई-पास देखें / डाउनलोड";
+        
+        ticketBtn.onclick = function() {
+          // सर्च मोडल को बंद करके 3D टिकट मशीन को ऊपर लाएँ
+          closeDownloadModal();
+          
+          setTimeout(() => {
+            launchTicketDispenser({
+              paymentId: pass.ticketId,
+              name: pass.name,
+              role: pass.type.includes("कवि") ? "Performer" : "Audience",
+              vidha: pass.vidha || "सामान्य",
+              eventName: displayEventName
+            });
+          }, 150);
+        };
+        actionBox.appendChild(ticketBtn);
+
+        // यदि सर्टिफिकेट उपलब्ध है
+        if (pass.certificateUrl && pass.certificateUrl.startsWith('http')) {
+          const certLink = document.createElement("a");
+          certLink.href = pass.certificateUrl;
+          certLink.target = "_blank";
+          certLink.className = "btn-outline-gold";
+          certLink.style.cssText = "flex:1; padding:8px 6px; font-size:12px; text-align:center; text-decoration:none; font-weight:bold;";
+          certLink.innerText = "📜 सर्टिफिकेट";
+          actionBox.appendChild(certLink);
+        }
       });
 
       resultBox.style.display = 'block';
@@ -877,7 +909,7 @@ function handlePortalSearch(event) {
   };
 
   const scriptTag = document.createElement('script');
-  scriptTag.src = `${WEB_APP_URL}?action=searchUser&query=${encodeURIComponent(query)}&callback=${callbackName}`;
+  scriptTag.src = `${WEB_APP_URL}?action=searchUser&query=${encodeURIComponent(query)}&callback=${callbackName}&t=${Date.now()}`;
   scriptTag.onerror = function() {
     if (loader) loader.style.display = 'none';
     if (searchBtn) searchBtn.disabled = false;
