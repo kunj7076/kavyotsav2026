@@ -475,7 +475,7 @@ body {
 
 .about-line i { color: var(--royal-gold); margin-top: 4px; }
 
-/* 🔹 मुख्य एकीकृत बॉक्स (Single Outer Container for Guests & Sponsors) */
+/* 🔹 मुख्य एकीकृत बॉक्स */
 .unified-card-wrapper {
   background: #FFFFFF;
   border: 1.5px solid rgba(212, 175, 55, 0.4);
@@ -485,7 +485,7 @@ body {
   margin-top: 20px;
 }
 
-/* 🔹 एक ही बॉक्स के अंदर साइड-बाई-साइड ग्रिड */
+/* 🔹 ग्रिड व्यवस्था */
 .guest-grid,
 .sponsors-grid {
   display: grid !important;
@@ -496,7 +496,7 @@ body {
   width: 100%;
 }
 
-/* 🔹 अंदर के इनर कार्ड्स की क्लीन स्टाइलिंग */
+/* 🔹 इनर कार्ड्स */
 .guest-card,
 .sponsor-card {
   background: rgba(248, 250, 252, 0.6) !important;
@@ -523,7 +523,6 @@ body {
   box-shadow: 0 8px 20px rgba(212, 175, 55, 0.15) !important;
 }
 
-/* 🔹 इमेज स्टाइलिंग */
 .guest-img-wrapper {
   width: 100px;
   height: 100px;
@@ -551,7 +550,6 @@ body {
   padding: 2px;
 }
 
-/* 🔹 टाइटल्स व रोल बैज */
 .guest-name,
 .sponsor-card span {
   font-family: 'Yatra One', cursive;
@@ -1125,7 +1123,7 @@ body {
   width: 100vw; height: 100vh;
   background: rgba(4, 9, 18, 0.94);
   backdrop-filter: blur(8px);
-  z-index: 9999999999;
+  z-index: 99999999999 !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1341,10 +1339,4 @@ body {
   border-radius: 6px;
   cursor: pointer;
   margin-top: 6px;
-}
-/* =========================================================
-   3D TICKET DISPENSER POPUP HIGH Z-INDEX FIX
-   ========================================================= */
-#ticketDispenserModal {
-  z-index: 99999999999 !important;
 }

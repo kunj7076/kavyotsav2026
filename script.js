@@ -241,6 +241,7 @@ function saveAdminNewEvent() {
       currentRegStatus = "ON";
       applyRegistrationUI("ON");
       alert(`🎉 नया इवेंट "${name}" सफलतापूर्वक लागू हो गया है और नई शीट तैयार कर दी गई है!`);
+      loadAdminStats();
     } else {
       alert("❌ इवेंट अपडेट करने में त्रुटि हुई!");
     }
@@ -252,7 +253,47 @@ function saveAdminNewEvent() {
 }
 
 // =================================================================
-// 4. DYNAMIC SPONSOR MANAGER (ADMIN TO GOOGLE SHEET)
+// 4. ADMIN ANALYTICS & CSV EXPORT
+// =================================================================
+function loadAdminStats() {
+  const cb = 'cb_stats_' + Date.now();
+  window[cb] = function(res) {
+    delete window[cb];
+    if (res && res.status === "success" && res.stats) {
+      if (document.getElementById("statTotalReg")) document.getElementById("statTotalReg").innerText = res.stats.totalReg;
+      if (document.getElementById("statTotalPresent")) document.getElementById("statTotalPresent").innerText = `${res.stats.presentTotal} / ${res.stats.totalReg}`;
+      if (document.getElementById("statPerformersPresent")) document.getElementById("statPerformersPresent").innerText = `${res.stats.presentPerformers} / ${res.stats.totalPerformers}`;
+    }
+  };
+
+  const s = document.createElement("script");
+  s.src = `${WEB_APP_URL}?action=getEventStats&callback=${cb}&t=${Date.now()}`;
+  document.body.appendChild(s);
+}
+
+function exportEventDataCSV() {
+  const cb = 'cb_export_' + Date.now();
+  window[cb] = function(res) {
+    delete window[cb];
+    if (res && res.status === "success" && res.csv) {
+      const csvStr = atob(res.csv);
+      const blob = new Blob(["\uFEFF" + csvStr], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `${res.eventName}_Participants_List.csv`;
+      link.click();
+    } else {
+      alert("डेटा एक्सपोर्ट करने में समस्या हुई।");
+    }
+  };
+
+  const s = document.createElement("script");
+  s.src = `${WEB_APP_URL}?action=exportEventCSV&callback=${cb}&t=${Date.now()}`;
+  document.body.appendChild(s);
+}
+
+// =================================================================
+// 5. SPONSORS MANAGER (ADMIN TO GOOGLE SHEET)
 // =================================================================
 function saveAdminSponsor() {
   const name  = document.getElementById("admSpName").value.trim();
@@ -262,7 +303,7 @@ function saveAdminSponsor() {
   const btn   = document.getElementById("btnAdminAddSp");
 
   if (!name) {
-    alert("कृपया प्रायोजक (Sponsor) का नाम दर्ज करें!");
+    alert("कृपया प्रायोजक का नाम दर्ज करें!");
     return;
   }
 
@@ -319,7 +360,7 @@ function loadSponsorsDirectly() {
 }
 
 // =================================================================
-// 5. VOLUNTEER SCANNER CONTROLLER (SEPARATE ACCESS)
+// 6. VOLUNTEER SCANNER CONTROLLER
 // =================================================================
 function openVolunteerModal(e) {
   if (e) {
@@ -332,7 +373,6 @@ function openVolunteerModal(e) {
     modal.style.setProperty("display", "flex", "important");
     document.body.style.overflow = "hidden";
 
-    // यदि पहले से लॉगिन है
     if (sessionStorage.getItem("vol_scanner_token")) {
       document.getElementById("volLoginView").style.display = "none";
       document.getElementById("volScannerView").style.display = "block";
@@ -472,117 +512,7 @@ function onScanSuccess(decodedText) {
 }
 
 // =================================================================
-// 6. NAVBAR & MODALS HANDLERS
-// =================================================================
-function toggleNavMenu(e) {
-  if (e) e.stopPropagation();
-  const nav = document.getElementById('navMenu');
-  if (nav) nav.classList.toggle('active');
-}
-
-function closeNavMenu() {
-  const nav = document.getElementById('navMenu');
-  if (nav) nav.classList.remove('active');
-}
-
-function handlePassBookClick(e) {
-  if (e) {
-    if (e.preventDefault) e.preventDefault();
-    if (e.stopPropagation) e.stopPropagation();
-  }
-  openRegisterModal(e);
-}
-
-function openRegisterModal(e) {
-  if (e) {
-    if (e.preventDefault) e.preventDefault();
-    if (e.stopPropagation) e.stopPropagation();
-  }
-
-  if (currentRegStatus === "OFF") {
-    alert("⚠️ वर्तमान में पंजीकरण बंद कर दिया गया है। आगामी कार्यक्रमों की सूचना हेतु हमारे साथ जुड़े रहें।");
-    return;
-  }
-
-  const regModal = document.getElementById('registerModal');
-  if (regModal) {
-    regModal.style.setProperty("display", "flex", "important");
-    regModal.style.setProperty("z-index", "999999999", "important");
-    document.body.style.overflow = "hidden";
-    updateTicketPrice();
-  }
-}
-
-function closeRegisterModal() {
-  const regModal = document.getElementById('registerModal');
-  if (regModal) regModal.style.setProperty("display", "none", "important");
-  document.body.style.overflow = "auto";
-}
-
-function openDownloadModal(e) {
-  if (e) {
-    if (e.preventDefault) e.preventDefault();
-    if (e.stopPropagation) e.stopPropagation();
-  }
-
-  const dlModal = document.getElementById('downloadModal');
-  if (dlModal) {
-    dlModal.style.setProperty("display", "flex", "important");
-    dlModal.style.setProperty("z-index", "999999999", "important");
-    const resBox = document.getElementById('portalResult');
-    const notFound = document.getElementById('portalNotFound');
-    const query = document.getElementById('searchQuery');
-    if (resBox) resBox.style.display = 'none';
-    if (notFound) notFound.style.display = 'none';
-    if (query) query.value = '';
-    document.body.style.overflow = "hidden";
-  }
-}
-
-function closeDownloadModal() {
-  const dlModal = document.getElementById('downloadModal');
-  if (dlModal) dlModal.style.setProperty("display", "none", "important");
-  document.body.style.overflow = "auto";
-}
-
-function openAdminModal(e) {
-  if (e) {
-    if (e.preventDefault) e.preventDefault();
-    if (e.stopPropagation) e.stopPropagation();
-  }
-
-  const modal = document.getElementById('adminModal');
-  if (modal) {
-    modal.style.setProperty("display", "flex", "important");
-    modal.style.setProperty("z-index", "9999999999", "important");
-    document.body.style.overflow = "hidden";
-  }
-}
-
-function closeAdminModal() {
-  const modal = document.getElementById('adminModal');
-  if (modal) modal.style.setProperty("display", "none", "important");
-  document.body.style.overflow = "auto";
-}
-
-function closeAdminDashboard() {
-  const dashboard = document.getElementById('adminDashboard');
-  if (dashboard) dashboard.style.setProperty("display", "none", "important");
-}
-
-window.addEventListener('click', function(event) {
-  ['registerModal', 'adminModal', 'adminDashboard', 'volunteerScanModal', 'downloadModal', 'policyModal'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el && event.target === el) {
-      el.style.setProperty("display", "none", "important");
-      document.body.style.overflow = "auto";
-      if (id === 'volunteerScanModal') stopCamera();
-    }
-  });
-});
-
-// =================================================================
-// 7. PRICING & REGISTRATION SUBMISSION
+// 7. PRICING & REGISTRATION
 // =================================================================
 function updateTicketPrice() {
   const roleEl = document.getElementById('userRole');
@@ -686,6 +616,7 @@ function processSuccessfulRegistration(ticketId, name, email, phone, role, vidha
   }
   closeRegisterModal();
 
+  // 🔹 सीधे 3D पास डिस्पेंसर खोलें
   launchTicketDispenser({
     paymentId: ticketId,
     name: name,
@@ -806,7 +737,7 @@ function downloadPassAs(format) {
 }
 
 // =================================================================
-// 9. MULTI-EVENT SEARCH PORTAL HANDLER (FIXED CLICK & DISPENSER OPEN)
+// 9. MULTI-EVENT SEARCH PORTAL HANDLER
 // =================================================================
 function handlePortalSearch(event) {
   if (event && event.preventDefault) event.preventDefault();
@@ -862,9 +793,7 @@ function handlePortalSearch(event) {
 
         resultBox.appendChild(passCard);
 
-        // 🔹 सुरक्षित डायरेक्ट इवेंट लिस्नर (बिना कोट्स टूटे)
         const actionBox = passCard.querySelector(`#actionBox_${index}`);
-        
         const ticketBtn = document.createElement("button");
         ticketBtn.type = "button";
         ticketBtn.className = "btn-primary";
@@ -872,9 +801,7 @@ function handlePortalSearch(event) {
         ticketBtn.innerHTML = "🎟️ ई-पास देखें / डाउनलोड";
         
         ticketBtn.onclick = function() {
-          // सर्च मोडल को बंद करके 3D टिकट मशीन को ऊपर लाएँ
           closeDownloadModal();
-          
           setTimeout(() => {
             launchTicketDispenser({
               paymentId: pass.ticketId,
@@ -887,7 +814,6 @@ function handlePortalSearch(event) {
         };
         actionBox.appendChild(ticketBtn);
 
-        // यदि सर्टिफिकेट उपलब्ध है
         if (pass.certificateUrl && pass.certificateUrl.startsWith('http')) {
           const certLink = document.createElement("a");
           certLink.href = pass.certificateUrl;
@@ -909,7 +835,7 @@ function handlePortalSearch(event) {
   };
 
   const scriptTag = document.createElement('script');
-  scriptTag.src = `${WEB_APP_URL}?action=searchUser&query=${encodeURIComponent(query)}&callback=${callbackName}&t=${Date.now()}`;
+  scriptTag.src = `${WEB_APP_URL}?action=searchUser&query=${encodeURIComponent(query)}&callback=${callbackName}`;
   scriptTag.onerror = function() {
     if (loader) loader.style.display = 'none';
     if (searchBtn) searchBtn.disabled = false;
@@ -922,8 +848,104 @@ function handlePortalSearch(event) {
 }
 
 // =================================================================
-// 10. ADMIN LOGIN & DASHBOARD
+// 10. NAVBAR, MODALS & ADMIN CONTROLLER
 // =================================================================
+function toggleNavMenu(e) {
+  if (e) e.stopPropagation();
+  const nav = document.getElementById('navMenu');
+  if (nav) nav.classList.toggle('active');
+}
+
+function closeNavMenu() {
+  const nav = document.getElementById('navMenu');
+  if (nav) nav.classList.remove('active');
+}
+
+function handlePassBookClick(e) {
+  if (e) {
+    if (e.preventDefault) e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
+  }
+  openRegisterModal(e);
+}
+
+function openRegisterModal(e) {
+  if (e) {
+    if (e.preventDefault) e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
+  }
+
+  if (currentRegStatus === "OFF") {
+    alert("⚠️ वर्तमान में पंजीकरण बंद कर दिया गया है। आगामी कार्यक्रमों की सूचना हेतु हमारे साथ जुड़े रहें।");
+    return;
+  }
+
+  const regModal = document.getElementById('registerModal');
+  if (regModal) {
+    regModal.style.setProperty("display", "flex", "important");
+    regModal.style.setProperty("z-index", "999999999", "important");
+    document.body.style.overflow = "hidden";
+    updateTicketPrice();
+  }
+}
+
+function closeRegisterModal() {
+  const regModal = document.getElementById('registerModal');
+  if (regModal) regModal.style.setProperty("display", "none", "important");
+  document.body.style.overflow = "auto";
+}
+
+function openDownloadModal(e) {
+  if (e) {
+    if (e.preventDefault) e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
+  }
+
+  const dlModal = document.getElementById('downloadModal');
+  if (dlModal) {
+    dlModal.style.setProperty("display", "flex", "important");
+    dlModal.style.setProperty("z-index", "999999999", "important");
+    const resBox = document.getElementById('portalResult');
+    const notFound = document.getElementById('portalNotFound');
+    const query = document.getElementById('searchQuery');
+    if (resBox) resBox.style.display = 'none';
+    if (notFound) notFound.style.display = 'none';
+    if (query) query.value = '';
+    document.body.style.overflow = "hidden";
+  }
+}
+
+function closeDownloadModal() {
+  const dlModal = document.getElementById('downloadModal');
+  if (dlModal) dlModal.style.setProperty("display", "none", "important");
+  document.body.style.overflow = "auto";
+}
+
+function openAdminModal(e) {
+  if (e) {
+    if (e.preventDefault) e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
+  }
+
+  const modal = document.getElementById('adminModal');
+  if (modal) {
+    modal.style.setProperty("display", "flex", "important");
+    modal.style.setProperty("z-index", "9999999999", "important");
+    document.body.style.overflow = "hidden";
+  }
+}
+
+function closeAdminModal() {
+  const modal = document.getElementById('adminModal');
+  if (modal) modal.style.setProperty("display", "none", "important");
+  document.body.style.overflow = "auto";
+}
+
+function closeAdminDashboard() {
+  const dashboard = document.getElementById('adminDashboard');
+  if (dashboard) dashboard.style.setProperty("display", "none", "important");
+}
+
 function performDirectLogin() {
   const userInput = document.getElementById('adminUser') ? document.getElementById('adminUser').value.trim() : '';
   const passInput = document.getElementById('adminPass') ? document.getElementById('adminPass').value.trim() : '';
@@ -945,7 +967,6 @@ function performDirectLogin() {
   }
 
   const callbackName = 'loginCb_' + Date.now();
-
   window[callbackName] = function(data) {
     delete window[callbackName];
     if (submitBtn) {
@@ -966,6 +987,7 @@ function performDirectLogin() {
       }
 
       checkGlobalRegistrationStatus();
+      loadAdminStats();
     } else {
       if (loginError) {
         loginError.innerText = "❌ अमान्य यूज़रनेम/मोबाइल या पासवर्ड!";
@@ -979,8 +1001,19 @@ function performDirectLogin() {
   document.body.appendChild(s);
 }
 
+window.addEventListener('click', function(event) {
+  ['registerModal', 'adminModal', 'adminDashboard', 'volunteerScanModal', 'downloadModal', 'policyModal'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el && event.target === el) {
+      el.style.setProperty("display", "none", "important");
+      document.body.style.overflow = "auto";
+      if (id === 'volunteerScanModal') stopCamera();
+    }
+  });
+});
+
 // =================================================================
-// 11. GUEST LOADER, NOTIFICATION & INIT
+// 11. GUEST LOADER, POLICIES & NOTIFY SYSTEM
 // =================================================================
 async function loadGuestsDirectly() {
   const grid = document.getElementById('guestGrid');
@@ -1106,7 +1139,6 @@ function handleNotifySubmit(event) {
   btn.disabled = true;
 
   const callbackName = 'notifyCb_' + Date.now();
-
   window[callbackName] = function(data) {
     delete window[callbackName];
     btn.innerText = "सूचना हेतु पंजीकृत करें";
