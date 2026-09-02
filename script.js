@@ -36,16 +36,9 @@ let scannedCount = 0;
 let currentMatchedUser = null;
 let currentRegStatus = "ON";
 
-var activeUserSession = null;
-try {
-  activeUserSession = JSON.parse(localStorage.getItem("akp_user_session")) || null;
-} catch(e) { 
-  activeUserSession = null; 
-}
-
-// =================================================================
+// -------------------------------------------------------------------
 // 2. CENTRAL EVENT DATA INJECTOR
-// =================================================================
+// -------------------------------------------------------------------
 function injectDynamicEventData() {
   const ev = (currentRegStatus === "OFF") ? EVENT_CONFIG.upcomingEvent : EVENT_CONFIG.currentEvent;
 
@@ -64,9 +57,9 @@ function injectDynamicEventData() {
   if (formTitle) formTitle.innerText = `${EVENT_CONFIG.currentEvent.name} पास बुकिंग`;
 }
 
-// =================================================================
-// 3. DYNAMIC REGISTRATION ON/OFF & EVENT SETTINGS
-// =================================================================
+// -------------------------------------------------------------------
+// 3. REGISTRATION ON/OFF STATUS
+// -------------------------------------------------------------------
 function checkGlobalRegistrationStatus() {
   const cb = 'cb_reg_stat_' + Date.now();
   window[cb] = function(res) {
@@ -180,7 +173,11 @@ function applyRegistrationUI(status) {
   injectDynamicEventData();
 }
 
+// 🔒 [PROTECTED] ADMIN REG TOGGLE
 function toggleRegistrationState() {
+  const token = sessionStorage.getItem("admin_auth_token");
+  if (!token) { alert("सत्र समाप्त हो गया है! कृपया दोबारा एडमिन लॉगिन करें।"); return; }
+
   const toggleBtn = document.getElementById("btnAdminToggleReg");
   const targetStatus = (currentRegStatus === "ON") ? "OFF" : "ON";
   
@@ -199,16 +196,20 @@ function toggleRegistrationState() {
       applyRegistrationUI(res.regStatus);
       alert(res.regStatus === "ON" ? "✅ पंजीकरण चालू हो गया है!" : "🛑 पंजीकरण बंद कर दिया गया है!");
     } else {
-      alert("❌ स्थिति अपडेट करने में त्रुटि हुई!");
+      alert("❌ " + (res.message || "त्रुटि हुई!"));
     }
   };
 
   const s = document.createElement("script");
-  s.src = `${WEB_APP_URL}?action=toggleRegistrationStatus&status=${targetStatus}&callback=${cb}&t=${Date.now()}`;
+  s.src = `${WEB_APP_URL}?action=toggleRegistrationStatus&status=${targetStatus}&token=${encodeURIComponent(token)}&callback=${cb}&t=${Date.now()}`;
   document.body.appendChild(s);
 }
 
+// 🔒 [PROTECTED] ADMIN EVENT SAVE
 function saveAdminNewEvent() {
+  const token = sessionStorage.getItem("admin_auth_token");
+  if (!token) { alert("कृपया पहले एडमिन लॉगिन करें!"); return; }
+
   const name   = document.getElementById("admEvName").value.trim();
   const date   = document.getElementById("admEvDate").value.trim();
   const time   = document.getElementById("admEvTime").value.trim();
@@ -223,14 +224,8 @@ function saveAdminNewEvent() {
   }
 
   const newEventData = {
-    name: name,
-    date: date,
-    time: time,
-    venue: venue,
-    fullAddress: venue,
-    mapUrl: mapUrl,
-    performerFee: fee,
-    razorpayAmount: rzp
+    name: name, date: date, time: time, venue: venue,
+    fullAddress: venue, mapUrl: mapUrl, performerFee: fee, razorpayAmount: rzp
   };
 
   const cb = 'cb_save_ev_' + Date.now();
@@ -240,22 +235,23 @@ function saveAdminNewEvent() {
       EVENT_CONFIG.currentEvent = Object.assign(EVENT_CONFIG.currentEvent, newEventData);
       currentRegStatus = "ON";
       applyRegistrationUI("ON");
-      alert(`🎉 नया इवेंट "${name}" सफलतापूर्वक लागू हो गया है और नई शीट तैयार कर दी गई है!`);
+      alert(`🎉 नया इवेंट "${name}" सफलतापूर्वक लागू हो गया है!`);
       loadAdminStats();
     } else {
-      alert("❌ इवेंट अपडेट करने में त्रुटि हुई!");
+      alert("❌ " + (res.message || "त्रुटि हुई!"));
     }
   };
 
   const s = document.createElement("script");
-  s.src = `${WEB_APP_URL}?action=toggleRegistrationStatus&status=ON&eventData=${encodeURIComponent(JSON.stringify(newEventData))}&callback=${cb}&t=${Date.now()}`;
+  s.src = `${WEB_APP_URL}?action=toggleRegistrationStatus&status=ON&eventData=${encodeURIComponent(JSON.stringify(newEventData))}&token=${encodeURIComponent(token)}&callback=${cb}&t=${Date.now()}`;
   document.body.appendChild(s);
 }
 
-// =================================================================
-// 4. ADMIN ANALYTICS & CSV EXPORT
-// =================================================================
+// 🔒 [PROTECTED] ADMIN ANALYTICS & CSV EXPORT
 function loadAdminStats() {
+  const token = sessionStorage.getItem("admin_auth_token");
+  if (!token) return;
+
   const cb = 'cb_stats_' + Date.now();
   window[cb] = function(res) {
     delete window[cb];
@@ -267,11 +263,14 @@ function loadAdminStats() {
   };
 
   const s = document.createElement("script");
-  s.src = `${WEB_APP_URL}?action=getEventStats&callback=${cb}&t=${Date.now()}`;
+  s.src = `${WEB_APP_URL}?action=getEventStats&token=${encodeURIComponent(token)}&callback=${cb}&t=${Date.now()}`;
   document.body.appendChild(s);
 }
 
 function exportEventDataCSV() {
+  const token = sessionStorage.getItem("admin_auth_token");
+  if (!token) { alert("अनधिकृत! कृपया एडमिन लॉगिन करें।"); return; }
+
   const cb = 'cb_export_' + Date.now();
   window[cb] = function(res) {
     delete window[cb];
@@ -283,42 +282,34 @@ function exportEventDataCSV() {
       link.download = `${res.eventName}_Participants_List.csv`;
       link.click();
     } else {
-      alert("डेटा एक्सपोर्ट करने में समस्या हुई।");
+      alert("❌ " + (res.message || "डेटा एक्सपोर्ट असफल!"));
     }
   };
 
   const s = document.createElement("script");
-  s.src = `${WEB_APP_URL}?action=exportEventCSV&callback=${cb}&t=${Date.now()}`;
+  s.src = `${WEB_APP_URL}?action=exportEventCSV&token=${encodeURIComponent(token)}&callback=${cb}&t=${Date.now()}`;
   document.body.appendChild(s);
 }
 
-// =================================================================
-// 5. SPONSORS MANAGER (ADMIN TO GOOGLE SHEET)
-// =================================================================
+// 🔒 [PROTECTED] SPONSORS MANAGER
 function saveAdminSponsor() {
+  const token = sessionStorage.getItem("admin_auth_token");
+  if (!token) { alert("कृपया पहले एडमिन लॉगिन करें!"); return; }
+
   const name  = document.getElementById("admSpName").value.trim();
   const tag   = document.getElementById("admSpTag").value.trim() || "Associate Partner";
   const photo = document.getElementById("admSpPhoto").value.trim();
   const insta = document.getElementById("admSpInsta").value.trim() || "#";
   const btn   = document.getElementById("btnAdminAddSp");
 
-  if (!name) {
-    alert("कृपया प्रायोजक का नाम दर्ज करें!");
-    return;
-  }
+  if (!name) { alert("कृपया प्रायोजक का नाम दर्ज करें!"); return; }
 
-  if (btn) {
-    btn.innerText = "⏳ सुरक्षित हो रहा है...";
-    btn.disabled = true;
-  }
+  if (btn) { btn.innerText = "⏳ सुरक्षित हो रहा है..."; btn.disabled = true; }
 
   const cb = 'cb_sp_add_' + Date.now();
   window[cb] = function(res) {
     delete window[cb];
-    if (btn) {
-      btn.innerText = "➕ प्रायोजक जोड़ें व लाइव करें";
-      btn.disabled = false;
-    }
+    if (btn) { btn.innerText = "➕ प्रायोजक जोड़ें व लाइव करें"; btn.disabled = false; }
 
     if (res && res.status === "success") {
       alert("✅ नया प्रायोजक सफलतापूर्वक जोड़ दिया गया है!");
@@ -327,12 +318,12 @@ function saveAdminSponsor() {
       document.getElementById("admSpInsta").value = '';
       loadSponsorsDirectly();
     } else {
-      alert("❌ प्रायोजक जोड़ने में त्रुटि: " + (res.message || ""));
+      alert("❌ " + (res.message || "त्रुटि हुई!"));
     }
   };
 
   const s = document.createElement("script");
-  s.src = `${WEB_APP_URL}?action=addSponsor&name=${encodeURIComponent(name)}&tag=${encodeURIComponent(tag)}&photo=${encodeURIComponent(photo)}&insta=${encodeURIComponent(insta)}&callback=${cb}&t=${Date.now()}`;
+  s.src = `${WEB_APP_URL}?action=addSponsor&name=${encodeURIComponent(name)}&tag=${encodeURIComponent(tag)}&photo=${encodeURIComponent(photo)}&insta=${encodeURIComponent(insta)}&token=${encodeURIComponent(token)}&callback=${cb}&t=${Date.now()}`;
   document.body.appendChild(s);
 }
 
@@ -359,9 +350,7 @@ function loadSponsorsDirectly() {
   document.body.appendChild(s);
 }
 
-// =================================================================
-// 6. VOLUNTEER SCANNER CONTROLLER
-// =================================================================
+// 🔒 [PROTECTED] VOLUNTEER SCANNER CONTROLLER (WITH SESSION TOKEN)
 function openVolunteerModal(e) {
   if (e) {
     if (e.preventDefault) e.preventDefault();
@@ -385,9 +374,7 @@ function openVolunteerModal(e) {
 
 function closeVolunteerModal() {
   const modal = document.getElementById("volunteerScanModal");
-  if (modal) {
-    modal.style.setProperty("display", "none", "important");
-  }
+  if (modal) modal.style.setProperty("display", "none", "important");
   document.body.style.overflow = "auto";
   stopCamera();
 }
@@ -477,6 +464,9 @@ function onScanSuccess(decodedText) {
     resultBox.innerHTML = `⏳ <strong>सत्यापन जारी है...</strong><br><small>Ticket: ${scannedId}</small>`;
   }
 
+  // वालंटियर / एडमिन सुरक्षा टोकन अनिवार्य
+  const volToken = sessionStorage.getItem("vol_scanner_token") || sessionStorage.getItem("admin_auth_token") || "";
+
   const cb = 'scanCallback_' + Math.round(100000 * Math.random());
   window[cb] = function(data) {
     delete window[cb];
@@ -501,19 +491,19 @@ function onScanSuccess(decodedText) {
         `;
       } else {
         resultBox.style.borderTop = "5px solid #DC2626";
-        resultBox.innerHTML = `<h4 style="color:#DC2626; margin:0;">⚠️ अमान्य टिकट</h4><p style="margin:2px 0; font-size:12px;">डेटाबेस में टिकट आईडी नहीं मिली।</p>`;
+        resultBox.innerHTML = `<h4 style="color:#DC2626; margin:0;">⚠️ अमान्य टिकट</h4><p style="margin:2px 0; font-size:12px;">${data.message || 'डेटाबेस में टिकट आईडी नहीं मिली।'}</p>`;
       }
     }
   };
 
   const scriptTag = document.createElement('script');
-  scriptTag.src = `${WEB_APP_URL}?action=markAttendance&ticketId=${encodeURIComponent(scannedId)}&callback=${cb}&t=${Date.now()}`;
+  scriptTag.src = `${WEB_APP_URL}?action=markAttendance&ticketId=${encodeURIComponent(scannedId)}&token=${encodeURIComponent(volToken)}&callback=${cb}&t=${Date.now()}`;
   document.body.appendChild(scriptTag);
 }
 
-// =================================================================
-// 7. PRICING & REGISTRATION
-// =================================================================
+// -------------------------------------------------------------------
+// 7. REGISTRATION SUBMISSION (SERVER-SIDE VALIDATED)
+// -------------------------------------------------------------------
 function updateTicketPrice() {
   const roleEl = document.getElementById('userRole');
   if (!roleEl) return;
@@ -557,8 +547,7 @@ if (ticketForm) {
     }
 
     if (role === 'Audience') {
-      const freeId = "AUD-" + Math.floor(100000 + Math.random() * 900000);
-      processSuccessfulRegistration(freeId, name, email, phone, role, vidha, title);
+      processSuccessfulRegistration("AUD_PENDING", name, email, phone, role, vidha, title);
       return;
     }
 
@@ -569,7 +558,7 @@ if (ticketForm) {
 
     const cur = EVENT_CONFIG.currentEvent;
     const options = {
-      "key": "rzp_live_TSAArVlVekqxXd",
+      "key": "rzp_live_TX8fmhfY8L2MJV",
       "amount": cur.razorpayAmount,
       "currency": "INR",
       "name": "अभिव्यक्ति काव्यपीठ",
@@ -588,10 +577,12 @@ if (ticketForm) {
 }
 
 function processSuccessfulRegistration(ticketId, name, email, phone, role, vidha, sample) {
+  const submitBtn = document.getElementById('submitRegBtn');
+  if (submitBtn) { submitBtn.innerText = "⏳ सत्यापन व पास जारी हो रहा है..."; submitBtn.disabled = true; }
+
   fetch(WEB_APP_URL, {
     method: 'POST',
-    mode: 'no-cors',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify({
       action: "register",
       paymentId: ticketId,
@@ -603,32 +594,36 @@ function processSuccessfulRegistration(ticketId, name, email, phone, role, vidha
       sample: sample,
       eventName: EVENT_CONFIG.currentEvent.name
     })
-  });
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (submitBtn) { submitBtn.innerText = "पास प्राप्त करें"; submitBtn.disabled = false; }
+    
+    if (data.result === "success") {
+      const generatedPassId = data.ticketId || ticketId;
+      if (document.getElementById('ticketForm')) document.getElementById('ticketForm').reset();
+      closeRegisterModal();
 
-  currentMatchedUser = {
-    ticketId: ticketId,
-    name: name,
-    type: role === 'Performer' ? 'कवि / मंच प्रस्तुतकर्ता' : 'श्रोता / दर्शक'
-  };
-  
-  if (document.getElementById('ticketForm')) {
-    document.getElementById('ticketForm').reset();
-  }
-  closeRegisterModal();
-
-  // 🔹 सीधे 3D पास डिस्पेंसर खोलें
-  launchTicketDispenser({
-    paymentId: ticketId,
-    name: name,
-    role: role === 'Performer' ? 'Performer' : 'Audience',
-    vidha: vidha || "सामान्य",
-    eventName: EVENT_CONFIG.currentEvent.name
+      launchTicketDispenser({
+        paymentId: generatedPassId,
+        name: name,
+        role: role === 'Performer' ? 'Performer' : 'Audience',
+        vidha: vidha || "सामान्य",
+        eventName: EVENT_CONFIG.currentEvent.name
+      });
+    } else {
+      alert("❌ पंजीकरण त्रुटि: " + (data.message || "विवरण सुरक्षित नहीं हो सका!"));
+    }
+  })
+  .catch(err => {
+    if (submitBtn) { submitBtn.innerText = "पास प्राप्त करें"; submitBtn.disabled = false; }
+    alert("सर्वर से संपर्क नहीं हो सका। कृपया पुनः प्रयास करें।");
   });
 }
 
-// =================================================================
-// 8. 3D TICKET DISPENSER (DYNAMIC EVENT DATA SYNC)
-// =================================================================
+// -------------------------------------------------------------------
+// 8. 3D TICKET DISPENSER
+// -------------------------------------------------------------------
 function playPrinterSound() {
   try {
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -640,13 +635,11 @@ function playPrinterSound() {
       
       osc.type = (i % 2 === 0) ? 'sawtooth' : 'triangle';
       osc.frequency.setValueAtTime(160 + (i * 12), now + (i * 0.11));
-      
       gain.gain.setValueAtTime(0.08, now + (i * 0.11));
       gain.gain.exponentialRampToValueAtTime(0.001, now + (i * 0.11) + 0.08);
       
       osc.connect(gain);
       gain.connect(audioCtx.destination);
-      
       osc.start(now + (i * 0.11));
       osc.stop(now + (i * 0.11) + 0.08);
     }
@@ -674,7 +667,7 @@ function launchTicketDispenser(passData) {
   }
 
   if (document.getElementById("tDispName")) document.getElementById("tDispName").innerText = passData.name || "प्रतिभागी";
-  if (document.getElementById("tDispId")) document.getElementById("tDispId").innerText = passData.paymentId || "AKP-PASS-" + Math.floor(1000 + Math.random() * 9000);
+  if (document.getElementById("tDispId")) document.getElementById("tDispId").innerText = passData.paymentId || "AKP-PASS";
   if (document.getElementById("tDispRole")) document.getElementById("tDispRole").innerText = passData.role || "Audience";
   if (document.getElementById("tDispVidha")) document.getElementById("tDispVidha").innerText = "विधा: " + (passData.vidha || "सामान्य");
 
@@ -687,13 +680,8 @@ function launchTicketDispenser(passData) {
 
   playPrinterSound();
 
-  setTimeout(() => {
-    ticket.classList.add("printing-done");
-  }, 300);
-
-  setTimeout(() => {
-    if (actions) actions.style.opacity = "1";
-  }, 2900);
+  setTimeout(() => { ticket.classList.add("printing-done"); }, 300);
+  setTimeout(() => { if (actions) actions.style.opacity = "1"; }, 2900);
 }
 
 function closeDispenserModal() {
@@ -710,11 +698,7 @@ function downloadPassAs(format) {
     return;
   }
 
-  html2canvas(element, {
-    scale: 3,
-    useCORS: true,
-    backgroundColor: null
-  }).then(canvas => {
+  html2canvas(element, { scale: 3, useCORS: true, backgroundColor: null }).then(canvas => {
     if (format === 'png') {
       const link = document.createElement('a');
       link.download = `E-Pass_${passId}.png`;
@@ -723,22 +707,16 @@ function downloadPassAs(format) {
     } else if (format === 'pdf') {
       const { jsPDF } = window.jspdf;
       const imgData = canvas.toDataURL('image/png');
-      
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'px',
-        format: [canvas.width / 3, canvas.height / 3]
-      });
-
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'px', format: [canvas.width / 3, canvas.height / 3] });
       pdf.addImage(imgData, 'PNG', 0, 0, canvas.width / 3, canvas.height / 3);
       pdf.save(`E-Pass_${passId}.pdf`);
     }
   });
 }
 
-// =================================================================
-// 9. MULTI-EVENT SEARCH PORTAL HANDLER
-// =================================================================
+// -------------------------------------------------------------------
+// 9. MULTI-EVENT SEARCH PORTAL
+// -------------------------------------------------------------------
 function handlePortalSearch(event) {
   if (event && event.preventDefault) event.preventDefault();
 
@@ -775,8 +753,7 @@ function handlePortalSearch(event) {
         passCard.style.cssText = "background:#0A1931; border:1px solid #D4AF37; border-radius:8px; padding:12px; margin-bottom:10px; text-align:left;";
         
         const displayEventName = (pass.eventName && pass.eventName !== "Participant's details") 
-          ? pass.eventName 
-          : EVENT_CONFIG.currentEvent.name;
+          ? pass.eventName : EVENT_CONFIG.currentEvent.name;
 
         passCard.innerHTML = `
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
@@ -828,7 +805,7 @@ function handlePortalSearch(event) {
       resultBox.style.display = 'block';
     } else {
       if (errorBox) {
-        errorBox.innerText = '⚠️ कोई विवरण नहीं मिला! कृपया सही मोबाइल नंबर या ईमेल दर्ज करें।';
+        errorBox.innerText = '⚠️ कोई विवरण नहीं मिला! कृपया सही 10 अंकों का मोबाइल नंबर या ईमेल दर्ज करें।';
         errorBox.style.display = 'block';
       }
     }
@@ -847,9 +824,9 @@ function handlePortalSearch(event) {
   document.body.appendChild(scriptTag);
 }
 
-// =================================================================
-// 10. NAVBAR, MODALS & ADMIN CONTROLLER
-// =================================================================
+// -------------------------------------------------------------------
+// 10. MODALS & ADMIN CONTROLLER
+// -------------------------------------------------------------------
 function toggleNavMenu(e) {
   if (e) e.stopPropagation();
   const nav = document.getElementById('navMenu');
@@ -1012,9 +989,9 @@ window.addEventListener('click', function(event) {
   });
 });
 
-// =================================================================
-// 11. GUEST LOADER, POLICIES & NOTIFY SYSTEM
-// =================================================================
+// -------------------------------------------------------------------
+// 11. GUESTS, POLICIES & NOTIFY
+// -------------------------------------------------------------------
 async function loadGuestsDirectly() {
   const grid = document.getElementById('guestGrid');
   if (!grid) return;
@@ -1057,9 +1034,7 @@ async function loadGuestsDirectly() {
         </div>
       `;
     }
-
     grid.innerHTML = html || `<p style="text-align:center; grid-column:1/-1; color:#64748B;">अतिथियों की सूची शीघ्र ही प्रकाशित की जाएगी।</p>`;
-
   } catch (error) {
     grid.innerHTML = `<p style="text-align:center; grid-column:1/-1; color:#64748B;">अतिथियों की सूची लोड करने में समस्या हुई।</p>`;
   }
@@ -1078,9 +1053,7 @@ function removeSplashScreen() {
   const splash = document.getElementById("introSplash");
   if (splash && !splash.classList.contains("hide-splash")) {
     splash.classList.add("hide-splash");
-    setTimeout(() => {
-      splash.style.display = "none";
-    }, 800);
+    setTimeout(() => { splash.style.display = "none"; }, 800);
   }
 }
 

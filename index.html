@@ -622,9 +622,12 @@
         </div>
       </div>
 
+      <!-- 🔹 PROFILE DASHBOARD (CONDENSED & CLEAN BY DEFAULT) -->
       <div id="portalProfileBox" style="display:none; padding:25px; max-width:1200px; margin:0 auto; box-sizing:border-box;">
         <div style="display:flex; flex-wrap:wrap; gap:20px;">
-          <div style="flex:1; min-width:290px; background:#0A1931; border:1px solid #D4AF37; border-radius:12px; padding:20px; text-align:left;">
+          
+          <!-- Left Mini-Profile Card -->
+          <div style="flex:1; min-width:280px; max-width:340px; background:#0A1931; border:1px solid #D4AF37; border-radius:12px; padding:20px; text-align:left; height:fit-content;">
             <div style="text-align:center; margin-bottom:15px;">
               <div style="position:relative; width:90px; height:90px; margin:0 auto;">
                 <img id="pAvatarImg" src="https://api.dicebear.com/7.x/initials/svg?seed=User" style="width:90px; height:90px; border-radius:50%; border:2px solid #D4AF37; object-fit:cover;">
@@ -637,28 +640,41 @@
               <span id="pDispId" style="color:#D4AF37; font-size:12px; font-weight:bold;">ID: --</span>
             </div>
 
-            <label style="font-size:11px; color:#94A3B8;">पूरा नाम</label>
-            <input type="text" id="pEditName" style="width:100%; padding:8px; margin:3px 0 8px; background:#112240; border:1px solid rgba(212,175,55,0.4); color:#FFF; border-radius:6px; box-sizing:border-box;">
+            <!-- बटन: प्रोफ़ाइल एडिट फॉर्म खोलने/बंद करने हेतु -->
+            <button type="button" id="btnToggleEditForm" onclick="toggleEditProfileForm()" style="width:100%; padding:9px; background:#D4AF37; color:#0A1931; border:none; border-radius:6px; font-weight:bold; cursor:pointer; margin-bottom:8px;">
+                ✏️ प्रोफ़ाइल एडिट करें
+            </button>
+            <button type="button" onclick="doDirectLogout()" style="width:100%; padding:8px; background:transparent; border:1px solid #EF4444; color:#EF4444; border-radius:6px; cursor:pointer;">
+                🚪 लॉगआउट करें
+            </button>
 
-            <label style="font-size:11px; color:#94A3B8;">ईमेल (स्थिर)</label>
-            <input type="email" id="pEditEmail" disabled style="width:100%; padding:8px; margin:3px 0 8px; background:#07101E; border:1px solid #334155; color:#64748B; border-radius:6px; box-sizing:border-box;">
+            <!-- 🔹 एडिट फ़ॉर्म (डिफ़ॉल्ट रूप से बंद रहेगा) -->
+            <div id="editProfileFormWrapper" style="display:none; margin-top:15px; border-top:1px dashed rgba(212,175,55,0.3); padding-top:12px;">
+                <label style="font-size:11px; color:#94A3B8;">पूरा नाम</label>
+                <input type="text" id="pEditName" style="width:100%; padding:8px; margin:3px 0 8px; background:#112240; border:1px solid rgba(212,175,55,0.4); color:#FFF; border-radius:6px; box-sizing:border-box;">
 
-            <label style="font-size:11px; color:#94A3B8;">मोबाइल नंबर</label>
-            <input type="tel" id="pEditPhone" style="width:100%; padding:8px; margin:3px 0 8px; background:#112240; border:1px solid rgba(212,175,55,0.4); color:#FFF; border-radius:6px; box-sizing:border-box;">
+                <label style="font-size:11px; color:#94A3B8;">ईमेल (स्थिर)</label>
+                <input type="email" id="pEditEmail" disabled style="width:100%; padding:8px; margin:3px 0 8px; background:#07101E; border:1px solid #334155; color:#64748B; border-radius:6px; box-sizing:border-box;">
 
-            <label style="font-size:11px; color:#94A3B8;">जन्मतिथि (DOB)</label>
-            <input type="date" id="pEditDOB" style="width:100%; padding:8px; margin:3px 0 8px; background:#112240; border:1px solid rgba(212,175,55,0.4); color:#FFF; border-radius:6px; box-sizing:border-box;">
+                <label style="font-size:11px; color:#94A3B8;">मोबाइल नंबर</label>
+                <input type="tel" id="pEditPhone" style="width:100%; padding:8px; margin:3px 0 8px; background:#112240; border:1px solid rgba(212,175,55,0.4); color:#FFF; border-radius:6px; box-sizing:border-box;">
 
-            <label style="font-size:11px; color:#94A3B8;">शहर / जिला</label>
-            <input type="text" id="pEditCity" placeholder="जैसे: प्रयागराज" style="width:100%; padding:8px; margin:3px 0 8px; background:#112240; border:1px solid rgba(212,175,55,0.4); color:#FFF; border-radius:6px; box-sizing:border-box;">
+                <label style="font-size:11px; color:#94A3B8;">जन्मतिथि (DOB)</label>
+                <input type="date" id="pEditDOB" style="width:100%; padding:8px; margin:3px 0 8px; background:#112240; border:1px solid rgba(212,175,55,0.4); color:#FFF; border-radius:6px; box-sizing:border-box;">
 
-            <label style="font-size:11px; color:#94A3B8;">विधा / रुचि</label>
-            <input type="text" id="pEditVidha" placeholder="कविता, गज़ल, गीत..." style="width:100%; padding:8px; margin:3px 0 12px; background:#112240; border:1px solid rgba(212,175,55,0.4); color:#FFF; border-radius:6px; box-sizing:border-box;">
+                <label style="font-size:11px; color:#94A3B8;">शहर / जिला</label>
+                <input type="text" id="pEditCity" placeholder="जैसे: प्रयागराज" style="width:100%; padding:8px; margin:3px 0 8px; background:#112240; border:1px solid rgba(212,175,55,0.4); color:#FFF; border-radius:6px; box-sizing:border-box;">
 
-            <button type="button" id="pBtnSaveProf" onclick="saveDirectProfile()" style="width:100%; padding:10px; background:#D4AF37; color:#0A1931; border:none; border-radius:6px; font-weight:bold; cursor:pointer; margin-bottom:8px;">💾 विवरण सुरक्षित करें</button>
-            <button type="button" onclick="doDirectLogout()" style="width:100%; padding:8px; background:transparent; border:1px solid #EF4444; color:#EF4444; border-radius:6px; cursor:pointer;">लॉगआउट करें</button>
+                <label style="font-size:11px; color:#94A3B8;">विधा / रुचि</label>
+                <input type="text" id="pEditVidha" placeholder="कविता, गज़ल, गीत..." style="width:100%; padding:8px; margin:3px 0 12px; background:#112240; border:1px solid rgba(212,175,55,0.4); color:#FFF; border-radius:6px; box-sizing:border-box;">
+
+                <button type="button" id="pBtnSaveProf" onclick="saveDirectProfile()" style="width:100%; padding:9px; background:linear-gradient(135deg, #22C55E, #15803D); color:#FFF; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">
+                    💾 विवरण सुरक्षित करें
+                </button>
+            </div>
           </div>
 
+          <!-- Right Passes & Certs Box (Always Prominently Visible) -->
           <div style="flex:2; min-width:300px; background:#0A1931; border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:20px; text-align:left;">
             <div style="display:flex; gap:10px; margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">
               <button type="button" id="pTabPassesBtn" onclick="setPortalTab('passes')" style="padding:8px 16px; background:#D4AF37; color:#0A1931; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">🎟️ मेरे इवेंट ई-पास</button>
@@ -819,6 +835,25 @@
       }
     }
 
+    // 🔹 प्रोफ़ाइल एडिट फॉर्म दिखाने / छुपाने का टॉगल फ़ंक्शन
+    function toggleEditProfileForm() {
+      var box = document.getElementById("editProfileFormWrapper");
+      var btn = document.getElementById("btnToggleEditForm");
+      if (!box) return;
+
+      if (box.style.display === "none" || box.style.display === "") {
+        box.style.display = "block";
+        btn.innerText = "✕ एडिट फॉर्म बंद करें";
+        btn.style.background = "#334155";
+        btn.style.color = "#FFF";
+      } else {
+        box.style.display = "none";
+        btn.innerText = "✏️ प्रोफ़ाइल एडिट करें";
+        btn.style.background = "#D4AF37";
+        btn.style.color = "#0A1931";
+      }
+    }
+
     function sendDirectOTP(type) {
       var isSignup = (type === 'signup');
       var idVal = isSignup ? document.getElementById("pSignEmail").value.trim() : document.getElementById("pForgEmail").value.trim();
@@ -845,7 +880,7 @@
             document.getElementById("pForgStep1").style.display = "none";
             document.getElementById("pForgStep2").style.display = "block";
           }
-          alert("✅ 6 अंकों का OTP आपकी ईमेल आईडी (" + idVal + ") पर भेज दिया गया है!");
+          alert("✅ 6 अंकों का सुरक्षित OTP आपकी ईमेल आईडी (" + idVal + ") पर भेज दिया गया है!");
         } else {
           alert("❌ " + res.message);
         }
@@ -877,6 +912,9 @@
         btn.disabled = false;
 
         if (res.status === "success") {
+          if (res.sessionToken) {
+            sessionStorage.setItem("user_session_token", res.sessionToken);
+          }
           alert(isSignup ? "✅ आपका खाता सफलतापूर्वक बन गया है! अब लॉगिन करें।" : "✅ नया पासवर्ड सुरक्षित हो गया है! अब लॉगिन करें।");
           setPortalView('login');
         } else {
@@ -913,6 +951,9 @@
         if (res.status === "success") {
           currentSession = res.user;
           localStorage.setItem("akp_user_session", JSON.stringify(res.user));
+          if (res.sessionToken) {
+            sessionStorage.setItem("user_session_token", res.sessionToken);
+          }
           document.getElementById("portalAuthBox").style.display = "none";
           document.getElementById("portalProfileBox").style.display = "block";
           renderDirectProfile();
@@ -947,6 +988,16 @@
       document.getElementById("pEditDOB").value = currentSession.dob || "";
       document.getElementById("pEditCity").value = currentSession.city || "";
       document.getElementById("pEditVidha").value = currentSession.bio || "";
+
+      // प्रोफ़ाइल खुलने पर एडिट बॉक्स को बंद रखें
+      var editBox = document.getElementById("editProfileFormWrapper");
+      var btn = document.getElementById("btnToggleEditForm");
+      if (editBox) editBox.style.display = "none";
+      if (btn) {
+        btn.innerText = "✏️ प्रोफ़ाइल एडिट करें";
+        btn.style.background = "#D4AF37";
+        btn.style.color = "#0A1931";
+      }
 
       fetchDirectHistory();
     }
@@ -1119,6 +1170,7 @@
 
     function doDirectLogout() {
       localStorage.removeItem("akp_user_session");
+      sessionStorage.removeItem("user_session_token");
       currentSession = null;
       closeUserPortalDirect();
       alert("आप सफलतापूर्वक लॉगआउट हो चुके हैं।");
@@ -1127,5 +1179,77 @@
 
     <!-- MAIN JAVASCRIPT FILE -->
     <script src="script.js"></script>
+  <!-- ===================================================================
+       Casual copy-protection (deterrent only — NOT real security).
+       Determined users can still view source / open DevTools.
+       =================================================================== -->
+  <style>
+    body {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+    /* Agar kisi input/textarea mein text select karna ho (jaise form fields), wahan allow karo */
+    input, textarea {
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+      user-select: text;
+    }
+    #devtoolsWarningOverlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #000;
+      color: #fff;
+      z-index: 999999;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 20px;
+      padding: 20px;
+    }
+  </style>
+
+  <div id="devtoolsWarningOverlay">
+    ⚠️ Developer Tools band karke page reload karein.
+  </div>
+
+  <script>
+    // Right-click disable
+    document.addEventListener('contextmenu', function (e) {
+      e.preventDefault();
+    });
+
+    // Common keyboard shortcuts disable (view-source, save, devtools, inspect)
+    document.addEventListener('keydown', function (e) {
+      const key = e.key ? e.key.toUpperCase() : '';
+      if (
+        key === 'F12' ||
+        (e.ctrlKey && key === 'U') ||                                  // View Source
+        (e.ctrlKey && key === 'S') ||                                  // Save Page
+        (e.ctrlKey && e.shiftKey && (key === 'I' || key === 'J' || key === 'C')) // DevTools
+      ) {
+        e.preventDefault();
+      }
+    });
+
+    // Basic DevTools-open detection (window size threshold trick)
+    (function () {
+      const threshold = 160;
+      const overlay = document.getElementById('devtoolsWarningOverlay');
+      function checkDevTools() {
+        const widthDiff = window.outerWidth - window.innerWidth > threshold;
+        const heightDiff = window.outerHeight - window.innerHeight > threshold;
+        if (widthDiff || heightDiff) {
+          overlay.style.display = 'flex';
+        } else {
+          overlay.style.display = 'none';
+        }
+      }
+      setInterval(checkDevTools, 1000);
+    })();
+  </script>
 </body>
 </html>
