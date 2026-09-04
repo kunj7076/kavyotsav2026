@@ -54,7 +54,7 @@ function injectDynamicEventData() {
   }
 
   const formTitle = document.getElementById("dynFormEventTitle");
-  if (formTitle) formTitle.innerText = `${EVENT_CONFIG.currentEvent.name} Register`;
+  if (formTitle) formTitle.innerText = `${EVENT_CONFIG.currentEvent.name} पंजीकरण`;
 }
 
 // -------------------------------------------------------------------
