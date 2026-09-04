@@ -49,18 +49,17 @@
 
             <nav class="nav-menu" id="navMenu">
                 <a href="javascript:void(0)" class="nav-link profile-nav-link" onclick="openUserAuthModal(event); return false;">
-                    <span style="font-size: 16px;">👤</span> <span id="navUserName">खाता / प्रोफ़ाइल</span>
+                    <span style="font-size: 16px;">👤</span> <span id="navUserName">Profile</span>
                 </a>
-                <a href="#about" onclick="closeNavMenu()">परिचय</a>
-                <a href="#sponsorsSection" onclick="closeNavMenu()">प्रायोजक</a>
-                <a href="#guestsSection" onclick="closeNavMenu()">अतिथि</a>
-                <a href="#aboutUsSection" onclick="closeNavMenu()">हमारे बारे में</a>
+                <a href="#guestsSection" onclick="closeNavMenu()">Guests</a>
+                <a href="#sponsorsSection" onclick="closeNavMenu()">Sponsors</a>
+                <a href="#aboutUsSection" onclick="closeNavMenu()">About Us</a>
                 <a href="#faq" onclick="closeNavMenu()">FAQ</a>
                 
-                <button type="button" id="btnNavPassBook" class="btn-nav-gold" onclick="handlePassBookClick(event);">पास बुक करें</button>
-                <button type="button" class="btn-nav-outline" onclick="openDownloadModal(event);">पास / सर्टिफिकेट</button>
+                <button type="button" id="btnNavPassBook" class="btn-nav-gold" onclick="handlePassBookClick(event);">Register</button>
+                <button type="button" class="btn-nav-outline" onclick="openDownloadModal(event);">Download Pass</button>
                 <button type="button" class="btn-nav-admin" onclick="openAdminModal(event); closeNavMenu();">
-                    <i class="fas fa-shield-alt"></i> एडमिन
+                    <i class="fas fa-shield-alt"></i>Admin
                 </button>
             </nav>
         </div>
@@ -80,22 +79,22 @@
             </div>
 
             <div class="hero-actions">
-                <button type="button" class="btn-primary" onclick="openRegisterModal(event)">पास बुक करें</button>
-                <button type="button" class="btn-outline-gold" onclick="openDownloadModal(event)">पहले से पंजीकृत हैं?</button>
+                <button type="button" class="btn-primary" onclick="openRegisterModal(event)">Register</button>
+                <button type="button" class="btn-outline-gold" onclick="openDownloadModal(event)">Already Registered?</button>
             </div>
         </div>
     </section>
 
     <!-- 4. ABOUT EVENT SECTION -->
     <section class="section" id="about">
-        <h2 class="section-title">कार्यक्रम बारे में</h2>
+        <h2 class="section-title">कार्यक्रम के बारे में</h2>
         <div class="about-content">
             <p>
-                <strong>अभिव्यक्ति काव्यपीठ</strong> द्वारा आयोजित यह भव्य राष्ट्रीय साहित्यिक समागम नवोदित एवं स्थापित कवियों, विचारकों और साहित्य-प्रेमियों को एक गरिमामयी मंच प्रदान करने हेतु संकल्पित है।
+                <strong>अभिव्यक्ति काव्यपीठ</strong> द्वारा आयोजित यह भव्य साहित्यिक समागम नवोदित एवं स्थापित कवियों, विचारकों और साहित्य-प्रेमियों को एक गरिमामयी मंच प्रदान करने हेतु संकल्पित है।
             </p>
             <div class="event-details-grid">
-                <div class="detail-item"><i class="fas fa-clock"></i> <span id="dynAboutTime">सुबह 11:00 बजे से</span></div>
-                <div class="detail-item"><i class="fas fa-map-pin"></i> <a id="dynAboutMapLink" href="https://goo.gl/maps/your-location" target="_blank" style="color: inherit; text-decoration: none;"><span id="dynAboutVenue">इलाहाबाद विश्वविद्यालय</span></a></div>
+                <div class="detail-item"><i class="fas fa-clock"></i> <span id="dynAboutTime"></span></div>
+                <div class="detail-item"><i class="fas fa-map-pin"></i> <a id="dynAboutMapLink" href="https://goo.gl/maps/your-location" target="_blank" style="color: inherit; text-decoration: none;"><span id="dynAboutVenue"></span></a></div>
             </div>
         </div>
     </section>
@@ -121,10 +120,7 @@
 
         <div class="unified-card-wrapper">
             <div class="sponsors-grid" id="sponsorsGrid">
-                <a href="https://www.instagram.com/prayagraj_insight" target="_blank" class="sponsor-card">
-                    <img src="image/sponsor1.png" alt="Sponsor 1" onerror="this.src='https://api.dicebear.com/7.x/initials/svg?seed=Media'"> 
-                    <span>Media Partner</span>
-                    <small>Official Partner</small>
+                <div class="sponsor-loader">⏳ विवरण लोड हो रहा है...</div>
                 </a>
             </div>
         </div>
@@ -132,12 +128,12 @@
 
     <!-- 7. ABOUT US SECTION -->
     <section class="section" id="aboutUsSection">
-        <h2 class="section-title">हमारे बारे में (About Us)</h2>
+        <h2 class="section-title">हमारे बारे में</h2>
         <div class="gold-divider"></div>
         <div class="about-us-box">
             <p class="about-line"><i class="fas fa-feather-alt"></i> <strong>अभिव्यक्ति काव्यपीठ</strong> प्रयागराज की पावन धरा से संचालित एक प्रतिष्ठित साहित्यिक संस्था है।</p>
             <p class="about-line"><i class="fas fa-bullhorn"></i> हमारा मुख्य उद्देश्य युवा साहित्यकारों और कवियों को राष्ट्रीय स्तर पर मंच और पहचान प्रदान करना है।</p>
-            <p class="about-line"><i class="fas fa-award"></i> यह संस्था (Reg: UDYAM-UP-03-0155035) भारतीय साहित्य और कला के संवर्धन हेतु समर्पित है।</p>
+            <p class="about-line"><i class="fas fa-award"></i> यह संस्था भारतीय साहित्य और कला के संवर्धन हेतु समर्पित है।</p>
         </div>
     </section>
 
@@ -229,10 +225,10 @@
                 <p>© 2026 अभिव्यक्ति काव्यपीठ | सर्वाधिकार सुरक्षित</p>
                 <div style="display: flex; gap: 15px;">
                     <a href="javascript:void(0)" onclick="openVolunteerModal(event)" style="color: #22C55E; font-size: 0.8rem; text-decoration: none; font-weight: bold;">
-                        📷 वालंटियर स्कैनर
+                        📷 PASS SCANNER
                     </a>
                     <a href="javascript:void(0)" onclick="openAdminModal(event)" style="color: #94A3B8; font-size: 0.8rem; text-decoration: none;">
-                        <i class="fas fa-lock"></i> व्यवस्थापक लॉगिन
+                        <i class="fas fa-lock"></i> ADMINS
                     </a>
                 </div>
             </div>
@@ -253,7 +249,7 @@
     <div class="modal-overlay" id="registerModal">
         <div class="modal-box">
             <button type="button" class="modal-close" onclick="closeRegisterModal()">&times;</button>
-            <h3 class="modal-title" id="dynFormEventTitle" style="color: #D4AF37; margin-top:0;">पास बुकिंग</h3>
+            <h3 class="modal-title" id="dynFormEventTitle" style="color: #D4AF37; margin-top:0;">Registration</h3>
             <p class="modal-sub" style="font-size:12px; color:#94A3B8; margin-bottom:15px;">कृपया अपना सही विवरण दर्ज करें</p>
 
             <form id="ticketForm">
@@ -292,7 +288,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label style="font-size:12px; color:#CBD5E1;">रचना का शीर्षक (Sample Title)</label>
+                        <label style="font-size:12px; color:#CBD5E1;">रचना का शीर्षक</label>
                         <input type="text" id="title" placeholder="अपनी रचना का शीर्षक लिखें">
                     </div>
                 </div>

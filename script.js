@@ -54,7 +54,7 @@ function injectDynamicEventData() {
   }
 
   const formTitle = document.getElementById("dynFormEventTitle");
-  if (formTitle) formTitle.innerText = `${EVENT_CONFIG.currentEvent.name} पास बुकिंग`;
+  if (formTitle) formTitle.innerText = `${EVENT_CONFIG.currentEvent.name} Register`;
 }
 
 // -------------------------------------------------------------------
@@ -149,7 +149,7 @@ function applyRegistrationUI(status) {
     }
 
     if (heroMainBtn) {
-      heroMainBtn.innerText = "पास बुक करें";
+      heroMainBtn.innerText = "Register Now";
       heroMainBtn.onclick = function(e) {
         openRegisterModal(e);
       };
@@ -157,7 +157,7 @@ function applyRegistrationUI(status) {
 
     regBtns.forEach(btn => {
       if (btn) {
-        btn.innerText = "पास बुक करें";
+        btn.innerText = "Register Now";
         btn.style.opacity = "1";
       }
     });
@@ -329,12 +329,14 @@ function saveAdminSponsor() {
 
 function loadSponsorsDirectly() {
   const grid = document.getElementById("sponsorsGrid");
+  const section = document.getElementById("sponsorsSection");
   if (!grid) return;
 
   const cb = 'cb_get_sp_' + Date.now();
   window[cb] = function(res) {
     delete window[cb];
     if (res && res.status === "success" && res.sponsors && res.sponsors.length > 0) {
+      if (section) section.style.display = "block";
       grid.innerHTML = res.sponsors.map(sp => `
         <a href="${sp.insta || '#'}" target="_blank" class="sponsor-card">
           <img src="${sp.photo || 'image/sponsor1.png'}" alt="${sp.name}" onerror="this.src='https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(sp.name)}'"> 
@@ -342,6 +344,10 @@ function loadSponsorsDirectly() {
           <small style="font-size:10px; color:#B45309; font-weight:bold;">${sp.tag}</small>
         </a>
       `).join('');
+    } else {
+      // यदि शीट में कोई प्रायोजक नहीं है तो पूरा सेक्शन अपने-आप छिप जाएगा
+      if (section) section.style.display = "none";
+      grid.innerHTML = "";
     }
   };
 
@@ -349,7 +355,6 @@ function loadSponsorsDirectly() {
   s.src = `${WEB_APP_URL}?action=getSponsors&callback=${cb}&t=${Date.now()}`;
   document.body.appendChild(s);
 }
-
 // 🔒 [PROTECTED] VOLUNTEER SCANNER CONTROLLER (WITH SESSION TOKEN)
 function openVolunteerModal(e) {
   if (e) {
